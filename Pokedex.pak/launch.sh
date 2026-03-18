@@ -45,6 +45,19 @@ fi
 export HOME="$SHARED_USERDATA_PATH/$PAK_NAME"
 mkdir -p "$HOME"
 
+CAUGHT_FILE="$HOME/caught.txt"
+touch "$CAUGHT_FILE"
+
+is_caught() { grep -q "^$1$" "$CAUGHT_FILE"; }
+toggle_caught() {
+    if is_caught "$1"; then
+        grep -v "^$1$" "$CAUGHT_FILE" > "$CAUGHT_FILE.tmp"
+        mv "$CAUGHT_FILE.tmp" "$CAUGHT_FILE"
+    else
+        echo "$1" >> "$CAUGHT_FILE"
+    fi
+}
+
 export PATH="$PAK_DIR/bin/$PLATFORM:$PAK_DIR/bin/$architecture:$PAK_DIR/bin/shared:$PATH"
 
 GAMES_DIR="$PAK_DIR/data/games"
@@ -159,73 +172,64 @@ build_poke_list_json() {
     slug="${gd%/}"; slug="${slug##*/}"
     last=$(read_setting "poke_$slug" "0")
 
-    # awk reads the file exactly once. It skips the header (NR==1),
-    # skips blank lines, formats each row, and prints JSON.
-    # All type-color logic lives here to avoid per-row shell forks.
-    awk -v selected="$last" '
+    # Read caught list into a space-separated string for awk
+    caught_list=$(cat "$CAUGHT_FILE" | xargs echo)
+
+    awk -v selected="$last" -v caught_str="$caught_list" -v pak_dir="$PAK_DIR" '
     BEGIN {
         FS = "\t"
-        # Build the type→color map in awk (avoids per-row shell calls)
-        color["Normal"]   = "#A8A878"
-        color["Fire"]     = "#F08030"
-        color["Water"]    = "#6890F0"
-        color["Electric"] = "#F8D030"
-        color["Grass"]    = "#78C850"
-        color["Ice"]      = "#98D8D8"
-        color["Fighting"] = "#C03028"
-        color["Poison"]   = "#A040A0"
-        color["Ground"]   = "#E0C068"
-        color["Flying"]   = "#A890F0"
-        color["Psychic"]  = "#F85888"
-        color["Bug"]      = "#A8B820"
-        color["Rock"]     = "#B8A038"
-        color["Ghost"]    = "#705898"
-        color["Dragon"]   = "#7038F8"
-        color["Dark"]     = "#705848"
-        color["Steel"]    = "#B8B8D0"
-        color["Fairy"]    = "#EE99AC"
+        # Build caught map
+        split(caught_str, caught_array, " ")
+        for (i in caught_array) caught[caught_array[i]] = 1
+
+        # Build the type→color map in awk
+        color["Normal"]   = "#A8A878"; color["Fire"]     = "#F08030"
+        color["Water"]    = "#6890F0"; color["Electric"] = "#F8D030"
+        color["Grass"]    = "#78C850"; color["Ice"]      = "#98D8D8"
+        color["Fighting"] = "#C03028"; color["Poison"]   = "#A040A0"
+        color["Ground"]   = "#E0C068"; color["Flying"]   = "#A890F0"
+        color["Psychic"]  = "#F85888"; color["Bug"]      = "#A8B820"
+        color["Rock"]     = "#B8A038"; color["Ghost"]    = "#705898"
+        color["Dragon"]   = "#7038F8"; color["Dark"]     = "#705848"
+        color["Steel"]    = "#B8B8D0"; color["Fairy"]    = "#EE99AC"
         default_color     = "#68A090"
 
         printf "{\n  \"selected\": %s,\n  \"items\": [\n", selected
         first = 1
     }
-    NR == 1 { next }       # skip header
-    /^[[:space:]]*$/ { next }  # skip blank lines
+    NR == 1 { next }
+    /^[[:space:]]*$/ { next }
     {
-        # FS is already set in BEGIN
-        dex_id  = $1
-        name    = $3
-        type1   = $4
-        type2   = $5
-        form    = $6
-
+        dex_id  = $1; name = $3; type1 = $4; type2 = $5; form = $6
         if (dex_id == "") next
 
         pad = sprintf("%03d", dex_id + 0)
+        ts = (type2 == "") ? type1 : type1 "/" type2
+        lbl = (form != "") ? "#" pad "  " name "  [" ts "]  (" form ")" : "#" pad "  " name "  [" ts "]"
 
-        if (type2 == "")
-            ts = type1
-        else
-            ts = type1 "/" type2
-
-        if (form != "")
-            lbl = "#" pad "  " name "  [" ts "]  (" form ")"
-        else
-            lbl = "#" pad "  " name "  [" ts "]"
-
-        # JSON-escape the label
-        gsub(/\\/, "\\\\", lbl)
-        gsub(/"/, "\\\"", lbl)
-
+        gsub(/\\/, "\\\\", lbl); gsub(/"/, "\\\"", lbl)
         col = (type1 in color) ? color[type1] : default_color
+
+        # Icon and Badge paths
+        icon_path = pak_dir "/data/sprites/" pad ".png"
+        badge_path = pak_dir "/data/icons/pokeball.png"
 
         if (!first) printf ",\n"
         first = 0
-        printf "    {\"name\": \"%s\", \"features\": {\"background_color\": \"%s\"}}", lbl, col
+        printf "    {\"name\": \"%s\", \"features\": {\"background_color\": \"%s\"", lbl, col
+        
+        # Check if icon exists (system command call in awk is slow but we only do it once per row)
+        # However, for 151 items it is faster to just assume it exists if we follow the naming convention.
+        # But let us be safe.
+        printf ", \"icon\": \"%s\"", icon_path
+        
+        if (dex_id in caught) {
+            printf ", \"badge\": \"%s\"", badge_path
+        }
+        
+        printf "}}"
     }
-    END {
-        printf "\n  ]\n}\n"
-    }
+    END { printf "\n  ]\n}\n" }
     ' "$data" > "$POKE_LIST_JSON"
 }
 
@@ -440,12 +444,11 @@ browse_game() {
         [ -z "$sidx" ] && sidx="0"
         write_setting "poke_$slug" "$sidx"
 
-        build_detail_json "$gd" "$((sidx + 1))"
-
-        minui-presenter \
-            --file "$DETAIL_JSON" \
-            --show-b-button \
-            --b-text "BACK"
+        # Toggling caught status
+        # We need to find the dex_id of the selected Pokémon
+        # Using awk to extract it from the TSV at the chosen index
+        target_dex_id=$(awk -v target="$((sidx + 2))" 'BEGIN{FS="\t"} NR==target{print $1; exit}' "$gd/pokemon.tsv")
+        [ -n "$target_dex_id" ] && toggle_caught "$target_dex_id"
     done
 }
 
