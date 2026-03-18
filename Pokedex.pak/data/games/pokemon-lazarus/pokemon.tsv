@@ -1,0 +1,399 @@
+dex_id	national_id	name	type1	type2	form_tag	hp	atk	def	spa	spd	spe	ability1	ability2	hidden_ability	evo_from	evo_method	evo_into	location	catch_rate	gender_ratio	egg_group1	egg_group2	description
+1	722	Rowlet	Grass	Flying														Starter / Sea of Vulcai (wild)					
+2	723	Dartrix	Grass	Flying											Rowlet								
+3	724	Decidueye	Grass	Ghost											Dartrix								
+3	724	Hisuian Decidueye	Grass	Fighting	Regional										Dartrix								
+4	725	Litten	Fire															Starter / Sea of Vulcai (wild)					
+5	726	Torracat	Fire												Litten								
+6	727	Incineroar	Fire	Dark											Torracat								
+7	728	Popplio	Water															Starter / Sea of Vulcai (wild)					
+8	729	Brionne	Water												Popplio								
+9	730	Primarina	Water	Fairy											Brionne								
+10	650	Chespin	Grass															Starter / Sea of Asteri E (wild)					
+11	651	Quilladin	Grass												Chespin								
+12	652	Chesnaught	Grass	Fighting											Quilladin								
+12	652	Mega Chesnaught	Grass	Fighting	Mega										Chesnaught	Mega Stone							
+13	653	Fennekin	Fire															Starter / Sea of Asteri E (wild)					
+14	654	Braixen	Fire												Fennekin								
+15	655	Delphox	Fire	Psychic											Braixen								
+15	655	Mega Delphox	Fire	Psychic	Mega										Delphox	Mega Stone							
+16	656	Froakie	Water															Starter / Sea of Asteri E (wild)					
+17	657	Frogadier	Water												Froakie								
+18	658	Greninja	Water	Dark											Frogadier								
+18	658	Mega Greninja	Water	Dark	Mega										Greninja	Mega Stone							
+19	906	Sprigatito	Grass															Starter / Sea of Vulcai (wild)					
+20	907	Floragato	Grass												Sprigatito								
+21	908	Meowscarada	Grass	Dark											Floragato								
+22	909	Fuecoco	Fire															Starter / Sea of Vulcai (wild)					
+23	910	Crocalor	Fire												Fuecoco								
+24	911	Skeledirge	Fire	Ghost											Crocalor								
+25	912	Quaxly	Water															Starter / Sea of Vulcai (wild)					
+26	913	Quaxwell	Water												Quaxly								
+27	914	Quaquaval	Water	Fighting											Quaxwell								
+28	511	Pansage	Grass	Normal														Acrisia City (wild)					
+29	512	Simisage	Grass	Normal											Pansage								
+30	513	Pansear	Fire	Normal														Acrisia City (wild)					
+31	514	Simisear	Fire	Normal											Pansear								
+32	515	Panpour	Water	Normal														Acrisia City (wild)					
+33	516	Simipour	Water	Normal											Panpour								
+34	506	Lillipup	Normal															Bronze Fields N/S, Kalami City (wild)					
+35	507	Herdier	Normal												Lillipup								
+36	508	Stoutland	Normal												Herdier								
+37	731	Pikipek	Normal	Flying														Acrisia City, Bronze Fields N, Jusmail Town (wild)					
+38	732	Trumbeak	Normal	Flying											Pikipek			Sea of Asteri E (wild)					
+39	733	Toucannon	Normal	Flying											Trumbeak			Wakewater Isle (wild)					
+39	733	Mega Toucannon	Fire	Flying	Mega										Toucannon	Mega Stone							
+40	580	Ducklett	Water	Flying														Acrisia City, Bronze Fields N (wild)					
+41	581	Swanna	Water	Flying											Ducklett			Pollen Road, Davosi Straits (surf)					
+42	187	Hoppip	Grass	Flying														Bronze Fields N/S (wild)					
+43	188	Skiploom	Grass	Flying											Hoppip			Kaptara Island E, Pollen Road (wild)					
+44	189	Jumpluff	Grass	Flying											Skiploom								
+45	290	Nincada	Bug	Ground														Bronze Fields N/S (wild)					
+46	291	Ninjask	Bug	Dark											Nincada			Sea of Asteri E (wild)					
+47	292	Shedinja	Bug	Ghost											Nincada			Sea of Asteri E (wild)					
+48	736	Grubbin	Bug															Bronze Fields N/S (wild)					
+49	737	Charjabug	Bug	Electric											Grubbin			Sea of Asteri E (wild)					
+50	738	Vikavolt	Bug	Electric											Charjabug								
+51	46	Paras	Bug	Grass														Bronze Fields N, Wanderer's Woods S, Pythios Cemetery (wild)					
+52	47	Parasect	Bug	Ghost											Paras								
+53	231	Phanpy	Ground															Acrisia City, Bronze Fields N (wild)					
+54	232	Donphan	Ground												Phanpy								
+55	872	Snom	Ice	Bug														Pythios Cemetery, Froslass Cavern (wild)					
+56	873	Frosmoth	Ice	Bug											Snom								
+57	104	Cubone	Ground															Bronze Fields N/S (wild)					
+58	105	Marowak	Ground												Cubone								
+58	105	Alolan Marowak	Fire	Ghost	Regional										Cubone								
+59	749	Mudbray	Ground															Bronze Fields S, Riverwalk Trail W (wild)					
+60	750	Mudsdale	Ground												Mudbray								
+61	179	Mareep	Electric															Bronze Fields S (wild)					
+62	180	Flaaffy	Electric												Mareep			Lastlight Road (wild)					
+63	181	Ampharos	Electric												Flaaffy								
+63	181	Mega Ampharos	Electric	Dragon	Mega										Ampharos	Mega Stone							
+64	840	Applin	Grass	Dragon														Kalami City, Wanderer's Woods N (wild)					
+65	841	Flapple	Grass	Dragon											Applin			Tower of Dioxippus (wild)					
+66	842	Appletun	Grass	Dragon											Applin			Tower of Dioxippus (wild)					
+67	1011	Dipplin	Grass	Dragon											Applin			Tower of Dioxippus (wild)					
+68	1019	Hydrapple	Grass	Dragon											Dipplin								
+69	742	Cutiefly	Bug	Fairy														Bronze Fields S, Jusmail Town (wild)					
+70	743	Ribombee	Bug	Fairy											Cutiefly			Port Pello (wild)					
+70	743	Mega Ribombee	Bug	Fairy	Mega										Ribombee	Mega Stone							
+71	88	Grimer	Poison															Acrisia City, Pentepetal City (wild)					
+71	88	Alolan Grimer	Poison	Dark	Regional													Acrisia City, Pentepetal City (wild)					
+72	89	Muk	Poison												Grimer			Areios Hideout (wild)					
+72	89	Alolan Muk	Poison	Dark	Regional										Alolan Grimer			Areios Hideout (wild)					
+73	265	Wurmple	Bug															Jusmail Town, Riverwalk Trail S (wild)					
+74	266	Silcoon	Bug												Wurmple								
+75	267	Beautifly	Bug	Flying											Silcoon			Kipos Town, Pentepetal City (wild)					
+76	268	Cascoon	Bug												Wurmple								
+77	269	Dustox	Bug	Poison											Cascoon			Kipos Town, Pentepetal City (wild)					
+78	357	Tropius	Grass	Flying														Riverwalk Trail S, Port Pello (wild)					
+79	280	Ralts	Psychic	Fairy														Jusmail Town, Wanderer's Woods S (wild)					
+80	281	Kirlia	Psychic	Fairy											Ralts			Sofos City (wild)					
+81	282	Gardevoir	Psychic	Fairy											Kirlia								
+81	282	Mega Gardevoir	Psychic	Fairy	Mega										Gardevoir	Mega Stone							
+82	475	Gallade	Psychic	Fighting											Kirlia								
+82	475	Mega Gallade	Psychic	Fighting	Mega										Gallade	Mega Stone							
+83	133	Eevee	Normal															Jusmail Town, Kipos Town (wild)					
+84	134	Vaporeon	Water												Eevee								
+85	135	Jolteon	Electric												Eevee								
+86	136	Flareon	Fire												Eevee								
+87	196	Espeon	Psychic												Eevee								
+88	197	Umbreon	Dark												Eevee								
+89	470	Leafeon	Grass												Eevee								
+90	471	Glaceon	Ice												Eevee								
+91	700	Sylveon	Fairy												Eevee								
+92	672	Skiddo	Grass															Jusmail Town, Acrisia Mountains Peak (wild)					
+93	673	Gogoat	Grass	Ground											Skiddo			Tower of Dioxippus (wild)					
+93	673	Mega Gogoat	Grass	Ground	Mega										Gogoat	Mega Stone							
+94	198	Murkrow	Dark	Flying														Bronze Fields N/S, Kalami City (wild)					
+95	430	Honchkrow	Dark	Flying											Murkrow								
+96	741	Oricorio Baile	Fire	Flying	Form													Jusmail Town, Myrrini Island (wild)					
+96	741	Oricorio Pom-Pom	Electric	Flying	Form													Myrrini Island (wild)					
+96	741	Oricorio Pau	Psychic	Flying	Form													Myrrini Island (wild)					
+96	741	Oricorio Sensu	Ghost	Flying	Form													Wanderer's Woods S, Myrrini Island (wild)					
+97	27	Sandshrew	Ground															Acrisia City, Acrisia Mountains (wild)					
+97	27	Alolan Sandshrew	Ice	Steel	Regional													Acrisia Mountains (wild)					
+98	28	Sandslash	Ground												Sandshrew								
+98	28	Alolan Sandslash	Ice	Steel	Regional										Alolan Sandshrew								
+99	551	Sandile	Ground	Dark														Riverwalk Trail W, Erinys Path W (wild)					
+100	552	Krokorok	Ground	Dark											Sandile			Fresco Isles (wild)					
+101	553	Krookodile	Ground	Dark											Krokorok								
+102	299	Nosepass	Rock															Acrisia Mountains, Sofos City (wild)					
+103	476	Probopass	Rock	Steel											Nosepass								
+104	303	Mawile	Steel	Fairy														Acrisia Mountains, Pentepetal City (wild)					
+104	303	Mega Mawile	Steel	Fairy	Mega										Mawile	Mega Stone							
+105	744	Rockruff	Rock															Acrisia Mountains, Acrisia Mountains Peak (wild)					
+106	745	Lycanroc	Rock												Rockruff			Palati City (wild)					
+106	745	Midnight Lycanroc	Rock	Dark	Form										Rockruff			Palati City (wild)					
+106	745	Dusk Lycanroc	Rock	Fighting	Form										Rockruff								
+107	629	Vullaby	Dark	Flying														Bronze Fields S, Acrisia Mountains (wild)					
+108	630	Mandibuzz	Dark	Flying											Vullaby								
+108	630	Mega Mandibuzz	Dark	Flying	Mega										Mandibuzz	Mega Stone							
+109	527	Woobat	Psychic	Flying														Acrisia Mountains, Jusmail Town (wild)					
+110	528	Swoobat	Psychic	Flying											Woobat								
+111	304	Aron	Steel	Rock														Acrisia Mountains, Riverwalk Trail W (wild)					
+112	305	Lairon	Steel	Rock											Aron								
+113	306	Aggron	Steel	Rock											Lairon								
+113	306	Mega Aggron	Steel		Mega										Aggron	Mega Stone							
+114	532	Timburr	Fighting															Acrisia Mountains, Kipos Town, Palati City (wild)					
+115	533	Gurdurr	Fighting												Timburr			Palati City (wild)					
+116	534	Conkeldurr	Fighting												Gurdurr								
+117	950	Klawf	Rock															Acrisia Mountains, Palati City (wild)					
+118	60	Poliwag	Water															Acrisia City, Wanderer's Woods N (wild)					
+119	61	Poliwhirl	Water												Poliwag								
+120	62	Poliwrath	Water	Fighting											Poliwhirl								
+121	186	Politoed	Water	Normal											Poliwhirl								
+122	710	Pumpkaboo	Ghost	Grass														Riverwalk Trail S, Wanderer's Woods N (wild)					
+123	711	Gourgeist	Ghost	Grass											Pumpkaboo			The Nyx Trails (wild)					
+124	285	Shroomish	Grass															Acrisia City, Wanderer's Woods N (wild)					
+125	286	Breloom	Grass	Fighting											Shroomish			Lastlight Road (wild)					
+126	214	Heracross	Bug	Fighting														Wanderer's Woods N/S (wild)					
+126	214	Mega Heracross	Bug	Fighting	Mega										Heracross	Mega Stone							
+127	353	Shuppet	Ghost	Normal														Wanderer's Woods N, Pythios Cemetery (wild)					
+128	354	Banette	Ghost	Normal											Shuppet			The Nyx Trails (wild)					
+128	354	Mega Banette	Ghost	Dark	Mega										Banette	Mega Stone							
+129	190	Aipom	Normal															Wanderer's Woods N/S (wild)					
+130	424	Ambipom	Normal												Aipom								
+131	761	Bounsweet	Grass															Jusmail Town, Riverwalk Trail S (wild)					
+132	762	Steenee	Grass												Bounsweet			Kipos Town (wild)					
+133	763	Tsareena	Grass												Steenee								
+134	194	Wooper	Water	Ground														Riverwalk Trail S, Wanderer's Woods N/S (wild)					
+134	194	Paldean Wooper	Poison	Ground	Regional													Riverwalk Trail S, Wanderer's Woods N/S (wild)					
+135	195	Quagsire	Water	Ground											Wooper			Palati City (wild)					
+136	980	Clodsire	Poison	Ground											Paldean Wooper			Palati City (wild)					
+137	948	Toedscool	Ground	Grass														Kalami City, Wanderer's Woods N, Palati City (wild)					
+138	949	Toedscruel	Ground	Grass											Toedscool			Palati City (wild)					
+139	522	Blitzle	Electric															Wanderer's Woods N (wild)					
+140	523	Zebstrika	Electric												Blitzle								
+141	163	Hoothoot	Normal	Flying														Acrisia City, Bronze Fields N, Pythios Town (wild)					
+142	164	Noctowl	Ghost	Flying											Hoothoot			Sofos City (wild)					
+142	164	Mega Noctowl	Ghost	Flying	Mega										Noctowl	Mega Stone							
+143	619	Mienfoo	Fighting															Pythios Town (wild)					
+144	620	Mienshao	Fighting												Mienfoo								
+145	955	Flittle	Psychic															Acrisia Mountains Peak, Pythios Town (wild)					
+146	956	Espathra	Psychic												Flittle			Kaptara Island W, Pollen Road (wild)					
+147	37	Vulpix	Fire	Fairy														Jusmail Town (wild)					
+147	37	Alolan Vulpix	Ice	Fairy	Regional													Jusmail Town, Froslass Cavern B1F (wild)					
+148	38	Ninetales	Fire	Fairy											Vulpix								
+148	38	Alolan Ninetales	Ice	Fairy	Regional										Alolan Vulpix								
+149	679	Honedge	Steel	Ghost														Pythios Town, Sofos City (wild)					
+150	680	Doublade	Steel	Ghost											Honedge			Kaptara Island E (wild)					
+151	681	Aegislash	Steel	Ghost											Doublade								
+151	681	Aegislash Blade	Steel	Ghost	Form																		
+152	557	Dwebble	Bug	Rock														Pythios Town, Marmaro Island (wild)					
+153	558	Crustle	Bug	Rock											Dwebble								
+154	774	Minior	Rock	Flying														Erinys Path W/E (wild)					
+154	774	Minior Core	Rock	Flying	Form																		
+155	92	Gastly	Ghost	Poison														Erinys Path E (wild)					
+156	93	Haunter	Ghost	Poison											Gastly								
+157	94	Gengar	Ghost	Poison											Haunter								
+157	94	Mega Gengar	Ghost	Poison	Mega										Gengar	Mega Stone							
+158	343	Baltoy	Ground	Psychic														Erinys Path W, Sofos City, Palati City (wild)					
+159	344	Claydol	Ground	Psychic											Baltoy			Kaptara Island W (wild)					
+160	757	Salandit	Poison	Fire														Erinys Path E, Fresco Isles, Areios Hideout (wild)					
+161	758	Salazzle	Poison	Fire											Salandit								
+162	963	Finizen	Water															Erinys Path E, Marmaro Island (surf)					
+163	964	Palafin	Water												Finizen								
+163	964	Hero Palafin	Water		Form																		
+164	175	Togepi	Fairy															Erinys Path W, Sea of Asteri E (wild)					
+165	176	Togetic	Fairy	Flying											Togepi			Port Pello (wild)					
+166	468	Togekiss	Fairy	Flying											Togetic								
+167	420	Cherubi	Grass															Erinys Path E, Myrrini Island (wild)					
+168	421	Cherrim	Grass	Fire											Cherubi			Lastlight Road (wild)					
+168	421	Cherrim Sunny	Grass	Fire	Form																		
+169	228	Houndour	Dark	Fire														Erinys Path E (wild)					
+170	229	Houndoom	Dark	Fire											Houndour			Areios Hideout (wild)					
+170	229	Mega Houndoom	Dark	Fire	Mega										Houndoom	Mega Stone							
+171	138	Omanyte	Rock	Water														Marmaro Island (event) / Erinys Path W (wild)					
+172	139	Omastar	Rock	Water											Omanyte								
+173	140	Kabuto	Rock	Water														Marmaro Island (event) / Erinys Path E (wild)					
+174	141	Kabutops	Rock	Water											Kabuto								
+175	451	Skorupi	Poison	Bug														Erinys Path E, Fresco Isles (wild)					
+176	452	Drapion	Poison	Dark											Skorupi			Areios Hideout (wild)					
+177	167	Spinarak	Bug	Poison														Acrisia Mountains Peak, Erinys Path E (wild)					
+178	168	Ariados	Bug	Poison											Spinarak			Areios Hideout (wild)					
+179	95	Onix	Rock	Ground														Erinys Path E, Froslass Cavern B1F (wild)					
+180	208	Steelix	Steel	Ground											Onix								
+180	208	Mega Steelix	Steel	Ground	Mega										Steelix	Mega Stone							
+181	775	Komala	Normal															Erinys Path W, Wakewater Isle (wild)					
+182	278	Wingull	Water	Flying														Kalami City, Pythios Town, Sofos City (wild)					
+183	279	Pelipper	Water	Flying											Wingull			Wakewater Isle (wild)					
+184	234	Stantler	Normal															Erinys Path W, Kipos Town (wild)					
+185	899	Wyrdeer	Normal	Psychic											Stantler								
+185	899	Mega Wyrdeer	Normal	Psychic	Mega										Wyrdeer	Mega Stone							
+186	361	Snorunt	Ice															Froslass Cavern (wild)					
+187	362	Glalie	Ice												Snorunt								
+187	362	Mega Glalie	Ice		Mega										Glalie	Mega Stone							
+188	478	Froslass	Ice	Ghost											Snorunt			Froslass Cavern B2F (event)					
+188	478	Mega Froslass	Ice	Ghost	Mega										Froslass	Mega Stone							
+189	363	Spheal	Ice	Water														Froslass Cavern (wild)					
+190	364	Sealeo	Ice	Water											Spheal								
+191	365	Walrein	Ice	Water											Sealeo								
+192	86	Seel	Water	Ice														Froslass Cavern 1F (wild)					
+193	87	Dewgong	Water	Ice											Seel								
+194	436	Bronzor	Steel	Psychic														Acrisia Mountains Peak, Froslass Cavern B1F/B2F (wild)					
+195	437	Bronzong	Steel	Psychic											Bronzor								
+196	878	Cufant	Steel	Normal														Riverwalk Trail S, Sea of Asteri W/E (wild)					
+197	879	Copperajah	Steel	Normal											Cufant								
+197	879	Mega Copperajah	Steel	Normal	Mega										Copperajah	Mega Stone							
+198	570	Zorua	Dark															Erinys Path W (wild)					
+198	570	Hisuian Zorua	Normal	Ghost	Regional													Erinys Path W (wild)					
+199	571	Zoroark	Dark												Zorua								
+199	571	Hisuian Zoroark	Normal	Ghost	Regional										Hisuian Zorua								
+200	215	Sneasel	Dark	Ice														Froslass Cavern 1F (wild)					
+200	215	Hisuian Sneasel	Poison	Fighting	Regional													Froslass Cavern 1F (wild)					
+201	461	Weavile	Dark	Ice											Sneasel								
+202	903	Sneasler	Fighting	Poison											Hisuian Sneasel								
+203	696	Tyrunt	Rock	Dragon														Marmaro Island (event) / Areios Hideout (wild)					
+204	697	Tyrantrum	Rock	Dragon											Tyrunt								
+205	698	Amaura	Rock	Ice														Marmaro Island (event) / Froslass Cavern (wild)					
+206	699	Aurorus	Rock	Ice											Amaura								
+207	52	Meowth	Normal															Kalami City, Pythios Town (wild)					
+207	52	Alolan Meowth	Dark		Regional													Kalami City, Pythios Town (wild)					
+207	52	Galarian Meowth	Steel		Regional													Asfal Hills (wild)					
+208	53	Persian	Normal												Meowth			The Nyx Trails (wild)					
+208	53	Alolan Persian	Dark		Regional										Alolan Meowth			The Nyx Trails (wild)					
+209	863	Perrserker	Steel												Galarian Meowth			Kaptara Island E (wild)					
+210	417	Pachirisu	Electric															Asfal Hills, Port Pello, Pollen Road (wild)					
+211	152	Chikorita	Grass															Wanderer's Woods N (wild)					
+212	153	Bayleef	Grass												Chikorita								
+213	154	Meganium	Grass	Fairy											Bayleef								
+213	154	Mega Meganium	Grass	Fairy	Mega										Meganium	Mega Stone							
+214	155	Cyndaquil	Fire															Pythios Cemetery (wild)					
+215	156	Quilava	Fire												Cyndaquil								
+216	157	Typhlosion	Fire	Ground											Quilava								
+216	157	Hisuian Typhlosion	Fire	Ghost	Regional										Quilava								
+217	158	Totodile	Water															Kalami City (wild)					
+218	159	Croconaw	Water												Totodile								
+219	160	Feraligatr	Water	Dark											Croconaw								
+219	160	Mega Feraligatr	Water	Dragon	Mega										Feraligatr	Mega Stone							
+220	782	Jangmo-o	Dragon															Riverwalk Trail W, Sea of Asteri E (wild)					
+221	783	Hakamo-o	Dragon	Fighting											Jangmo-o								
+222	784	Kommo-o	Dragon	Fighting											Hakamo-o								
+223	701	Hawlucha	Fighting	Flying														Asfal Hills, Myrrini Island, Pollen Road (wild)					
+223	701	Mega Hawlucha	Fighting	Flying	Mega										Hawlucha	Mega Stone							
+224	850	Sizzlipede	Fire	Bug														Pythios Cemetery, Marmaro Island (wild)					
+225	851	Centiskorch	Fire	Bug											Sizzlipede								
+225	851	Mega Centiskorch	Fire	Bug	Mega										Centiskorch	Mega Stone							
+226	408	Cranidos	Rock															Marmaro Island (event)					
+227	409	Rampardos	Rock												Cranidos								
+228	410	Shieldon	Rock	Steel														Marmaro Island (event)					
+229	411	Bastiodon	Rock	Steel											Shieldon								
+230	442	Spiritomb	Ghost	Dark														Marmaro Island (event)					
+231	835	Yamper	Electric															Bronze Fields S, Riverwalk Trail W, Asfal Hills (wild)					
+232	836	Boltund	Electric												Yamper			Areios Hideout (wild)					
+233	921	Pawmi	Electric															Asfal Hills (wild)					
+234	922	Pawmo	Electric	Fighting											Pawmi			Pentepetal City, Palati City (wild)					
+235	923	Pawmot	Electric	Fighting											Pawmo								
+236	944	Shroodle	Poison	Normal														Kalami City, Asfal Hills (wild)					
+237	945	Grafaiai	Poison	Normal											Shroodle			Palati City (wild)					
+238	418	Buizel	Water															Riverwalk Trail S, Kalami City, Asfal Hills (wild)					
+239	419	Floatzel	Water												Buizel			Sea of Asteri E (dive)					
+240	434	Stunky	Poison	Dark														Pythios Cemetery, Asfal Hills, Kipos Town (wild)					
+241	435	Skuntank	Poison	Dark											Stunky								
+242	940	Wattrel	Electric	Flying														Pythios Cemetery, Sea of Asteri W (wild)					
+243	941	Kilowattrel	Electric	Flying											Wattrel			Sea of Vulcai (wild)					
+244	128	Tauros	Normal															Asfal Hills, Kaptara Island E (wild)					
+244	128	Paldean Tauros (Combat)	Fighting		Regional													Asfal Hills, Kaptara Island E (wild)					
+244	128	Paldean Tauros (Blaze)	Fighting	Fire	Regional													Asfal Hills, Kaptara Island E (wild)					
+244	128	Paldean Tauros (Aqua)	Fighting	Water	Regional													Asfal Hills, Kaptara Island E (wild)					
+245	967	Cyclizar	Dragon	Normal														Lastlight Road, Fresco Isles (wild)					
+245	967	Mega Cyclizar S	Dragon	Fighting	Mega										Cyclizar	Mega Stone							
+245	967	Mega Cyclizar V	Dragon	Electric	Mega										Cyclizar	Mega Stone							
+246	767	Wimpod	Bug	Water														Kalami City (wild)					
+247	768	Golisopod	Bug	Water											Wimpod								
+248	172	Pichu	Electric															Acrisia Mountains Peak, Wanderer's Woods N (wild)					
+249	25	Pikachu	Electric												Pichu			Kipos Town, Pollen Road (wild)					
+250	26	Raichu	Electric												Pikachu			Port Pello, Wakewater Isle (wild)					
+250	26	Alolan Raichu	Electric	Psychic	Regional										Pikachu								
+250	26	Mega Raichu X	Electric		Mega										Raichu	Mega Stone							
+250	26	Mega Raichu Y	Electric		Mega										Raichu	Mega Stone							
+251	778	Mimikyu	Ghost	Fairy														Erinys Path E, Port Pello (wild)					
+252	77	Ponyta	Fire															Riverwalk Trail W, Sofos City, Lastlight Road (wild)					
+252	77	Galarian Ponyta	Psychic		Regional													Riverwalk Trail W, Sofos City, Lastlight Road (wild)					
+253	78	Rapidash	Fire												Ponyta			Port Pello (wild)					
+253	78	Galarian Rapidash	Psychic	Fairy	Regional										Galarian Ponyta			Port Pello (wild)					
+254	222	Corsola	Water	Rock														Sofos City, Kipos Town, Marmaro Island (surf)					
+254	222	Galarian Corsola	Ghost	Rock	Regional													Sofos City, Kipos Town, Marmaro Island (surf)					
+255	864	Cursola	Ghost	Rock											Galarian Corsola								
+256	456	Finneon	Water	Fairy														Acrisia City, Acrisia Mountains (surf)					
+257	457	Lumineon	Water	Fairy											Finneon			Corrin Crossing (surf)					
+258	320	Wailmer	Water															Sofos City, Sea of Asteri W (surf)					
+259	321	Wailord	Water												Wailmer								
+260	72	Tentacool	Water	Poison														Sofos City, Kipos Town, Sea of Asteri (surf)					
+261	73	Tentacruel	Water	Poison											Tentacool			Corrin Crossing (surf)					
+262	692	Clauncher	Water															Riverwalk Trail W/S, Kalami City (surf)					
+263	693	Clawitzer	Water												Clauncher								
+264	123	Scyther	Bug	Flying														Wanderer's Woods S, Sea of Asteri W (wild)					
+265	212	Scizor	Bug	Steel											Scyther								
+265	212	Mega Scizor	Bug	Steel	Mega										Scizor	Mega Stone							
+266	900	Kleavor	Bug	Rock											Scyther								
+267	759	Stufful	Normal	Fighting														Sea of Asteri W/E (wild)					
+268	760	Bewear	Normal	Fighting											Stufful			Wakewater Isle (wild)					
+269	885	Dreepy	Dragon	Ghost														Riverwalk Trail S, Sea of Asteri W (wild)					
+270	886	Drakloak	Dragon	Ghost											Dreepy			Tower of Dioxippus (wild)					
+271	887	Dragapult	Dragon	Ghost											Drakloak								
+272	777	Togedemaru	Electric	Steel														Wanderer's Woods N, Marmaro Island (wild)					
+273	739	Crabrawler	Fighting															Sofos City, Sea of Asteri W/E (wild)					
+274	740	Crabominable	Fighting	Ice											Crabrawler			Wakewater Isle (wild)					
+275	345	Lileep	Rock	Grass														Marmaro Island (event) / Wanderer's Woods S (wild)					
+276	346	Cradily	Rock	Grass											Lileep								
+277	347	Anorith	Rock	Bug														Marmaro Island (event) / Wanderer's Woods S (wild)					
+278	348	Armaldo	Rock	Bug											Anorith								
+279	702	Dedenne	Electric	Fairy														Acrisia Mountains Peak, Asfal Hills, Marmaro Island (wild)					
+280	441	Chatot	Normal	Flying														Asfal Hills, Sea of Asteri W (wild)					
+281	307	Meditite	Fighting	Psychic														Riverwalk Trail W, Marmaro Island, Myrrini Island (wild)					
+282	308	Medicham	Fighting	Psychic											Meditite								
+282	308	Mega Medicham	Fighting	Psychic	Mega										Medicham	Mega Stone							
+283	96	Drowzee	Psychic															Pythios Town, Myrrini Island (wild)					
+284	97	Hypno	Psychic	Dark											Drowzee								
+285	23	Ekans	Poison	Dark														Riverwalk Trail S, Pythios Cemetery (wild)					
+286	24	Arbok	Poison	Dark											Ekans			Kaptara Island E (wild)					
+287	550	Basculin Red	Water		Form													Myrrini Island (surf)					
+287	550	Basculin Blue	Water		Form													Unknown location					
+287	550	Basculin White	Water		Form													Myrrini Island (surf)					
+288	902	Basculegion	Water	Ghost											Basculin White								
+289	674	Pancham	Fighting															Myrrini Island (wild)					
+290	675	Pangoro	Fighting	Dark											Pancham								
+290	675	Mega Pangoro	Fighting	Dark	Mega										Pangoro	Mega Stone							
+291	690	Skrelp	Poison	Water														Riverwalk Trail S, Kalami City, Sea of Asteri E (surf)					
+292	691	Dragalge	Poison	Dragon											Skrelp								
+292	691	Mega Dragalge	Poison	Dragon	Mega										Dragalge	Mega Stone							
+293	574	Gothita	Psychic															Erinys Path W (wild)					
+294	575	Gothorita	Psychic												Gothita			Kaptara Island W (wild)					
+295	576	Gothitelle	Psychic												Gothorita			Kaptara Island W (wild)					
+296	577	Solosis	Psychic															Erinys Path W (wild)					
+297	578	Duosion	Psychic												Solosis			Kaptara Island W (wild)					
+298	579	Reuniclus	Psychic												Duosion			Kaptara Island W (wild)					
+299	607	Litwick	Ghost	Fire														Pythios Cemetery (wild)					
+300	608	Lampent	Ghost	Fire											Litwick			Lastlight Road (wild)					
+301	609	Chandelure	Ghost	Fire											Lampent								
+301	609	Mega Chandelure	Ghost	Fire	Mega										Chandelure	Mega Stone							
+302	935	Charcadet	Fire															Sea of Asteri E, Sea of Vulcai (wild)					
+303	936	Armarouge	Fire	Psychic											Charcadet			Lastlight Road (wild)					
+304	937	Ceruledge	Fire	Ghost											Charcadet			Lastlight Road (wild)					
+305	170	Chinchou	Water	Electric														Marmaro Island (surf) / Sea of Asteri W (dive)					
+306	171	Lanturn	Water	Electric											Chinchou								
+307	90	Shellder	Water															Pythios Town, Froslass Cavern B2F (surf)					
+308	91	Cloyster	Water	Ice											Shellder			Pollen Road (fish)					
+309	366	Clamperl	Water															Sea of Asteri E, Sea of Vulcai (dive)					
+310	367	Huntail	Water	Dragon											Clamperl								
+311	368	Gorebyss	Water	Fairy											Clamperl								
+312	669	Flabebe	Fairy															Acrisia Mountains Peak (wild)					
+313	670	Floette	Fairy												Flabebe			Myrrini Island, Port Pello (wild)					
+313	670	Eternal Flower Floette	Fairy		Form													Pentepetal City (event)					
+314	671	Florges	Fairy												Floette			Port Pello (wild)					
+315	174	Igglybuff	Normal	Fairy														Kipos Town (wild)					
+316	39	Jigglypuff	Normal	Fairy											Igglybuff			Myrrini Island, Port Pello (wild)					
+317	40	Wigglytuff	Normal	Fairy											Jigglypuff			Port Pello (wild)					
+318	694	Helioptile	Electric	Normal														Sofos City, Lastlight Road, Fresco Isles (wild)					
+319	695	Heliolisk	Electric	Normal											Helioptile								
+319	695	Mega Heliolisk	Electric	Normal	Mega										Heliolisk	Mega Stone							
+320	870	Falinks	Fighting	Bug														Erinys Path E (wild)					
+320	870	Mega Falinks	Fighting	Steel	Mega										Falinks	Mega Stone							
+321	328	Trapinch	Ground															Pythios Cemetery, Fresco Isles (wild)					
+322	329	Vibrava	Ground	Dragon											Trapinch								
+323	330	Flygon	Ground	Dragon											Vibrava								
+323	330	Mega Flygon	Bug	Dragon	Mega										Flygon	Mega Stone							
+324	84	Doduo	Ground	Flying														Pythios Town, Kipos Town, Fresco Isles (wild)					
+325	85	Dodrio	Ground	Flying											Doduo								
