@@ -1,0 +1,4 @@
+libGL error: failed to create dri screen
+libGL error: failed to load driver: nouveau
+Detected Screen: 2880x1800 -> Card Size: 960x870
+Error loading pokedex data from Pokedex.pak/data/pokemon.tsv

@@ -212,21 +212,18 @@ build_poke_list_json() {
 
         # Icon and Badge paths
         icon_path = pak_dir "/data/sprites/" pad ".png"
-        badge_path = pak_dir "/data/icons/pokeball.png"
+        
+        # Composite Badge Logic: {type1}[_{type2}][_caught].png
+        b_name = type1
+        if (type2 != "") b_name = b_name "_" type2
+        if (dex_id in caught) b_name = b_name "_caught"
+        badge_path = pak_dir "/data/badges/" b_name ".png"
 
         if (!first) printf ",\n"
         first = 0
         printf "    {\"name\": \"%s\", \"features\": {\"background_color\": \"%s\"", lbl, col
-        
-        # Check if icon exists (system command call in awk is slow but we only do it once per row)
-        # However, for 151 items it is faster to just assume it exists if we follow the naming convention.
-        # But let us be safe.
         printf ", \"icon\": \"%s\"", icon_path
-        
-        if (dex_id in caught) {
-            printf ", \"badge\": \"%s\"", badge_path
-        }
-        
+        printf ", \"badge\": \"%s\"", badge_path
         printf "}}"
     }
     END { printf "\n  ]\n}\n" }
@@ -421,35 +418,9 @@ build_detail_json() {
 # =============================================================================
 browse_game() {
     gd="$1"
-    gname=$(conf_field "$gd" "name")
-    slug="${gd%/}"; slug="${slug##*/}"
-
-    while true; do
-        build_poke_list_json "$gd"
-
-        sel=$(minui-list \
-            --file "$POKE_LIST_JSON" \
-            --item-key "items" \
-            --title "$gname" \
-            --title-alignment center \
-            --confirm-text "VIEW" \
-            --cancel-text "BACK" \
-            --write-value state)
-
-        ec=$?
-        [ "$ec" = "2" ] || [ "$ec" = "3" ] && return
-        [ "$ec" != "0" ] && return
-
-        sidx=$(printf '%s' "$sel" | grep -o '"selected":[[:space:]]*[0-9]*' | grep -o '[0-9]*$')
-        [ -z "$sidx" ] && sidx="0"
-        write_setting "poke_$slug" "$sidx"
-
-        # Toggling caught status
-        # We need to find the dex_id of the selected Pokémon
-        # Using awk to extract it from the TSV at the chosen index
-        target_dex_id=$(awk -v target="$((sidx + 2))" 'BEGIN{FS="\t"} NR==target{print $1; exit}' "$gd/pokemon.tsv")
-        [ -n "$target_dex_id" ] && toggle_caught "$target_dex_id"
-    done
+    # Launch the custom SDL2 Pokedex application within the pak directory
+    # so that relative paths for assets (data/sprites, etc) work correctly.
+    (cd "$PAK_DIR" && "./bin/arm64/pokedex" "$gd/pokemon.tsv" "$CAUGHT_FILE")
 }
 
 # =============================================================================

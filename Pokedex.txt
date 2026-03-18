@@ -1,0 +1,2 @@
+/mnt/SDCARD/Tools/tg5040/Pokedex.pak/launch.sh 
+./bin/arm64/pokedex: /lib64/libc.so.6: version `GLIBC_2.34' not found (required by ./bin/arm64/pokedex)
