@@ -43,6 +43,10 @@ arm64:
 	mkdir -p Pokedex.pak/bin/arm64
 	mv $(TARGET) Pokedex.pak/bin/arm64/pokedex
 
+# Local build for prototyping
+local: CFLAGS += -DDESKTOP
+local: all
+
 # Local Test Run
-run: all
-	(cd Pokedex.pak && ../bin/pokedex data/games/pokemon-red-blue/pokemon.tsv data/caught.txt)
+run: local
+	(cd Pokedex.pak && ../bin/pokedex)

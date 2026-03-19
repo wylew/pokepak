@@ -1,0 +1,15 @@
+make CROSS_COMPILE=aarch64-linux-gnu-
+make[1]: Entering directory '/home/wlewin/Documents/Code/pokepak'
+aarch64-linux-gnu-gcc -Iinclude -Wall -O2 -I/usr/include/SDL2 -c -o src/main.o src/main.c
+src/main.c: In function ‘render_card’:
+src/main.c:379:22: error: ‘ball_tex’ undeclared (first use in this function)
+  379 |     if (p->caught && ball_tex) {
+      |                      ^~~~~~~~
+src/main.c:379:22: note: each undeclared identifier is reported only once for each function it appears in
+src/main.c: In function ‘main’:
+src/main.c:605:5: error: ‘ball_tex’ undeclared (first use in this function)
+  605 |     ball_tex = IMG_LoadTexture(renderer, ppath);
+      |     ^~~~~~~~
+make[1]: *** [Makefile:35: src/main.o] Error 1
+make[1]: Leaving directory '/home/wlewin/Documents/Code/pokepak'
+make: *** [Makefile:42: arm64] Error 2

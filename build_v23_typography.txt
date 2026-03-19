@@ -1,0 +1,6 @@
+gcc -Iinclude -Wall -O2 -I/usr/include/SDL2 -DDESKTOP -c -o src/main.o src/main.c
+src/main.c:1:10: fatal error: SDL.h: No such file or directory
+    1 | #include <SDL.h>
+      |          ^~~~~~~
+compilation terminated.
+make: *** [Makefile:35: src/main.o] Error 1

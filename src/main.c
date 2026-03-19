@@ -10,7 +10,9 @@
 #define GRID_COLS 3
 #define GRID_ROWS 2
 #define FOOTER_H 100
-#define FONT_SIZE 74
+#define FONT_SIZE_LIST 70
+#define FONT_SIZE_BOLD 105
+#define FONT_SIZE_HEADER 140
 
 int screen_w = 1024;
 int screen_h = 768;
@@ -43,7 +45,12 @@ typedef struct {
 
 SpriteRef sprites[800];
 SDL_Texture *ball_tex;
-TTF_Font *font;
+SDL_Texture *ball_x_tex;
+SDL_Texture *oak_tex;
+SDL_Texture *sil_tex;
+TTF_Font *font_list;
+TTF_Font *font_bold;
+TTF_Font *font_header;
 
 typedef enum {
     MODE_GAME_SELECT,
@@ -76,6 +83,10 @@ void render_game_select(SDL_Renderer *renderer);
 void render_footer(SDL_Renderer *renderer);
 void sanitize_pokemon_name(const char *src, char *dest, bool upper);
 void load_sprite(SDL_Renderer *renderer, Pokemon *p, SpriteRef *out);
+void draw_gradient(SDL_Renderer *renderer, int x, int y, int w, int h, SDL_Color top, SDL_Color bot);
+void draw_grid(SDL_Renderer *renderer);
+void strip_pokemon(char *str);
+void draw_pixel_box(SDL_Renderer *renderer, SDL_Rect r, int p, SDL_Color border, SDL_Color fill);
 
 // Scan data/games/ for subdirectories and parse game.conf
 void find_games() {
@@ -102,6 +113,7 @@ void find_games() {
                 if (strncmp(line, "name=", 5) == 0) {
                     char *val = line + 5;
                     val[strcspn(val, "\r\n")] = 0;
+                    strip_pokemon(val);
                     strncpy(games[game_count].name, val, MAX_STR - 1);
                     games[game_count].name[MAX_STR - 1] = 0;
                 }
@@ -184,8 +196,9 @@ void load_sprite(SDL_Renderer *renderer, Pokemon *p, SpriteRef *out) {
     }
 
     if (surf) {
-        find_sprite_bbox(surf, &out->bbox);
         out->tex = SDL_CreateTextureFromSurface(renderer, surf);
+        SDL_QueryTexture(out->tex, NULL, NULL, &out->bbox.w, &out->bbox.h);
+        out->bbox.x = 0; out->bbox.y = 0;
         SDL_FreeSurface(surf);
     }
 }
@@ -252,7 +265,7 @@ void draw_type_tag(SDL_Renderer *renderer, const char *type, int x, int y, int w
     SDL_RenderDrawRect(renderer, &r);
 
     SDL_Color white = {255, 255, 255, 255};
-    SDL_Surface *surf = TTF_RenderUTF8_Blended(font, type, white);
+    SDL_Surface *surf = TTF_RenderUTF8_Blended(font_bold, type, white);
     if (surf) {
         SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
         // Scale text to fit tag
@@ -268,211 +281,289 @@ void draw_type_tag(SDL_Renderer *renderer, const char *type, int x, int y, int w
     }
 }
 
-void render_card(SDL_Renderer *renderer, Pokedex *dex, int i, int x, int y, bool selected) {
-    if (i < 0 || i >= dex->count) return;
+void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scroll) {
+    // 1. Background Grid
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderClear(renderer);
+    draw_grid(renderer);
 
-    // Lazy Loading: Load sprite only when needed
-    if (!sprites[i].tex) {
-        load_sprite(renderer, &dex->pokemon[i], &sprites[i]);
+    // 2. Top Red Bar
+    SDL_Rect top_bar = {0, 0, screen_w, 80};
+    SDL_Color red_top = {220, 20, 20, 255}, red_bot = {160, 0, 0, 255};
+    draw_gradient(renderer, top_bar.x, top_bar.y, top_bar.w, top_bar.h, red_top, red_bot);
+    
+    char title[128];
+    sprintf(title, "%s (%d / %d)", games[selected_game_idx].name, games[selected_game_idx].caught, dex->count);
+    SDL_Color white = {255, 255, 255, 255};
+    SDL_Surface *ts = TTF_RenderUTF8_Blended(font_header, title, white);
+    if (ts) {
+        SDL_Texture *tt = SDL_CreateTextureFromSurface(renderer, ts);
+        float s = (float)(top_bar.h - 10) / ts->h; // Larger
+        int tw = (int)(ts->w * s), th = (int)(ts->h * s);
+        SDL_Rect tr = {(screen_w - tw)/2, (top_bar.h - th)/2, tw, th};
+        SDL_RenderCopy(renderer, tt, NULL, &tr);
+        SDL_FreeSurface(ts); SDL_DestroyTexture(tt);
     }
 
-    Pokemon *p = &dex->pokemon[i];
-    
-    // 1. Overall Card Background (Premium Cream / Parchment)
-    SDL_Rect card_rect = {x + 10, y + 10, card_w - 20, card_h - 20};
-    if (selected) {
-        SDL_SetRenderDrawColor(renderer, 255, 250, 200, 255); // Brighter cream
-    } else {
-        SDL_SetRenderDrawColor(renderer, 245, 242, 215, 255); // Classic cream
-    }
-    SDL_RenderFillRect(renderer, &card_rect);
-    
-    // Selection Highlight Frame (Slate Blue - EXTRA THICK)
-    if (selected) {
-        SDL_SetRenderDrawColor(renderer, 70, 130, 255, 255);
-        for(int t=0; t<4; t++) {
-            SDL_Rect h = {card_rect.x - 6 + t, card_rect.y - 6 + t, card_rect.w + 12 - (t*2), card_rect.h + 12 - (t*2)};
-            SDL_RenderDrawRect(renderer, &h);
+    // 3. Right side: Vertical List
+    SDL_Rect list_frame = {520, 100, 460, 600}; // Ends at Y=700
+    SDL_Color r_border = {200, 40, 40, 255}, r_white = {255, 255, 255, 220};
+    draw_pixel_box(renderer, list_frame, 8, r_border, r_white);
+
+    int max_visible = 7;
+    float item_h = (float)(list_frame.h - 16 - 20) / max_visible; // Subtracting 8px border*2 and 10px padding*2
+    int scroll_off = (selected >= max_visible) ? selected - max_visible + 1 : 0;
+
+    for (int i = 0; i < dex->count; i++) {
+        if (i < scroll_off || i >= scroll_off + max_visible) continue;
+        int v_idx = i - scroll_off;
+        bool sel = (i == selected);
+        SDL_Rect item_r = {list_frame.x + 10, list_frame.y + 12 + (int)(v_idx * item_h), list_frame.w - 20, (int)item_h - 2};
+        
+        if (sel) {
+            SDL_Rect highlight = {item_r.x + 2, item_r.y + 2, item_r.w - 4, item_r.h - 4}; // Smaller
+            SDL_Color h_red = {255, 0, 0, 255};
+            // Use draw_pixel_box with transparent fill for "transparent inside" look
+            draw_pixel_box(renderer, highlight, 4, h_red, (SDL_Color){0,0,0,0});
+        }
+
+        // Ball Icon
+        SDL_Texture *icon = dex->pokemon[i].caught ? ball_tex : ball_x_tex;
+        if (icon) {
+            SDL_Rect ir = {item_r.x + 10, item_r.y + 10, 40, 40};
+            SDL_RenderCopy(renderer, icon, NULL, &ir);
+        }
+
+        // ID
+        char id_buf[16];
+        sprintf(id_buf, "%03d", dex->pokemon[i].dex_id);
+        SDL_Color black = {40, 40, 40, 255};
+        SDL_Surface *is = TTF_RenderUTF8_Blended(font_list, id_buf, black);
+        int id_w = 0;
+        if (is) {
+            SDL_Texture *it = SDL_CreateTextureFromSurface(renderer, is);
+            float s = (float)(item_h - 20) / is->h;
+            id_w = (int)(is->w * s);
+            SDL_Rect tr = {item_r.x + 60, item_r.y + (item_h - (int)(is->h * s))/2, id_w, (int)(is->h * s)};
+            SDL_RenderCopy(renderer, it, NULL, &tr);
+            SDL_FreeSurface(is); SDL_DestroyTexture(it);
+        }
+
+        // Name
+        SDL_Surface *ps = TTF_RenderUTF8_Blended(font_list, dex->pokemon[i].name, black);
+        if (ps) {
+            SDL_Texture *pt = SDL_CreateTextureFromSurface(renderer, ps);
+            float s = (float)(item_h - 20) / ps->h;
+            int tw = (int)(ps->w * s);
+            int max_tw = item_r.w - 60 - id_w - 30;
+            if (tw > max_tw) tw = max_tw;
+            int th = (int)(ps->h * s);
+            SDL_Rect tr = {item_r.x + 60 + id_w + 15, item_r.y + (item_h - th)/2, tw, th};
+            SDL_RenderCopy(renderer, pt, NULL, &tr);
+            SDL_FreeSurface(ps); SDL_DestroyTexture(pt);
         }
     }
 
-    // DOUBLE LINE BORDER (Card)
-    SDL_SetRenderDrawColor(renderer, 80, 70, 60, 255); // Dark brown
-    SDL_RenderDrawRect(renderer, &card_rect);
-    SDL_Rect inner_border = {card_rect.x + 3, card_rect.y + 3, card_rect.w - 6, card_rect.h - 6};
-    SDL_RenderDrawRect(renderer, &inner_border);
+    // 4. Left side: Detail Focus
+    Pokemon *p = &dex->pokemon[selected];
+    if (!sprites[selected].tex) load_sprite(renderer, p, &sprites[selected]);
 
-    // 2. Name Header Zone (Top 12%)
-    int header_h = card_rect.h * 0.12;
-    SDL_Rect header_rect = {card_rect.x + 8, card_rect.y + 8, card_rect.w - 16, header_h};
-    SDL_SetRenderDrawColor(renderer, 235, 230, 190, 255);
-    SDL_RenderFillRect(renderer, &header_rect);
-    
-    // DOUBLE LINE BORDER (Header)
-    SDL_SetRenderDrawColor(renderer, 100, 90, 80, 255);
-    SDL_RenderDrawRect(renderer, &header_rect);
-    SDL_Rect h_inner = {header_rect.x + 2, header_rect.y + 2, header_rect.w - 4, header_rect.h - 4};
-    SDL_RenderDrawRect(renderer, &h_inner);
-    
-    SDL_Color brown = {60, 40, 30, 255};
-    if (!font) return; // CRASH PREVENTION
-    SDL_Surface *surf = TTF_RenderUTF8_Blended(font, p->name, brown);
-    if (surf) {
-        SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
-        int tw = surf->w, th = surf->h;
-        if (tw > header_rect.w - 20) { float s = (float)(header_rect.w-20)/tw; tw *= s; th *= s; }
-        if (th > header_rect.h - 10) { float s = (float)(header_rect.h-10)/th; tw *= s; th *= s; }
-        SDL_Rect tr = {header_rect.x + (header_rect.w - tw)/2, header_rect.y + (header_rect.h - th)/2, tw, th};
-        SDL_RenderCopy(renderer, tex, NULL, &tr);
-        SDL_FreeSurface(surf);
-        SDL_DestroyTexture(tex);
+    // Name Plate (Squeezed for long names)
+    SDL_Rect name_plate = {50, 100, 440, 70};
+    draw_pixel_box(renderer, name_plate, 8, r_border, r_white);
+    SDL_Surface *ns = TTF_RenderUTF8_Blended(font_bold, p->name, (SDL_Color){40, 40, 40, 255});
+    if (ns) {
+        SDL_Texture *nt = SDL_CreateTextureFromSurface(renderer, ns);
+        float s = (float)(name_plate.h - 10) / ns->h; // Larger (+50%)
+        int tw = (int)(ns->w * s);
+        int max_tw = name_plate.w - 40;
+        if (tw > max_tw) tw = max_tw;
+        int th = (int)(ns->h * s);
+        SDL_Rect tr = {name_plate.x + (name_plate.w - tw)/2, name_plate.y + (name_plate.h - th)/2, tw, th};
+        SDL_RenderCopy(renderer, nt, NULL, &tr);
+        SDL_FreeSurface(ns); SDL_DestroyTexture(nt);
     }
 
-    // 3. Image Zone (Middle 63%)
-    int img_zone_y = header_rect.y + header_rect.h + 8;
-    int img_zone_h = card_rect.h * 0.63;
-    SDL_Rect img_rect = {card_rect.x + 8, img_zone_y, card_rect.w - 16, img_zone_h};
-    SDL_SetRenderDrawColor(renderer, 255, 255, 245, 255);
-    SDL_RenderFillRect(renderer, &img_rect);
-    
-    // DOUBLE LINE BORDER (Image)
-    SDL_SetRenderDrawColor(renderer, 120, 110, 100, 255);
-    SDL_RenderDrawRect(renderer, &img_rect);
-    SDL_Rect img_inner = {img_rect.x + 2, img_rect.y + 2, img_rect.w - 4, img_rect.h - 4};
-    SDL_RenderDrawRect(renderer, &img_inner);
+    // Background Silhouette
+    if (sil_tex) {
+        int sw, sh;
+        SDL_QueryTexture(sil_tex, NULL, NULL, &sw, &sh);
+        float aspect = (float)sw / sh;
+        int target_h = 420;
+        int tw = (int)(target_h * aspect), th = target_h;
+        if (tw > 440) { tw = 440; th = (int)(tw / aspect); }
+        SDL_Rect sil_r = {50 + (440 - tw)/2, 180 + (420 - th)/2, tw, th};
+        SDL_RenderCopy(renderer, sil_tex, NULL, &sil_r);
+    }
 
-    if (sprites[i].tex) {
-        SDL_Rect src = sprites[i].bbox;
-        int sh = img_rect.h - 15;
+    // Large Sprite
+    if (sprites[selected].tex) {
+        SDL_Rect src = sprites[selected].bbox;
+        int target_h = 400;
         float aspect = (float)src.w / src.h;
-        int sw = (int)(sh * aspect);
-        if (sw > img_rect.w - 15) {
-            sw = img_rect.w - 15;
-            sh = (int)(sw / aspect);
-        }
-        SDL_Rect r = {img_rect.x + (img_rect.w - sw)/2, img_rect.y + (img_rect.h - sh)/2, sw, sh};
-        SDL_RenderCopy(renderer, sprites[i].tex, &src, &r);
+        int tw = (int)(target_h * aspect), th = target_h;
+        if (tw > 400) { tw = 400; th = (int)(tw / aspect); }
+        SDL_Rect sr = {50 + (440 - tw)/2, 180 + (400 - th)/2, tw, th};
+        SDL_RenderCopy(renderer, sprites[selected].tex, NULL, &sr);
     }
 
-    // 4. Divider Bar (Info Line - 10%)
-    int info_y = img_rect.y + img_rect.h + 8;
-    int info_h = card_rect.h * 0.10;
-    SDL_Rect info_rect = {card_rect.x + 8, info_y, card_rect.w - 16, info_h};
-    SDL_SetRenderDrawColor(renderer, 235, 230, 200, 255);
-    SDL_RenderFillRect(renderer, &info_rect);
-
-    char idbuf[16];
-    sprintf(idbuf, "%03d", p->dex_id);
-    surf = TTF_RenderUTF8_Blended(font, idbuf, brown);
-    if (surf) {
-        SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
-        int th = info_rect.h - 10;
-        float s = (float)th / surf->h;
-        int tw = (int)(surf->w * s);
-        SDL_Rect tr = {info_rect.x + 10, info_rect.y + (info_rect.h - th)/2, tw, th};
-        SDL_RenderCopy(renderer, tex, NULL, &tr);
-        SDL_FreeSurface(surf);
-        SDL_DestroyTexture(tex);
-    }
-
-    if (p->caught && ball_tex) {
-        int icon_s = info_rect.h - 6;
-        SDL_Rect r = {info_rect.x + info_rect.w - icon_s - 10, info_rect.y + 3, icon_s, icon_s};
-        SDL_RenderCopy(renderer, ball_tex, NULL, &r);
+    // Type Plate (Baseline aligned at Y=700)
+    SDL_Rect type_plate = {50, 610, 440, 90};
+    draw_pixel_box(renderer, type_plate, 8, r_border, r_white);
+    int badge_w = 180, badge_h = 50;
+    if (p->type1[0] && !p->type2[0]) {
+        draw_type_tag(renderer, p->type1, type_plate.x + (type_plate.w - badge_w)/2, type_plate.y + (type_plate.h - badge_h)/2, badge_w, badge_h);
     } else {
-        SDL_Color red = {180, 40, 40, 255}; // Soft red
-        surf = TTF_RenderUTF8_Blended(font, "X", red);
-        if (surf) {
-            SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
-            int th = info_rect.h - 6;
-            float s = (float)th / surf->h;
-            int tw = (int)(surf->w * s);
-            SDL_Rect tr = {info_rect.x + info_rect.w - tw - 12, info_rect.y + (info_rect.h - th)/2, tw, th};
-            SDL_RenderCopy(renderer, tex, NULL, &tr);
-            SDL_FreeSurface(surf);
-            SDL_DestroyTexture(tex);
+        if (p->type1[0]) draw_type_tag(renderer, p->type1, type_plate.x + 20, type_plate.y + (type_plate.h - badge_h)/2, badge_w, badge_h);
+        if (p->type2[0]) draw_type_tag(renderer, p->type2, type_plate.x + type_plate.w - badge_w - 20, type_plate.y + (type_plate.h - badge_h)/2, badge_w, badge_h);
+    }
+    // 5. Global Bottom Bar
+    SDL_Rect foot_bar = {0, screen_h - 60, screen_w, 60};
+    draw_gradient(renderer, foot_bar.x, foot_bar.y, foot_bar.w, foot_bar.h, red_top, red_bot);
+    SDL_Surface *is = TTF_RenderUTF8_Blended(font_header, "[A] Toggle Caught    [B] Back", white);
+    if (is) {
+        SDL_Texture *it = SDL_CreateTextureFromSurface(renderer, is);
+        float s = (float)(foot_bar.h - 10) / is->h;
+        int tw = (int)(is->w * s), th = (int)(is->h * s);
+        SDL_Rect tr = {(screen_w - tw)/2, foot_bar.y + (foot_bar.h - th)/2, tw, th};
+        SDL_RenderCopy(renderer, it, NULL, &tr);
+        SDL_FreeSurface(is); SDL_DestroyTexture(it);
+    }
+}
+
+void draw_gradient(SDL_Renderer *renderer, int x, int y, int w, int h, SDL_Color top, SDL_Color bot) {
+    for (int i = 0; i < h; i++) {
+        float ratio = (float)i / h;
+        Uint8 r = top.r + (bot.r - top.r) * ratio;
+        Uint8 g = top.g + (bot.g - top.g) * ratio;
+        Uint8 b = top.b + (bot.b - top.b) * ratio;
+        SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+        SDL_RenderDrawLine(renderer, x, y + i, x + w, y + i);
+    }
+}
+
+void draw_grid(SDL_Renderer *renderer) {
+    SDL_SetRenderDrawColor(renderer, 230, 230, 230, 255);
+    int spacing = 64; // Doubled size
+    for (int x = 0; x < screen_w; x += spacing) SDL_RenderDrawLine(renderer, x, 0, x, screen_h);
+    for (int y = 0; y < screen_h; y += spacing) SDL_RenderDrawLine(renderer, 0, y, screen_w, y);
+}
+
+void strip_pokemon(char *str) {
+    const char *targets[] = {"Pokemon ", "pokemon ", "POKEMON ", "Pokemon", "pokemon", "POKEMON"};
+    for (int i = 0; i < 6; i++) {
+        char *p = strstr(str, targets[i]);
+        if (p) {
+            int len = strlen(targets[i]);
+            memmove(p, p + len, strlen(p + len) + 1);
+            break;
         }
     }
+}
 
-    // 5. Types Footer Zone
-    int types_y = info_rect.y + info_rect.h + 8;
-    int types_h = (card_rect.y + card_rect.h) - types_y - 8;
-    if (types_h < 30) types_h = 40;
-
-    int tw = (card_rect.w - 24) / 2;
-    if (!p->type2[0]) tw = card_rect.w - 16;
-
-    if (p->type1[0]) {
-        draw_type_tag(renderer, p->type1, card_rect.x + 8, types_y, tw, types_h);
+void draw_pixel_box(SDL_Renderer *renderer, SDL_Rect r, int p, SDL_Color border, SDL_Color fill) {
+    SDL_SetRenderDrawColor(renderer, border.r, border.g, border.b, border.a);
+    for(int i=0; i<p; i++) {
+        SDL_Rect b = {r.x + i, r.y + i, r.w - (i*2), r.h - (i*2)};
+        // Pixel rounding: skip corners
+        if (i < p) {
+            SDL_RenderDrawLine(renderer, b.x + 6 - i, b.y, b.x + b.w - 7 + i, b.y); // Top
+            SDL_RenderDrawLine(renderer, b.x + 6 - i, b.y + b.h - 1, b.x + b.w - 7 + i, b.y + b.h - 1); // Bot
+            SDL_RenderDrawLine(renderer, b.x, b.y + 6 - i, b.x, b.y + b.h - 7 + i); // Left
+            SDL_RenderDrawLine(renderer, b.x + b.w - 1, b.y + 6 - i, b.x + b.w - 1, b.y + b.h - 7 + i); // Right
+            
+            // Smoother "pixel" diagonals
+            SDL_RenderDrawPoint(renderer, b.x + 1, b.y + 3); SDL_RenderDrawPoint(renderer, b.x + 3, b.y + 1);
+            SDL_RenderDrawPoint(renderer, b.x + 2, b.y + 2);
+            SDL_RenderDrawPoint(renderer, b.x + b.w - 2, b.y + 3); SDL_RenderDrawPoint(renderer, b.x + b.w - 4, b.y + 1);
+            SDL_RenderDrawPoint(renderer, b.x + b.w - 3, b.y + 2);
+            SDL_RenderDrawPoint(renderer, b.x + 1, b.y + b.h - 4); SDL_RenderDrawPoint(renderer, b.x + 3, b.y + b.h - 2);
+            SDL_RenderDrawPoint(renderer, b.x + 2, b.y + b.h - 3);
+            SDL_RenderDrawPoint(renderer, b.x + b.w - 2, b.y + b.h - 4); SDL_RenderDrawPoint(renderer, b.x + b.w - 4, b.y + b.h - 2);
+            SDL_RenderDrawPoint(renderer, b.x + b.w - 3, b.y + b.h - 3);
+        } else {
+            SDL_RenderDrawRect(renderer, &b);
+        }
     }
-    if (p->type2[0]) {
-        draw_type_tag(renderer, p->type2, card_rect.x + tw + 16, types_y, tw, types_h);
+    if (fill.a > 0) {
+        SDL_SetRenderDrawColor(renderer, fill.r, fill.g, fill.b, fill.a);
+        SDL_Rect fi = {r.x + p, r.y + p, r.w - (p*2), r.h - (p*2)};
+        SDL_RenderFillRect(renderer, &fi);
     }
 }
 
 void render_game_select(SDL_Renderer *renderer) {
-    static bool logged = false; if (!logged) { fprintf(stderr, "DEBUG: render_game_select() called.\n"); fflush(stderr); logged = true; }
-    int item_h = 100;
-    int spacing = 20;
-    int list_w = screen_w * 0.85;
-    int total_menu_h = game_count * (item_h + spacing) - spacing;
-    int start_y = (screen_h - total_menu_h) / 2;
-    if (start_y < 120) start_y = 120;
+    // 1. Background Gradient (Light Teal to White)
+    SDL_Color teal = {180, 230, 230, 255};
+    SDL_Color white = {245, 250, 250, 255};
+    draw_gradient(renderer, 0, 0, screen_w, screen_h, teal, white);
+
+    // 2. Draw Prof Oak (Right side)
+    if (oak_tex) {
+        int ow, oh; SDL_QueryTexture(oak_tex, NULL, NULL, &ow, &oh);
+        float scale = (float)(screen_h * 0.65) / oh;
+        int tw = (int)(ow * scale), th = (int)(oh * scale);
+        SDL_Rect or = {screen_w - tw - 80, screen_h - th - 180, tw, th};
+        SDL_RenderCopy(renderer, oak_tex, NULL, &or);
+    }
+
+    // 3. Floating List Box (Left side)
+    SDL_Rect box_outer = {60, 60, 520, 500};
+    SDL_SetRenderDrawColor(renderer, 80, 100, 180, 255); // Blue border
+    for(int i=0; i<8; i++) { SDL_Rect b = {box_outer.x+i, box_outer.y+i, box_outer.w-(i*2), box_outer.h-(i*2)}; SDL_RenderDrawRect(renderer, &b); }
+    SDL_SetRenderDrawColor(renderer, 248, 248, 248, 255); // White inner
+    SDL_Rect box_inner = {box_outer.x+8, box_outer.y+8, box_outer.w-16, box_outer.h-16};
+    SDL_RenderFillRect(renderer, &box_inner);
+
+    // Render list items inside the box
+    int list_start_y = box_inner.y + 20;
+    int max_visible = 7;
+    float list_item_h = (float)(box_inner.h - 40) / max_visible;
+    int scroll_off = 0;
+    if (selected_game_idx >= max_visible) scroll_off = selected_game_idx - max_visible + 1;
 
     for (int i = 0; i < game_count; i++) {
-        SDL_Rect r = {(screen_w - list_w) / 2, start_y + i * (item_h + spacing), list_w, item_h};
+        if (i < scroll_off || i >= scroll_off + max_visible) continue;
+        int v_idx = i - scroll_off;
         bool sel = (i == selected_game_idx);
-
-        // Background
-        if (sel) SDL_SetRenderDrawColor(renderer, 255, 250, 210, 255);
-        else SDL_SetRenderDrawColor(renderer, 245, 242, 220, 255);
-        SDL_RenderFillRect(renderer, &r);
-
-        // Selection Highlight (EXTRA THICK)
+        SDL_Color color = sel ? (SDL_Color){220, 0, 0, 255} : (SDL_Color){60, 60, 60, 255};
+        
+        // Selection Highlight (Contracted Parity)
         if (sel) {
-            SDL_SetRenderDrawColor(renderer, 70, 130, 255, 255);
-            for(int t=0; t<4; t++) {
-                SDL_Rect h = {r.x - 6 + t, r.y - 6 + t, r.w + 12 - (t*2), r.h + 12 - (t*2)};
-                SDL_RenderDrawRect(renderer, &h);
-            }
+            SDL_Rect highlight = {box_inner.x + 10, list_start_y + (int)(v_idx * list_item_h) + 2, box_inner.w - 20, (int)list_item_h - 4};
+            SDL_Color h_red = {255, 0, 0, 255};
+            draw_pixel_box(renderer, highlight, 4, h_red, (SDL_Color){0,0,0,0});
         }
 
-        // Double Border
-        SDL_SetRenderDrawColor(renderer, 80, 70, 60, 255);
-        SDL_RenderDrawRect(renderer, &r);
-        SDL_Rect ir = {r.x + 3, r.y + 3, r.w - 6, r.h - 6};
-        SDL_RenderDrawRect(renderer, &ir);
-
-        // Text
-        SDL_Color brown = {60, 40, 30, 255};
-        SDL_Surface *surf = TTF_RenderUTF8_Blended(font, games[i].name, brown);
+        SDL_Surface *surf = TTF_RenderUTF8_Blended(sel ? font_bold : font_list, games[i].name, color);
         if (surf) {
             SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
-            float s = (float)(item_h - 40) / surf->h;
-            if (s > 1.0f) s = 1.0f; // CAPP FONT SCALING
+            float s = (float)(list_item_h - 10) / surf->h;
             int tw = (int)(surf->w * s), th = (int)(surf->h * s);
-            if (tw > list_w * 0.6) { float s2 = (list_w * 0.6) / tw; tw *= s2; th *= s2; }
-            SDL_Rect tr = {r.x + 20, r.y + (item_h - th)/2, tw, th};
+            SDL_Rect tr = {box_inner.x + 30, list_start_y + (int)(v_idx * list_item_h), tw, th};
             SDL_RenderCopy(renderer, tex, NULL, &tr);
-            SDL_FreeSurface(surf);
-            SDL_DestroyTexture(tex);
-        }
-
-        char pbuf[32];
-        sprintf(pbuf, "%d / %d", games[i].caught, games[i].total);
-        surf = TTF_RenderUTF8_Blended(font, pbuf, brown);
-        if (surf) {
-            SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
-            float s = (float)(item_h - 60) / surf->h;
-            int tw = (int)(surf->w * s), th = (item_h - 60);
-            SDL_Rect tr = {r.x + r.w - tw - 30, r.y + (item_h - th) / 2, tw, th};
-            SDL_RenderCopy(renderer, tex, NULL, &tr);
-            SDL_FreeSurface(surf);
-            SDL_DestroyTexture(tex);
+            SDL_FreeSurface(surf); SDL_DestroyTexture(tex);
         }
     }
 
-    render_footer(renderer);
+    // 4. Chat Bubble (Bottom)
+    SDL_Rect bubble = {40, screen_h - 180, screen_w - 80, 140};
+    SDL_Color b_border = {100, 200, 240, 255}, b_white = {255, 255, 255, 255};
+    draw_pixel_box(renderer, bubble, 6, b_border, b_white);
+
+    SDL_Color black = {40, 40, 40, 255};
+    const char *lines[] = {"Please select your pokemon game", "from the list."};
+    for(int i=0; i<2; i++) {
+        SDL_Surface *sf = TTF_RenderUTF8_Blended(font_header, lines[i], black);
+        if (sf) {
+            SDL_Texture *tx = SDL_CreateTextureFromSurface(renderer, sf);
+            float s = (float)(bubble.h / 3.0) / sf->h; // Double size (+100%)
+            int tw = (int)(sf->w * s), th = (int)(sf->h * s);
+            SDL_Rect tr = {bubble.x + (bubble.w - tw)/2, bubble.y + 20 + i * (th + 10), tw, th};
+            SDL_RenderCopy(renderer, tx, NULL, &tr);
+            SDL_FreeSurface(sf); SDL_DestroyTexture(tx);
+        }
+    }
 }
 
 void render_footer(SDL_Renderer *renderer) {
@@ -483,11 +574,11 @@ void render_footer(SDL_Renderer *renderer) {
     SDL_RenderDrawLine(renderer, 0, screen_h - FOOTER_H, screen_w, screen_h - FOOTER_H);
 
     SDL_Color gray = {200, 180, 160, 255}; // Light parchment-gray
-    SDL_Surface *surf = TTF_RenderUTF8_Blended(font, "[A] Select/Toggle     [B] Back", gray);
+    SDL_Surface *surf = TTF_RenderUTF8_Blended(font_header, "[A] Select/Toggle     [B] Back", gray);
     if (surf) {
         SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
         if (tex) {
-            float scale = (float)(FOOTER_H - 18) / surf->h;
+            float scale = (float)(FOOTER_H - 20) / surf->h; // Larger (+100%)
             int tw = (int)(surf->w * scale);
             if (tw > screen_w - 40) {
                 scale = (float)(screen_w - 40) / surf->w;
@@ -529,7 +620,11 @@ int main(int argc, char *argv[]) {
     IMG_Init(IMG_INIT_PNG);
     if (TTF_Init() < 0) return 1;
 
+#ifdef DESKTOP
+    SDL_Window *window = SDL_CreateWindow("Pokedex", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_w, screen_h, SDL_WINDOW_SHOWN);
+#else
     SDL_Window *window = SDL_CreateWindow("Pokedex", 0, 0, screen_w, screen_h, SDL_WINDOW_FULLSCREEN_DESKTOP);
+#endif
     if (!window) {
         fprintf(stderr, "ERROR: SDL_CreateWindow failed: %s\n", SDL_GetError()); fflush(stderr);
         return 1;
@@ -562,21 +657,36 @@ int main(int argc, char *argv[]) {
     card_w = screen_w / GRID_COLS;
     card_h = (screen_h - FOOTER_H) / GRID_ROWS;
 
-    font = TTF_OpenFont("data/font.ttf", FONT_SIZE);
-    if (!font) {
+    font_list = TTF_OpenFont("data/font.ttf", FONT_SIZE_LIST);
+    font_bold = TTF_OpenFont("data/font.ttf", FONT_SIZE_BOLD);
+    font_header = TTF_OpenFont("data/font.ttf", FONT_SIZE_HEADER);
+    if (font_bold) TTF_SetFontStyle(font_bold, TTF_STYLE_BOLD);
+    if (font_header) TTF_SetFontStyle(font_header, TTF_STYLE_BOLD);
+
+    if (!font_list) {
         fprintf(stderr, "WARN: data/font.ttf failed. Trying fallback...\n"); fflush(stderr);
-        font = TTF_OpenFont("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf", FONT_SIZE);
+        font_list = TTF_OpenFont("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf", FONT_SIZE_LIST);
     }
-    if (font) {
-        fprintf(stderr, "DEBUG: Font Loaded Successfully.\n"); fflush(stderr);
+
+    oak_tex = IMG_LoadTexture(renderer, "data/sprites/profoak.png");
+    if (!oak_tex) {
+        fprintf(stderr, "WARN: profoak.png not found. Trying fallback path...\n"); fflush(stderr);
+        oak_tex = IMG_LoadTexture(renderer, "Pokedex.pak/data/sprites/profoak.png");
+    }
+    if (font_list && font_bold && font_header) {
+        fprintf(stderr, "DEBUG: Fonts Loaded Successfully.\n"); fflush(stderr);
     } else {
-        fprintf(stderr, "ERROR: ALL FONTS FAILED.\n"); fflush(stderr);
+        fprintf(stderr, "ERROR: FONT LOADING FAILED.\n"); fflush(stderr);
     }
     
     char ppath[256];
     sprintf(ppath, "data/icons/pokeball.png");
     ball_tex = IMG_LoadTexture(renderer, ppath);
-    if (ball_tex) { fprintf(stderr, "DEBUG: UI Textures Loaded.\n"); fflush(stderr); } else { fprintf(stderr, "ERROR: UI Texture Load Failed: %s\n", IMG_GetError()); fflush(stderr); }
+    sprintf(ppath, "data/icons/pokeball_x.png");
+    ball_x_tex = IMG_LoadTexture(renderer, ppath);
+    sil_tex = IMG_LoadTexture(renderer, "data/icons/pokeball_sil.png");
+    if (sil_tex) SDL_SetTextureAlphaMod(sil_tex, 51); // 20% alpha
+    if (ball_tex && ball_x_tex) { fprintf(stderr, "DEBUG: UI Textures Loaded.\n"); fflush(stderr); } else { fprintf(stderr, "ERROR: UI Texture Load Failed: %s\n", IMG_GetError()); fflush(stderr); }
 
     find_games();
 
@@ -595,7 +705,7 @@ int main(int argc, char *argv[]) {
                 if (app_mode == MODE_GAME_SELECT) {
                     if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP) { if (selected_game_idx > 0) selected_game_idx--; }
                     else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN) { if (selected_game_idx < game_count - 1) selected_game_idx++; }
-                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_B) {
+                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_A) {
                         fprintf(stderr, "DEBUG: Selection B (Confirm) index %d\n", selected_game_idx); fflush(stderr);
                         if (load_pokedex(games[selected_game_idx].tsv_path, games[selected_game_idx].caught_path, &main_dex) == 0) {
                             fprintf(stderr, "DEBUG: TSV Loaded. Count: %d\n", main_dex.count);
@@ -606,21 +716,25 @@ int main(int argc, char *argv[]) {
                         } else {
                             fprintf(stderr, "ERROR: TSV Load Failed\n"); fflush(stderr);
                         }
-                    } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_A) { running = false; }
+                    } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_B) { running = false; }
                 } else {
-                    if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_B) {
+                    if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_A) {
                         toggle_caught(&main_dex, selected);
                         save_caught_status(games[selected_game_idx].caught_path, &main_dex);
-                    } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_A) {
+                        // Live recount for header
+                        games[selected_game_idx].caught = 0;
+                        for(int j = 0; j < main_dex.count; j++) if(main_dex.pokemon[j].caught) games[selected_game_idx].caught++;
+                    } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_B) {
                         save_caught_status(games[selected_game_idx].caught_path, &main_dex);
                         // Refresh count
                         games[selected_game_idx].caught = 0;
                         for(int j=0; j<main_dex.count; j++) if(main_dex.pokemon[j].caught) games[selected_game_idx].caught++;
                         app_mode = MODE_GAME_SELECT;
-                    } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP) { if (selected >= GRID_COLS) selected -= GRID_COLS; }
-                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN) { if (selected < main_dex.count - GRID_COLS) selected += GRID_COLS; }
-                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT) { if (selected > 0) selected--; }
-                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT) { if (selected < main_dex.count - 1) selected++; }
+                    }
+                    if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP) { if (selected > 0) selected--; }
+                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN) { if (selected < main_dex.count - 1) selected++; }
+                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT) { selected -= 10; if (selected < 0) selected = 0; }
+                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT) { selected += 10; if (selected >= main_dex.count) selected = main_dex.count - 1; }
                 }
             }
         }
@@ -652,6 +766,9 @@ int main(int argc, char *argv[]) {
                 if (ks[SDL_SCANCODE_RETURN] || ks[SDL_SCANCODE_Z]) {
                     toggle_caught(&main_dex, selected);
                     save_caught_status(games[selected_game_idx].caught_path, &main_dex);
+                    // Live recount for header
+                    games[selected_game_idx].caught = 0;
+                    for(int j = 0; j < main_dex.count; j++) if(main_dex.pokemon[j].caught) games[selected_game_idx].caught++;
                     moved = true;
                 }
                 if (ks[SDL_SCANCODE_ESCAPE] || ks[SDL_SCANCODE_X] || ks[SDL_SCANCODE_BACKSPACE]) {
@@ -670,21 +787,7 @@ int main(int argc, char *argv[]) {
         if (app_mode == MODE_GAME_SELECT) {
             render_game_select(renderer);
         } else {
-            int sel_row = selected / GRID_COLS;
-            if (sel_row < scroll) scroll = sel_row;
-            if (sel_row >= scroll + GRID_ROWS) scroll = sel_row - GRID_ROWS + 1;
-
-            for (int r = 0; r < GRID_ROWS + 1; r++) {
-                int row_idx = scroll + r;
-                if (row_idx * GRID_COLS >= main_dex.count) break;
-                for (int c = 0; c < GRID_COLS; c++) {
-                    int i = row_idx * GRID_COLS + c;
-                    if (i >= main_dex.count) break;
-                    render_card(renderer, &main_dex, i, c * card_w, r * card_h, i == selected);
-                }
-            }
-
-            render_footer(renderer);
+            render_pokedex(renderer, &main_dex, selected, scroll);
         }
 
         SDL_RenderPresent(renderer);
