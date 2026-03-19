@@ -43,6 +43,10 @@ arm64:
 	mkdir -p Pokedex.pak/bin/arm64
 	mv $(TARGET) Pokedex.pak/bin/arm64/pokedex
 
+# Legacy build via Distrobox (Glibc compatibility)
+legacy:
+	./tools/build_legacy.sh
+
 # Local build for prototyping
 local: CFLAGS += -DDESKTOP
 local: all

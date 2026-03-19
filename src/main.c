@@ -43,14 +43,20 @@ typedef struct {
     SDL_Rect bbox; // The active non-transparent area of the sprite
 } SpriteRef;
 
-SpriteRef sprites[800];
+SpriteRef sprites[MAX_POKEMON]; // Match Pokedex size
 SDL_Texture *ball_tex;
 SDL_Texture *ball_x_tex;
 SDL_Texture *oak_tex;
 SDL_Texture *sil_tex;
+SDL_Texture *bubble_tex[2]; // Cached chat bubble lines
+SDL_Texture *footer_tex;    // Cached footer text
 TTF_Font *font_list;
 TTF_Font *font_bold;
 TTF_Font *font_header;
+
+// Parallel Pokedex caches
+SDL_Texture *pk_id_tex[MAX_POKEMON];
+SDL_Texture *pk_name_tex[MAX_POKEMON];
 
 typedef enum {
     MODE_GAME_SELECT,
@@ -64,6 +70,7 @@ typedef struct {
     char caught_path[512];
     int total;
     int caught;
+    SDL_Texture *name_tex;   // Cached texture for the name
 } GameInfo;
 
 GameInfo games[64];
@@ -204,11 +211,82 @@ void load_sprite(SDL_Renderer *renderer, Pokemon *p, SpriteRef *out) {
 }
 
 void unload_pokedex_assets() {
-    for (int i = 0; i < 800; i++) {
+    for (int i = 0; i < MAX_POKEMON; i++) {
         if (sprites[i].tex) {
             SDL_DestroyTexture(sprites[i].tex);
             sprites[i].tex = NULL;
         }
+    }
+    // Clean up cached game textures
+    for (int i = 0; i < 64; i++) {
+        if (games[i].name_tex) {
+            SDL_DestroyTexture(games[i].name_tex);
+            games[i].name_tex = NULL;
+        }
+    }
+    // Clean up bubble and footer textures
+    for (int i = 0; i < 2; i++) {
+        if (bubble_tex[i]) {
+            SDL_DestroyTexture(bubble_tex[i]);
+            bubble_tex[i] = NULL;
+        }
+    }
+    if (footer_tex) {
+        SDL_DestroyTexture(footer_tex);
+        footer_tex = NULL;
+    }
+    // Clean up Pokedex caches
+    for (int i = 0; i < MAX_POKEMON; i++) {
+        if (pk_id_tex[i]) { SDL_DestroyTexture(pk_id_tex[i]); pk_id_tex[i] = NULL; }
+        if (pk_name_tex[i]) { SDL_DestroyTexture(pk_name_tex[i]); pk_name_tex[i] = NULL; }
+    }
+}
+
+// Pre-render game names to avoid texture creation in the main loop
+void cache_game_textures(SDL_Renderer *renderer) {
+    SDL_Color black = {40, 40, 40, 255};
+    for (int i = 0; i < game_count; i++) {
+        if (games[i].name_tex) SDL_DestroyTexture(games[i].name_tex);
+        SDL_Surface *s = TTF_RenderUTF8_Blended(font_list, games[i].name, black);
+        if (s) {
+            games[i].name_tex = SDL_CreateTextureFromSurface(renderer, s);
+            SDL_FreeSurface(s);
+        }
+    }
+
+    // Cache Bubble Text
+    const char *lines[] = {"Please select your pokemon game", "from the list."};
+    for(int i=0; i<2; i++) {
+        if (bubble_tex[i]) SDL_DestroyTexture(bubble_tex[i]);
+        SDL_Surface *sf = TTF_RenderUTF8_Blended(font_header, lines[i], black);
+        if (sf) {
+            bubble_tex[i] = SDL_CreateTextureFromSurface(renderer, sf);
+            SDL_FreeSurface(sf);
+        }
+    }
+
+    // Cache Footer Text
+    SDL_Color gray = {200, 180, 160, 255};
+    if (footer_tex) SDL_DestroyTexture(footer_tex);
+    SDL_Surface *fs = TTF_RenderUTF8_Blended(font_header, "[A] Select/Toggle     [B] Back", gray);
+    if (fs) {
+        footer_tex = SDL_CreateTextureFromSurface(renderer, fs);
+        SDL_FreeSurface(fs);
+    }
+
+    // Cache Pokedex names/IDs for the CURRENT main_dex
+    SDL_Color gray_c = {120, 120, 120, 255};
+    SDL_Color black_c = {40, 40, 40, 255};
+    for (int i = 0; i < main_dex.count; i++) {
+        if (pk_id_tex[i]) SDL_DestroyTexture(pk_id_tex[i]);
+        if (pk_name_tex[i]) SDL_DestroyTexture(pk_name_tex[i]);
+        
+        char id_str[16]; sprintf(id_str, "#%03d", main_dex.pokemon[i].dex_id);
+        SDL_Surface *s1 = TTF_RenderUTF8_Blended(font_list, id_str, gray_c);
+        if (s1) { pk_id_tex[i] = SDL_CreateTextureFromSurface(renderer, s1); SDL_FreeSurface(s1); }
+        
+        SDL_Surface *s2 = TTF_RenderUTF8_Blended(font_list, main_dex.pokemon[i].name, black_c);
+        if (s2) { pk_name_tex[i] = SDL_CreateTextureFromSurface(renderer, s2); SDL_FreeSurface(s2); }
     }
 }
 
@@ -282,6 +360,7 @@ void draw_type_tag(SDL_Renderer *renderer, const char *type, int x, int y, int w
 }
 
 void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scroll) {
+    if (!dex || dex->count == 0) return;
     // 1. Background Grid
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderClear(renderer);
@@ -314,6 +393,7 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
     float item_h = (float)(list_frame.h - 16 - 20) / max_visible; // Subtracting 8px border*2 and 10px padding*2
     int scroll_off = (selected >= max_visible) ? selected - max_visible + 1 : 0;
 
+    int id_w = 0;
     for (int i = 0; i < dex->count; i++) {
         if (i < scroll_off || i >= scroll_off + max_visible) continue;
         int v_idx = i - scroll_off;
@@ -323,44 +403,36 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
         if (sel) {
             SDL_Rect highlight = {item_r.x + 2, item_r.y + 2, item_r.w - 4, item_r.h - 4}; // Smaller
             SDL_Color h_red = {255, 0, 0, 255};
-            // Use draw_pixel_box with transparent fill for "transparent inside" look
             draw_pixel_box(renderer, highlight, 4, h_red, (SDL_Color){0,0,0,0});
         }
 
-        // Ball Icon
+        // Ball Icon — vertically centered in row
         SDL_Texture *icon = dex->pokemon[i].caught ? ball_tex : ball_x_tex;
         if (icon) {
-            SDL_Rect ir = {item_r.x + 10, item_r.y + 10, 40, 40};
+            int icon_size = (int)(item_h - 20);
+            if (icon_size > 48) icon_size = 48; // Cap at 48px
+            SDL_Rect ir = {item_r.x + 10, item_r.y + ((int)item_h - icon_size) / 2, icon_size, icon_size};
             SDL_RenderCopy(renderer, icon, NULL, &ir);
         }
 
-        // ID
-        char id_buf[16];
-        sprintf(id_buf, "%03d", dex->pokemon[i].dex_id);
-        SDL_Color black = {40, 40, 40, 255};
-        SDL_Surface *is = TTF_RenderUTF8_Blended(font_list, id_buf, black);
-        int id_w = 0;
-        if (is) {
-            SDL_Texture *it = SDL_CreateTextureFromSurface(renderer, is);
-            float s = (float)(item_h - 20) / is->h;
-            id_w = (int)(is->w * s);
-            SDL_Rect tr = {item_r.x + 60, item_r.y + (item_h - (int)(is->h * s))/2, id_w, (int)(is->h * s)};
-            SDL_RenderCopy(renderer, it, NULL, &tr);
-            SDL_FreeSurface(is); SDL_DestroyTexture(it);
+        // ID (Cached)
+        if (pk_id_tex[i]) {
+            int tw, th; SDL_QueryTexture(pk_id_tex[i], NULL, NULL, &tw, &th);
+            float s = (float)(item_h - 20) / th;
+            id_w = (int)(tw * s);
+            SDL_Rect tr = {item_r.x + 60, item_r.y + (item_h - (int)(th * s))/2, id_w, (int)(th * s)};
+            SDL_RenderCopy(renderer, pk_id_tex[i], NULL, &tr);
         }
 
-        // Name
-        SDL_Surface *ps = TTF_RenderUTF8_Blended(font_list, dex->pokemon[i].name, black);
-        if (ps) {
-            SDL_Texture *pt = SDL_CreateTextureFromSurface(renderer, ps);
-            float s = (float)(item_h - 20) / ps->h;
-            int tw = (int)(ps->w * s);
-            int max_tw = item_r.w - 60 - id_w - 30;
-            if (tw > max_tw) tw = max_tw;
-            int th = (int)(ps->h * s);
-            SDL_Rect tr = {item_r.x + 60 + id_w + 15, item_r.y + (item_h - th)/2, tw, th};
-            SDL_RenderCopy(renderer, pt, NULL, &tr);
-            SDL_FreeSurface(ps); SDL_DestroyTexture(pt);
+        // Name (Cached)
+        if (pk_name_tex[i]) {
+            int tw, th; SDL_QueryTexture(pk_name_tex[i], NULL, NULL, &tw, &th);
+            float s = (float)(item_h - 20) / th;
+            int tw_scaled = (int)(tw * s);
+            int max_tw = list_frame.w - 100 - id_w;
+            if (tw_scaled > max_tw) tw_scaled = max_tw;
+            SDL_Rect tr = {item_r.x + 60 + id_w + 15, item_r.y + (item_h - (int)(th * s))/2, tw_scaled, (int)(th * s)};
+            SDL_RenderCopy(renderer, pk_name_tex[i], NULL, &tr);
         }
     }
 
@@ -374,7 +446,7 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
     SDL_Surface *ns = TTF_RenderUTF8_Blended(font_bold, p->name, (SDL_Color){40, 40, 40, 255});
     if (ns) {
         SDL_Texture *nt = SDL_CreateTextureFromSurface(renderer, ns);
-        float s = (float)(name_plate.h - 10) / ns->h; // Larger (+50%)
+        float s = (float)(name_plate.h - 10) / ns->h;
         int tw = (int)(ns->w * s);
         int max_tw = name_plate.w - 40;
         if (tw > max_tw) tw = max_tw;
@@ -384,14 +456,12 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
         SDL_FreeSurface(ns); SDL_DestroyTexture(nt);
     }
 
-    // Background Silhouette
+    // Silhouette
     if (sil_tex) {
-        int sw, sh;
-        SDL_QueryTexture(sil_tex, NULL, NULL, &sw, &sh);
+        int sw, sh; SDL_QueryTexture(sil_tex, NULL, NULL, &sw, &sh);
         float aspect = (float)sw / sh;
-        int target_h = 420;
-        int tw = (int)(target_h * aspect), th = target_h;
-        if (tw > 440) { tw = 440; th = (int)(tw / aspect); }
+        int th = 420, tw = (int)(420 * aspect);
+        if (tw > 440) { tw = 440; th = (int)(440 / aspect); }
         SDL_Rect sil_r = {50 + (440 - tw)/2, 180 + (420 - th)/2, tw, th};
         SDL_RenderCopy(renderer, sil_tex, NULL, &sil_r);
     }
@@ -399,15 +469,13 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
     // Large Sprite
     if (sprites[selected].tex) {
         SDL_Rect src = sprites[selected].bbox;
-        int target_h = 400;
-        float aspect = (float)src.w / src.h;
-        int tw = (int)(target_h * aspect), th = target_h;
-        if (tw > 400) { tw = 400; th = (int)(tw / aspect); }
+        int th = 400, tw = (int)(400 * ((float)src.w / src.h));
+        if (tw > 400) { tw = 400; th = (int)(400 / ((float)src.w / src.h)); }
         SDL_Rect sr = {50 + (440 - tw)/2, 180 + (400 - th)/2, tw, th};
         SDL_RenderCopy(renderer, sprites[selected].tex, NULL, &sr);
     }
 
-    // Type Plate (Baseline aligned at Y=700)
+    // Type Plate
     SDL_Rect type_plate = {50, 610, 440, 90};
     draw_pixel_box(renderer, type_plate, 8, r_border, r_white);
     int badge_w = 180, badge_h = 50;
@@ -417,6 +485,7 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
         if (p->type1[0]) draw_type_tag(renderer, p->type1, type_plate.x + 20, type_plate.y + (type_plate.h - badge_h)/2, badge_w, badge_h);
         if (p->type2[0]) draw_type_tag(renderer, p->type2, type_plate.x + type_plate.w - badge_w - 20, type_plate.y + (type_plate.h - badge_h)/2, badge_w, badge_h);
     }
+
     // 5. Global Bottom Bar
     SDL_Rect foot_bar = {0, screen_h - 60, screen_w, 60};
     draw_gradient(renderer, foot_bar.x, foot_bar.y, foot_bar.w, foot_bar.h, red_top, red_bot);
@@ -432,19 +501,21 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
 }
 
 void draw_gradient(SDL_Renderer *renderer, int x, int y, int w, int h, SDL_Color top, SDL_Color bot) {
-    for (int i = 0; i < h; i++) {
+    int step = 4; 
+    for (int i = 0; i < h; i += step) {
         float ratio = (float)i / h;
         Uint8 r = top.r + (bot.r - top.r) * ratio;
         Uint8 g = top.g + (bot.g - top.g) * ratio;
         Uint8 b = top.b + (bot.b - top.b) * ratio;
         SDL_SetRenderDrawColor(renderer, r, g, b, 255);
-        SDL_RenderDrawLine(renderer, x, y + i, x + w, y + i);
+        SDL_Rect rect = {x, y + i, w, (i + step > h) ? (h - i) : step};
+        SDL_RenderFillRect(renderer, &rect);
     }
 }
 
 void draw_grid(SDL_Renderer *renderer) {
     SDL_SetRenderDrawColor(renderer, 230, 230, 230, 255);
-    int spacing = 64; // Doubled size
+    int spacing = 64; 
     for (int x = 0; x < screen_w; x += spacing) SDL_RenderDrawLine(renderer, x, 0, x, screen_h);
     for (int y = 0; y < screen_h; y += spacing) SDL_RenderDrawLine(renderer, 0, y, screen_w, y);
 }
@@ -462,43 +533,65 @@ void strip_pokemon(char *str) {
 }
 
 void draw_pixel_box(SDL_Renderer *renderer, SDL_Rect r, int p, SDL_Color border, SDL_Color fill) {
+    if (fill.a > 0) {
+        SDL_SetRenderDrawColor(renderer, fill.r, fill.g, fill.b, fill.a);
+        SDL_RenderFillRect(renderer, &r);
+    }
     SDL_SetRenderDrawColor(renderer, border.r, border.g, border.b, border.a);
     for(int i=0; i<p; i++) {
         SDL_Rect b = {r.x + i, r.y + i, r.w - (i*2), r.h - (i*2)};
-        // Pixel rounding: skip corners
-        if (i < p) {
-            SDL_RenderDrawLine(renderer, b.x + 6 - i, b.y, b.x + b.w - 7 + i, b.y); // Top
-            SDL_RenderDrawLine(renderer, b.x + 6 - i, b.y + b.h - 1, b.x + b.w - 7 + i, b.y + b.h - 1); // Bot
-            SDL_RenderDrawLine(renderer, b.x, b.y + 6 - i, b.x, b.y + b.h - 7 + i); // Left
-            SDL_RenderDrawLine(renderer, b.x + b.w - 1, b.y + 6 - i, b.x + b.w - 1, b.y + b.h - 7 + i); // Right
-            
-            // Smoother "pixel" diagonals
-            SDL_RenderDrawPoint(renderer, b.x + 1, b.y + 3); SDL_RenderDrawPoint(renderer, b.x + 3, b.y + 1);
-            SDL_RenderDrawPoint(renderer, b.x + 2, b.y + 2);
-            SDL_RenderDrawPoint(renderer, b.x + b.w - 2, b.y + 3); SDL_RenderDrawPoint(renderer, b.x + b.w - 4, b.y + 1);
-            SDL_RenderDrawPoint(renderer, b.x + b.w - 3, b.y + 2);
-            SDL_RenderDrawPoint(renderer, b.x + 1, b.y + b.h - 4); SDL_RenderDrawPoint(renderer, b.x + 3, b.y + b.h - 2);
-            SDL_RenderDrawPoint(renderer, b.x + 2, b.y + b.h - 3);
-            SDL_RenderDrawPoint(renderer, b.x + b.w - 2, b.y + b.h - 4); SDL_RenderDrawPoint(renderer, b.x + b.w - 4, b.y + b.h - 2);
-            SDL_RenderDrawPoint(renderer, b.x + b.w - 3, b.y + b.h - 3);
-        } else {
-            SDL_RenderDrawRect(renderer, &b);
-        }
-    }
-    if (fill.a > 0) {
-        SDL_SetRenderDrawColor(renderer, fill.r, fill.g, fill.b, fill.a);
-        SDL_Rect fi = {r.x + p, r.y + p, r.w - (p*2), r.h - (p*2)};
-        SDL_RenderFillRect(renderer, &fi);
+        SDL_RenderDrawLine(renderer, b.x + 2, b.y, b.x + b.w - 3, b.y);             // Top
+        SDL_RenderDrawLine(renderer, b.x + 2, b.y + b.h - 1, b.x + b.w - 3, b.y + b.h - 1); // Bot
+        SDL_RenderDrawLine(renderer, b.x, b.y + 2, b.x, b.y + b.h - 3);             // Left
+        SDL_RenderDrawLine(renderer, b.x + b.w - 1, b.y + 2, b.x + b.w - 1, b.y + b.h - 3); // Right
+        SDL_RenderDrawPoint(renderer, b.x + 1, b.y + 1);
+        SDL_RenderDrawPoint(renderer, b.x + b.w - 2, b.y + 1);
+        SDL_RenderDrawPoint(renderer, b.x + 1, b.y + b.h - 2);
+        SDL_RenderDrawPoint(renderer, b.x + b.w - 2, b.y + b.h - 2);
     }
 }
 
 void render_game_select(SDL_Renderer *renderer) {
-    // 1. Background Gradient (Light Teal to White)
-    SDL_Color teal = {180, 230, 230, 255};
-    SDL_Color white = {245, 250, 250, 255};
-    draw_gradient(renderer, 0, 0, screen_w, screen_h, teal, white);
+    // ── GBA-style banded gradient ─────────────────────────────────────────────
+    // Colors from the reference: teal top, light mint/white center,
+    // slightly dimmer teal bottom. Non-linear: holds top 30%, bottom 30%.
+    // Each band is 8px tall to create the visible banding artifact.
+    {
+        // Top solid zone (30% of screen height)
+        int top_zone    = (int)(screen_h * 0.30f);
+        // Bottom solid zone (30% of screen height)
+        int bot_zone    = (int)(screen_h * 0.30f);
+        // Transition zone (middle 40%)
+        int mid_start   = top_zone;
+        int mid_end     = screen_h - bot_zone;
+        int mid_h       = mid_end - mid_start;
+        int band        = 8; // pixel band height
 
-    // 2. Draw Prof Oak (Right side)
+        // Top section – solid teal  #A8D8D0  (168,216,208)
+        SDL_SetRenderDrawColor(renderer, 168, 216, 208, 255);
+        SDL_Rect top_r = {0, 0, screen_w, top_zone};
+        SDL_RenderFillRect(renderer, &top_r);
+
+        // Middle section – banded transition teal→white
+        for (int y = mid_start; y < mid_end; y += band) {
+            float t = (float)(y - mid_start) / mid_h;
+            // Ease in-out curve to make the bands look intentional
+            t = t * t * (3.0f - 2.0f * t);
+            Uint8 r = (Uint8)(168 + (230 - 168) * t);
+            Uint8 g = (Uint8)(216 + (245 - 216) * t);
+            Uint8 b = (Uint8)(208 + (242 - 208) * t);
+            SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+            int bh = (y + band > mid_end) ? (mid_end - y) : band;
+            SDL_Rect br = {0, y, screen_w, bh};
+            SDL_RenderFillRect(renderer, &br);
+        }
+
+        // Bottom section – solid slightly darker teal  #88C8C0  (136,200,192)
+        SDL_SetRenderDrawColor(renderer, 136, 200, 192, 255);
+        SDL_Rect bot_r = {0, mid_end, screen_w, screen_h - mid_end};
+        SDL_RenderFillRect(renderer, &bot_r);
+    }
+
     if (oak_tex) {
         int ow, oh; SDL_QueryTexture(oak_tex, NULL, NULL, &ow, &oh);
         float scale = (float)(screen_h * 0.65) / oh;
@@ -506,110 +599,102 @@ void render_game_select(SDL_Renderer *renderer) {
         SDL_Rect or = {screen_w - tw - 80, screen_h - th - 180, tw, th};
         SDL_RenderCopy(renderer, oak_tex, NULL, &or);
     }
-
-    // 3. Floating List Box (Left side)
     SDL_Rect box_outer = {60, 60, 520, 500};
-    SDL_SetRenderDrawColor(renderer, 80, 100, 180, 255); // Blue border
+    SDL_SetRenderDrawColor(renderer, 80, 100, 180, 255); 
     for(int i=0; i<8; i++) { SDL_Rect b = {box_outer.x+i, box_outer.y+i, box_outer.w-(i*2), box_outer.h-(i*2)}; SDL_RenderDrawRect(renderer, &b); }
-    SDL_SetRenderDrawColor(renderer, 248, 248, 248, 255); // White inner
+    SDL_SetRenderDrawColor(renderer, 248, 248, 248, 255); 
     SDL_Rect box_inner = {box_outer.x+8, box_outer.y+8, box_outer.w-16, box_outer.h-16};
     SDL_RenderFillRect(renderer, &box_inner);
 
-    // Render list items inside the box
-    int list_start_y = box_inner.y + 20;
-    int max_visible = 7;
+    int list_start_y = box_inner.y + 20, max_visible = 7;
     float list_item_h = (float)(box_inner.h - 40) / max_visible;
-    int scroll_off = 0;
-    if (selected_game_idx >= max_visible) scroll_off = selected_game_idx - max_visible + 1;
+    int scroll_off = (selected_game_idx >= max_visible) ? selected_game_idx - max_visible + 1 : 0;
 
     for (int i = 0; i < game_count; i++) {
-        if (i < scroll_off || i >= scroll_off + max_visible) continue;
         int v_idx = i - scroll_off;
-        bool sel = (i == selected_game_idx);
-        SDL_Color color = sel ? (SDL_Color){220, 0, 0, 255} : (SDL_Color){60, 60, 60, 255};
-        
-        // Selection Highlight (Contracted Parity)
-        if (sel) {
+        if (v_idx < 0 || v_idx >= max_visible) continue;
+        if (i == selected_game_idx) {
             SDL_Rect highlight = {box_inner.x + 10, list_start_y + (int)(v_idx * list_item_h) + 2, box_inner.w - 20, (int)list_item_h - 4};
-            SDL_Color h_red = {255, 0, 0, 255};
-            draw_pixel_box(renderer, highlight, 4, h_red, (SDL_Color){0,0,0,0});
+            draw_pixel_box(renderer, highlight, 4, (SDL_Color){255, 0, 0, 255}, (SDL_Color){0,0,0,0});
         }
-
-        SDL_Surface *surf = TTF_RenderUTF8_Blended(sel ? font_bold : font_list, games[i].name, color);
-        if (surf) {
-            SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
-            float s = (float)(list_item_h - 10) / surf->h;
-            int tw = (int)(surf->w * s), th = (int)(surf->h * s);
-            SDL_Rect tr = {box_inner.x + 30, list_start_y + (int)(v_idx * list_item_h), tw, th};
-            SDL_RenderCopy(renderer, tex, NULL, &tr);
-            SDL_FreeSurface(surf); SDL_DestroyTexture(tex);
+        if (games[i].name_tex) {
+            int tw, th; SDL_QueryTexture(games[i].name_tex, NULL, NULL, &tw, &th);
+            float s = (float)(list_item_h - 10) / th;
+            SDL_Rect tr = {box_inner.x + 30, list_start_y + (int)(v_idx * list_item_h), (int)(tw*s), (int)(th*s)};
+            SDL_RenderCopy(renderer, games[i].name_tex, NULL, &tr);
         }
     }
-
-    // 4. Chat Bubble (Bottom)
-    SDL_Rect bubble = {40, screen_h - 180, screen_w - 80, 140};
-    SDL_Color b_border = {100, 200, 240, 255}, b_white = {255, 255, 255, 255};
-    draw_pixel_box(renderer, bubble, 6, b_border, b_white);
-
-    SDL_Color black = {40, 40, 40, 255};
-    const char *lines[] = {"Please select your pokemon game", "from the list."};
-    for(int i=0; i<2; i++) {
-        SDL_Surface *sf = TTF_RenderUTF8_Blended(font_header, lines[i], black);
-        if (sf) {
-            SDL_Texture *tx = SDL_CreateTextureFromSurface(renderer, sf);
-            float s = (float)(bubble.h / 3.0) / sf->h; // Double size (+100%)
-            int tw = (int)(sf->w * s), th = (int)(sf->h * s);
-            SDL_Rect tr = {bubble.x + (bubble.w - tw)/2, bubble.y + 20 + i * (th + 10), tw, th};
-            SDL_RenderCopy(renderer, tx, NULL, &tr);
-            SDL_FreeSurface(sf); SDL_DestroyTexture(tx);
+    // ── Chat bubble (GBA-style: white fill, thin rounded light-blue border) ──
+    SDL_Rect bubble = {30, screen_h - 185, screen_w - 60, 148};
+    // Fill
+    SDL_SetRenderDrawColor(renderer, 252, 252, 252, 255);
+    SDL_RenderFillRect(renderer, &bubble);
+    // Thin border – draw a 2-pixel inset rounded rect manually
+    SDL_Color bdr = {150, 210, 220, 255};
+    SDL_SetRenderDrawColor(renderer, bdr.r, bdr.g, bdr.b, 255);
+    // Outer frame (2px thick)
+    for (int t = 0; t < 2; t++) {
+        SDL_Rect f = {bubble.x + t, bubble.y + t, bubble.w - t*2, bubble.h - t*2};
+        // Top & bottom lines (with 8px corner gap)
+        SDL_RenderDrawLine(renderer, f.x + 8, f.y,         f.x + f.w - 8, f.y);
+        SDL_RenderDrawLine(renderer, f.x + 8, f.y+f.h-1,  f.x + f.w - 8, f.y+f.h-1);
+        // Left & right lines (with 8px gap)
+        SDL_RenderDrawLine(renderer, f.x,         f.y + 8, f.x,         f.y + f.h - 8);
+        SDL_RenderDrawLine(renderer, f.x+f.w-1,  f.y + 8, f.x+f.w-1,   f.y + f.h - 8);
+        // Corners – 45-degree diagonal pixel
+        SDL_RenderDrawPoint(renderer, f.x + 4, f.y + 2);
+        SDL_RenderDrawPoint(renderer, f.x + 3, f.y + 3);
+        SDL_RenderDrawPoint(renderer, f.x + 2, f.y + 4);
+        SDL_RenderDrawPoint(renderer, f.x + f.w - 5, f.y + 2);
+        SDL_RenderDrawPoint(renderer, f.x + f.w - 4, f.y + 3);
+        SDL_RenderDrawPoint(renderer, f.x + f.w - 3, f.y + 4);
+        SDL_RenderDrawPoint(renderer, f.x + 4, f.y + f.h - 3);
+        SDL_RenderDrawPoint(renderer, f.x + 3, f.y + f.h - 4);
+        SDL_RenderDrawPoint(renderer, f.x + 2, f.y + f.h - 5);
+        SDL_RenderDrawPoint(renderer, f.x + f.w - 5, f.y + f.h - 3);
+        SDL_RenderDrawPoint(renderer, f.x + f.w - 4, f.y + f.h - 4);
+        SDL_RenderDrawPoint(renderer, f.x + f.w - 3, f.y + f.h - 5);
+    }
+    // Text lines left-aligned (like GBA dialogue box)
+    int text_y = bubble.y + 24;
+    for (int i = 0; i < 2; i++) {
+        if (bubble_tex[i]) {
+            int tw, th; SDL_QueryTexture(bubble_tex[i], NULL, NULL, &tw, &th);
+            float s = (float)(bubble.h / 3.5f) / th;
+            SDL_Rect tr = {bubble.x + 28, text_y, (int)(tw*s), (int)(th*s)};
+            SDL_RenderCopy(renderer, bubble_tex[i], NULL, &tr);
+            text_y += (int)(th*s) + 8;
         }
     }
 }
 
+
 void render_footer(SDL_Renderer *renderer) {
     SDL_Rect r = {0, screen_h - FOOTER_H, screen_w, FOOTER_H};
-    SDL_SetRenderDrawColor(renderer, 50, 40, 30, 255); // Darker wood/brown
+    SDL_SetRenderDrawColor(renderer, 50, 40, 30, 255); 
     SDL_RenderFillRect(renderer, &r);
-    SDL_SetRenderDrawColor(renderer, 100, 80, 60, 255); // Accent line
-    SDL_RenderDrawLine(renderer, 0, screen_h - FOOTER_H, screen_w, screen_h - FOOTER_H);
-
-    SDL_Color gray = {200, 180, 160, 255}; // Light parchment-gray
-    SDL_Surface *surf = TTF_RenderUTF8_Blended(font_header, "[A] Select/Toggle     [B] Back", gray);
-    if (surf) {
-        SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
-        if (tex) {
-            float scale = (float)(FOOTER_H - 20) / surf->h; // Larger (+100%)
-            int tw = (int)(surf->w * scale);
-            if (tw > screen_w - 40) {
-                scale = (float)(screen_w - 40) / surf->w;
-                tw = screen_w - 40;
-            }
-            int th = (int)(surf->h * scale);
-            SDL_Rect tr = {(screen_w - tw)/2, screen_h - FOOTER_H + (FOOTER_H - th)/2, tw, th};
-            SDL_RenderCopy(renderer, tex, NULL, &tr);
-            SDL_DestroyTexture(tex);
-        }
-        SDL_FreeSurface(surf);
+    if (footer_tex) {
+        int tw, th; SDL_QueryTexture(footer_tex, NULL, NULL, &tw, &th);
+        float scale = (float)(FOOTER_H - 18) / th;
+        int tw_s = (int)(tw * scale);
+        if (tw_s > screen_w - 40) { scale = (float)(screen_w - 40) / tw; tw_s = screen_w - 40; }
+        SDL_Rect tr = {(screen_w - tw_s)/2, screen_h - FOOTER_H + (FOOTER_H - (int)(th*scale))/2, tw_s, (int)(th*scale)};
+        SDL_RenderCopy(renderer, footer_tex, NULL, &tr);
     }
 }
 
 int main(int argc, char *argv[]) {
     setvbuf(stderr, NULL, _IONBF, 0);
     fprintf(stderr, "DEBUG: App Started. Pokedex Init.\n");
-    fprintf(stderr, "DEBUG: ENV DISPLAY=%s\n", getenv("DISPLAY"));
-    fprintf(stderr, "DEBUG: ENV SDL_VIDEODRIVER=%s\n", getenv("SDL_VIDEODRIVER"));
-    fflush(stderr);
-
-    // USE HARDWARE IF AVAILABLE (Renderer fallback handles the rest)
+    SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengles2");
+    SDL_SetHint(SDL_HINT_RENDER_OPENGL_SHADERS, "1");
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0) return 1;
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); 
 
     memset(&main_dex, 0, sizeof(Pokedex));
     memset(sprites, 0, sizeof(sprites));
-
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0) {
-        fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
-        return 1;
-    }
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); 
+    memset(pk_id_tex, 0, sizeof(pk_id_tex));
+    memset(pk_name_tex, 0, sizeof(pk_name_tex));
 
     for (int i = 0; i < SDL_NumJoysticks(); ++i) {
         if (SDL_IsGameController(i)) {
@@ -618,44 +703,45 @@ int main(int argc, char *argv[]) {
         }
     }
     IMG_Init(IMG_INIT_PNG);
-    if (TTF_Init() < 0) return 1;
+    TTF_Init();
 
 #ifdef DESKTOP
     SDL_Window *window = SDL_CreateWindow("Pokedex", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_w, screen_h, SDL_WINDOW_SHOWN);
 #else
-    SDL_Window *window = SDL_CreateWindow("Pokedex", 0, 0, screen_w, screen_h, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_Window *window = SDL_CreateWindow("Pokedex", 0, 0, screen_w, screen_h, 0); // Safer than FULLSCREEN
 #endif
-    if (!window) {
-        fprintf(stderr, "ERROR: SDL_CreateWindow failed: %s\n", SDL_GetError()); fflush(stderr);
-        return 1;
-    }
-    
-    // RENDERER FALLBACK
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!renderer) {
-        fprintf(stderr, "WARN: Accelerated+VSync failed. Trying Accelerated...\n"); fflush(stderr);
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    }
-    if (!renderer) {
-        fprintf(stderr, "WARN: Accelerated failed. Falling back to SOFTWARE renderer.\n"); fflush(stderr);
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
-    }
-    if (!renderer) {
-        fprintf(stderr, "ERROR: All renderer attempts failed: %s\n", SDL_GetError()); fflush(stderr);
-        return 1;
-    }
-    SDL_GetRendererOutputSize(renderer, &screen_w, &screen_h);
-    
-    SDL_RendererInfo info;
-    if (SDL_GetRendererInfo(renderer, &info) == 0) {
-        fprintf(stderr, "DEBUG: Active Renderer: %s\n", info.name);
-        fprintf(stderr, "DEBUG: Renderer Flags: 0x%08X\n", info.flags);
-        fprintf(stderr, "DEBUG: Screen Output: %dx%d\n", screen_w, screen_h);
-        fflush(stderr);
+    if (!window) { fprintf(stderr, "ERROR: Window Creation Failed: %s\n", SDL_GetError()); return 1; }
+    SDL_Delay(100); // Driver settle
+
+    // LOG AVAILABLE DRIVERS
+    int num_drivers = SDL_GetNumRenderDrivers();
+    fprintf(stderr, "DEBUG: Available Render Drivers (%d):\n", num_drivers);
+    for (int i = 0; i < num_drivers; i++) {
+        SDL_RendererInfo ri; SDL_GetRenderDriverInfo(i, &ri);
+        fprintf(stderr, "  %d: %s (flags: 0x%08X)\n", i, ri.name, ri.flags);
     }
 
-    card_w = screen_w / GRID_COLS;
-    card_h = (screen_h - FOOTER_H) / GRID_ROWS;
+    // FORCE GLES Hints
+    SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengles2");
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+    SDL_GL_LoadLibrary(NULL); 
+
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (!renderer) {
+        fprintf(stderr, "WARN: GLES2+VSync failed, trying ANY accelerated.\n");
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    }
+    if (!renderer) { 
+        fprintf(stderr, "WARN: Accelerated failed, Falling back to SOFTWARE.\n");
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+    }
+    if (!renderer) return 1;
+
+    SDL_GetRendererOutputSize(renderer, &screen_w, &screen_h);
+    card_w = screen_w / GRID_COLS; card_h = (screen_h - FOOTER_H) / GRID_ROWS;
 
     font_list = TTF_OpenFont("data/font.ttf", FONT_SIZE_LIST);
     font_bold = TTF_OpenFont("data/font.ttf", FONT_SIZE_BOLD);
@@ -663,72 +749,40 @@ int main(int argc, char *argv[]) {
     if (font_bold) TTF_SetFontStyle(font_bold, TTF_STYLE_BOLD);
     if (font_header) TTF_SetFontStyle(font_header, TTF_STYLE_BOLD);
 
-    if (!font_list) {
-        fprintf(stderr, "WARN: data/font.ttf failed. Trying fallback...\n"); fflush(stderr);
-        font_list = TTF_OpenFont("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf", FONT_SIZE_LIST);
-    }
-
     oak_tex = IMG_LoadTexture(renderer, "data/sprites/profoak.png");
-    if (!oak_tex) {
-        fprintf(stderr, "WARN: profoak.png not found. Trying fallback path...\n"); fflush(stderr);
-        oak_tex = IMG_LoadTexture(renderer, "Pokedex.pak/data/sprites/profoak.png");
-    }
-    if (font_list && font_bold && font_header) {
-        fprintf(stderr, "DEBUG: Fonts Loaded Successfully.\n"); fflush(stderr);
-    } else {
-        fprintf(stderr, "ERROR: FONT LOADING FAILED.\n"); fflush(stderr);
-    }
-    
-    char ppath[256];
-    sprintf(ppath, "data/icons/pokeball.png");
-    ball_tex = IMG_LoadTexture(renderer, ppath);
-    sprintf(ppath, "data/icons/pokeball_x.png");
-    ball_x_tex = IMG_LoadTexture(renderer, ppath);
+    ball_tex = IMG_LoadTexture(renderer, "data/icons/pokeball.png");
+    ball_x_tex = IMG_LoadTexture(renderer, "data/icons/pokeball_x.png");
     sil_tex = IMG_LoadTexture(renderer, "data/icons/pokeball_sil.png");
-    if (sil_tex) SDL_SetTextureAlphaMod(sil_tex, 51); // 20% alpha
-    if (ball_tex && ball_x_tex) { fprintf(stderr, "DEBUG: UI Textures Loaded.\n"); fflush(stderr); } else { fprintf(stderr, "ERROR: UI Texture Load Failed: %s\n", IMG_GetError()); fflush(stderr); }
+    if (sil_tex) SDL_SetTextureAlphaMod(sil_tex, 51);
 
-    find_games();
+    find_games(); cache_game_textures(renderer);
 
-    int selected = 0;
-    int scroll = 0;
+    int selected = 0, scroll = 0;
     bool running = true;
     SDL_Event ev;
     Uint32 last_input = 0;
 
+    fprintf(stderr, "DEBUG: Starting Main Loop\n"); fflush(stderr);
     while (running) {
-        static int frame_count = 0; if (frame_count++ % 120 == 0) { fprintf(stderr, "DEBUG: Heartbeat (frame %d)\n", frame_count); fflush(stderr); }
         while (SDL_PollEvent(&ev)) {
-            if (ev.type == SDL_QUIT) running = false;
-            
+            if (ev.type == SDL_QUIT) { fprintf(stderr, "DEBUG: SDL_QUIT received\n"); running = false; }
             if (ev.type == SDL_CONTROLLERBUTTONDOWN) {
                 if (app_mode == MODE_GAME_SELECT) {
                     if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP) { if (selected_game_idx > 0) selected_game_idx--; }
                     else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN) { if (selected_game_idx < game_count - 1) selected_game_idx++; }
-                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_A) {
-                        fprintf(stderr, "DEBUG: Selection B (Confirm) index %d\n", selected_game_idx); fflush(stderr);
+                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_B) { // B = confirm on TRIMUI (Nintendo layout)
+                        fprintf(stderr, "DEBUG: B pressed. Loading index %d\n", selected_game_idx);
                         if (load_pokedex(games[selected_game_idx].tsv_path, games[selected_game_idx].caught_path, &main_dex) == 0) {
-                            fprintf(stderr, "DEBUG: TSV Loaded. Count: %d\n", main_dex.count);
-                            unload_pokedex_assets();
-                            fprintf(stderr, "DEBUG: Assets Cleared. Modeswitching...\n"); fflush(stderr);
-                            app_mode = MODE_POKEDEX;
-                            selected = 0; scroll = 0;
-                        } else {
-                            fprintf(stderr, "ERROR: TSV Load Failed\n"); fflush(stderr);
+                            unload_pokedex_assets(); cache_game_textures(renderer);
+                            app_mode = MODE_POKEDEX; selected = 0; scroll = 0;
                         }
-                    } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_B) { running = false; }
+                    } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_A) { fprintf(stderr, "DEBUG: A pressed (Quit)\n"); running = false; } // A = back/quit on TRIMUI
                 } else {
-                    if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_A) {
+                    if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_B) { // B = confirm/toggle on TRIMUI
                         toggle_caught(&main_dex, selected);
                         save_caught_status(games[selected_game_idx].caught_path, &main_dex);
-                        // Live recount for header
-                        games[selected_game_idx].caught = 0;
-                        for(int j = 0; j < main_dex.count; j++) if(main_dex.pokemon[j].caught) games[selected_game_idx].caught++;
-                    } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_B) {
+                    } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_A) { // A = back on TRIMUI
                         save_caught_status(games[selected_game_idx].caught_path, &main_dex);
-                        // Refresh count
-                        games[selected_game_idx].caught = 0;
-                        for(int j=0; j<main_dex.count; j++) if(main_dex.pokemon[j].caught) games[selected_game_idx].caught++;
                         app_mode = MODE_GAME_SELECT;
                     }
                     if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP) { if (selected > 0) selected--; }
@@ -738,7 +792,6 @@ int main(int argc, char *argv[]) {
                 }
             }
         }
-
         const Uint8 *ks = SDL_GetKeyboardState(NULL);
         if (SDL_GetTicks() - last_input > 180) {
             bool moved = false;
@@ -746,59 +799,29 @@ int main(int argc, char *argv[]) {
                 if (ks[SDL_SCANCODE_UP]) { if (selected_game_idx > 0) { selected_game_idx--; moved = true; } }
                 if (ks[SDL_SCANCODE_DOWN]) { if (selected_game_idx < game_count - 1) { selected_game_idx++; moved = true; } }
                 if (ks[SDL_SCANCODE_RETURN] || ks[SDL_SCANCODE_Z]) {
-                    fprintf(stderr, "DEBUG: Keyboard Enter/Z. Loading game index %d\n", selected_game_idx);
                     if (load_pokedex(games[selected_game_idx].tsv_path, games[selected_game_idx].caught_path, &main_dex) == 0) {
-                        fprintf(stderr, "DEBUG: TSV Load Success. Count: %d\n", main_dex.count);
-                        unload_pokedex_assets();
-                        fprintf(stderr, "DEBUG: Assets Cleared. Modeswitching...\n"); fflush(stderr);
-                        app_mode = MODE_POKEDEX;
-                        selected = 0; scroll = 0; moved = true;
-                    } else {
-                        fprintf(stderr, "ERROR: TSV Load Failed\n"); fflush(stderr);
+                        unload_pokedex_assets(); cache_game_textures(renderer);
+                        app_mode = MODE_POKEDEX; selected = 0; scroll = 0; moved = true;
                     }
                 }
-                if (ks[SDL_SCANCODE_ESCAPE] || ks[SDL_SCANCODE_X]) { running = false; moved = true; }
             } else {
                 if (ks[SDL_SCANCODE_UP]) { if (selected >= GRID_COLS) { selected -= GRID_COLS; moved = true; } }
                 if (ks[SDL_SCANCODE_DOWN]) { if (selected < main_dex.count - GRID_COLS) { selected += GRID_COLS; moved = true; } }
                 if (ks[SDL_SCANCODE_LEFT]) { if (selected > 0) { selected--; moved = true; } }
                 if (ks[SDL_SCANCODE_RIGHT]) { if (selected < main_dex.count - 1) { selected++; moved = true; } }
-                if (ks[SDL_SCANCODE_RETURN] || ks[SDL_SCANCODE_Z]) {
-                    toggle_caught(&main_dex, selected);
-                    save_caught_status(games[selected_game_idx].caught_path, &main_dex);
-                    // Live recount for header
-                    games[selected_game_idx].caught = 0;
-                    for(int j = 0; j < main_dex.count; j++) if(main_dex.pokemon[j].caught) games[selected_game_idx].caught++;
-                    moved = true;
-                }
-                if (ks[SDL_SCANCODE_ESCAPE] || ks[SDL_SCANCODE_X] || ks[SDL_SCANCODE_BACKSPACE]) {
-                    save_caught_status(games[selected_game_idx].caught_path, &main_dex);
-                    games[selected_game_idx].caught = 0;
-                    for(int j=0; j<main_dex.count; j++) if(main_dex.pokemon[j].caught) games[selected_game_idx].caught++;
-                    app_mode = MODE_GAME_SELECT; moved = true;
-                }
+                if (ks[SDL_SCANCODE_RETURN] || ks[SDL_SCANCODE_Z]) { toggle_caught(&main_dex, selected); moved = true; }
+                if (ks[SDL_SCANCODE_ESCAPE] || ks[SDL_SCANCODE_X]) { app_mode = MODE_GAME_SELECT; moved = true; }
             }
             if (moved) last_input = SDL_GetTicks();
         }
-
-        SDL_SetRenderDrawColor(renderer, 65, 55, 45, 255); 
-        SDL_RenderClear(renderer);
-
-        if (app_mode == MODE_GAME_SELECT) {
-            render_game_select(renderer);
-        } else {
-            render_pokedex(renderer, &main_dex, selected, scroll);
-        }
-
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); SDL_RenderClear(renderer);
+        if (app_mode == MODE_GAME_SELECT) render_game_select(renderer);
+        else render_pokedex(renderer, &main_dex, selected, scroll);
         SDL_RenderPresent(renderer);
         SDL_Delay(16);
     }
-
     unload_pokedex_assets();
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    TTF_Quit();
-    IMG_Quit();
-    SDL_Quit();
+    SDL_DestroyRenderer(renderer); SDL_DestroyWindow(window);
+    TTF_Quit(); IMG_Quit(); SDL_Quit();
     return 0;
 }
