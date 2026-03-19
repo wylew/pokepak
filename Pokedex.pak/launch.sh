@@ -424,33 +424,12 @@ browse_game() {
 }
 
 # =============================================================================
-#  MAIN LOOP
+#  MAIN ENTRY
 # =============================================================================
 main() {
-    while true; do
-        build_game_list_json
-
-        sel=$(minui-list \
-            --file "$GAME_LIST_JSON" \
-            --item-key "items" \
-            --title "POKEDEX" \
-            --title-alignment center \
-            --confirm-text "OPEN" \
-            --cancel-text "QUIT" \
-            --write-value state)
-
-        ec=$?
-        [ "$ec" = "2" ] || [ "$ec" = "3" ] && break
-        [ "$ec" != "0" ] && break
-
-        sidx=$(printf '%s' "$sel" | grep -o '"selected":[[:space:]]*[0-9]*' | grep -o '[0-9]*$')
-        [ -z "$sidx" ] && sidx="0"
-        write_setting "selected_game" "$sidx"
-
-        gd=$(get_game_dir_by_index "$sidx")
-        [ -z "$gd" ] && continue
-        browse_game "$gd"
-    done
+    # Launch the high-performance SDL2 application directly.
+    # We use 'pokedex' without a path because bin/$architecture is in our PATH.
+    exec "$PAK_DIR/bin/$architecture/pokedex"
 }
 
 main "$@"

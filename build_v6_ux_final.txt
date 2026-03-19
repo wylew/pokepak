@@ -1,0 +1,42 @@
+make CROSS_COMPILE=aarch64-linux-gnu-
+make[1]: Entering directory '/home/wlewin/Documents/Code/pokepak'
+aarch64-linux-gnu-gcc -Iinclude -Wall -O2 -I/usr/include/SDL2 -c -o src/main.o src/main.c
+In file included from /usr/aarch64-linux-gnu/include/string.h:495,
+                 from /usr/include/SDL2/SDL_stdinc.h:60,
+                 from /usr/include/SDL2/SDL_main.h:25,
+                 from /usr/include/SDL2/SDL.h:32,
+                 from src/main.c:1:
+In function ‘strncpy’,
+    inlined from ‘find_games’ at src/main.c:95:13:
+/usr/aarch64-linux-gnu/include/bits/string_fortified.h:106:10: warning: ‘__builtin_strncpy’ output may be truncated copying 127 bytes from a string of length 255 [-Wstringop-truncation]
+  106 |   return __builtin___strncpy_chk (__dest, __src, __len, __bos (__dest));
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+aarch64-linux-gnu-gcc -Iinclude -Wall -O2 -I/usr/include/SDL2 -c -o src/tsv_parser.o src/tsv_parser.c
+In file included from /usr/aarch64-linux-gnu/include/string.h:495,
+                 from src/tsv_parser.c:4:
+In function ‘strncpy’,
+    inlined from ‘load_pokedex’ at src/tsv_parser.c:48:25:
+/usr/aarch64-linux-gnu/include/bits/string_fortified.h:106:10: warning: ‘__builtin_strncpy’ output may be truncated copying 128 bytes from a string of length 1023 [-Wstringop-truncation]
+  106 |   return __builtin___strncpy_chk (__dest, __src, __len, __bos (__dest));
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In function ‘strncpy’,
+    inlined from ‘load_pokedex’ at src/tsv_parser.c:49:25:
+/usr/aarch64-linux-gnu/include/bits/string_fortified.h:106:10: warning: ‘__builtin_strncpy’ output may be truncated copying 128 bytes from a string of length 1023 [-Wstringop-truncation]
+  106 |   return __builtin___strncpy_chk (__dest, __src, __len, __bos (__dest));
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In function ‘strncpy’,
+    inlined from ‘load_pokedex’ at src/tsv_parser.c:50:25:
+/usr/aarch64-linux-gnu/include/bits/string_fortified.h:106:10: warning: ‘__builtin_strncpy’ output may be truncated copying 128 bytes from a string of length 1023 [-Wstringop-truncation]
+  106 |   return __builtin___strncpy_chk (__dest, __src, __len, __bos (__dest));
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In function ‘strncpy’,
+    inlined from ‘load_pokedex’ at src/tsv_parser.c:47:25:
+/usr/aarch64-linux-gnu/include/bits/string_fortified.h:106:10: warning: ‘__builtin_strncpy’ output may be truncated copying 128 bytes from a string of length 1023 [-Wstringop-truncation]
+  106 |   return __builtin___strncpy_chk (__dest, __src, __len, __bos (__dest));
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+mkdir -p bin
+aarch64-linux-gnu-gcc -o bin/pokedex src/main.o src/tsv_parser.o -lSDL2 -lSDL2_image -lSDL2_ttf -lm
+aarch64-linux-gnu-strip bin/pokedex
+make[1]: Leaving directory '/home/wlewin/Documents/Code/pokepak'
+mkdir -p Pokedex.pak/bin/arm64
+mv bin/pokedex Pokedex.pak/bin/arm64/pokedex

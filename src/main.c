@@ -3,6 +3,8 @@
 #include <SDL_ttf.h>
 #include <stdio.h>
 #include <string.h>
+#include <dirent.h>
+#include <sys/stat.h>
 #include "pokedex.h"
 
 #define GRID_COLS 3
@@ -10,8 +12,8 @@
 #define FOOTER_H 100
 #define FONT_SIZE 74
 
-int screen_w = 720;
-int screen_h = 720;
+int screen_w = 1024;
+int screen_h = 768;
 int card_w = 240;
 int card_h = 330;
 SDL_GameController *controller = NULL;
@@ -43,7 +45,160 @@ SpriteRef sprites[800];
 SDL_Texture *ball_tex;
 TTF_Font *font;
 
-// Helper to find the bounding box of non-transparent pixels in a surface
+typedef enum {
+    MODE_GAME_SELECT,
+    MODE_POKEDEX
+} AppMode;
+
+typedef struct {
+    char slug[MAX_STR];      // Directory name
+    char name[MAX_STR];      // From game.conf
+    char tsv_path[512];
+    char caught_path[512];
+    int total;
+    int caught;
+} GameInfo;
+
+GameInfo games[64];
+int game_count = 0;
+AppMode app_mode = MODE_GAME_SELECT;
+int selected_game_idx = 0;
+
+Pokedex main_dex;
+Pokedex temp_dex; // For find_games()
+
+// Function Prototypes
+void find_games();
+void unload_pokedex_assets();
+void find_sprite_bbox(SDL_Surface *surf, SDL_Rect *bbox);
+void draw_type_tag(SDL_Renderer *renderer, const char *type, int x, int y, int w, int h);
+void render_game_select(SDL_Renderer *renderer);
+void render_footer(SDL_Renderer *renderer);
+void sanitize_pokemon_name(const char *src, char *dest, bool upper);
+void load_sprite(SDL_Renderer *renderer, Pokemon *p, SpriteRef *out);
+
+// Scan data/games/ for subdirectories and parse game.conf
+void find_games() {
+    DIR *d = opendir("data/games");
+    if (!d) return;
+
+    struct dirent *dir;
+    game_count = 0;
+    while ((dir = readdir(d)) != NULL && game_count < 64) {
+        if (dir->d_name[0] == '.') continue;
+        
+        char conf_path[512];
+        sprintf(conf_path, "data/games/%s/game.conf", dir->d_name);
+        
+        FILE *f = fopen(conf_path, "r");
+        if (f) {
+            strncpy(games[game_count].slug, dir->d_name, MAX_STR - 1);
+            games[game_count].slug[MAX_STR - 1] = 0;
+            snprintf(games[game_count].tsv_path, 512, "data/games/%s/pokemon.tsv", dir->d_name);
+            snprintf(games[game_count].caught_path, 512, "data/games/%s/caught.txt", dir->d_name);
+            
+            char line[256];
+            while (fgets(line, sizeof(line), f)) {
+                if (strncmp(line, "name=", 5) == 0) {
+                    char *val = line + 5;
+                    val[strcspn(val, "\r\n")] = 0;
+                    strncpy(games[game_count].name, val, MAX_STR - 1);
+                    games[game_count].name[MAX_STR - 1] = 0;
+                }
+            }
+            fclose(f);
+
+            // Compute counts
+            if (load_pokedex(games[game_count].tsv_path, games[game_count].caught_path, &temp_dex) == 0) {
+                games[game_count].total = temp_dex.count;
+                games[game_count].caught = 0;
+                for (int i = 0; i < temp_dex.count; i++) {
+                    if (temp_dex.pokemon[i].caught) games[game_count].caught++;
+                }
+            }
+            game_count++;
+        }
+    }
+    closedir(d);
+    fprintf(stderr, "DEBUG: find_games() done. Detected %d games.\n", game_count); fflush(stderr);
+}
+
+void sanitize_pokemon_name(const char *src, char *dest, bool upper) {
+    int j = 0;
+    for (int i = 0; src[i]; i++) {
+        char c = src[i];
+        if (upper) {
+            if (c >= 'a' && c <= 'z') c = c - 'a' + 'A';
+        } else {
+            if (c >= 'A' && c <= 'Z') c = c - 'A' + 'a';
+        }
+        
+        bool ok = false;
+        if (upper) ok = ((c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'));
+        else ok = ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'));
+
+        if (ok) {
+            dest[j++] = c;
+        } else {
+            if (j > 0 && dest[j-1] != '-') dest[j++] = '-';
+        }
+    }
+    if (j > 0 && dest[j-1] == '-') j--;
+    dest[j] = 0;
+}
+
+void load_sprite(SDL_Renderer *renderer, Pokemon *p, SpriteRef *out) {
+    char path[512];
+    char sname[128];
+    SDL_Surface *surf = NULL;
+
+    // 1. Try lowercase .png
+    sanitize_pokemon_name(p->name, sname, false);
+    sprintf(path, "data/sprites/%s.png", sname);
+    surf = IMG_Load(path);
+
+    // 2. Try uppercase .PNG
+    if (!surf) {
+        sanitize_pokemon_name(p->name, sname, true);
+        sprintf(path, "data/sprites/%s.PNG", sname);
+        surf = IMG_Load(path);
+    }
+
+    // 3. Try uppercase .png
+    if (!surf) {
+        sprintf(path, "data/sprites/%s.png", sname);
+        surf = IMG_Load(path);
+    }
+
+    // 4. Try lowercase .PNG
+    if (!surf) {
+        sanitize_pokemon_name(p->name, sname, false);
+        sprintf(path, "data/sprites/%s.PNG", sname);
+        surf = IMG_Load(path);
+    }
+
+    // 5. Fallback to ID
+    if (!surf) {
+        sprintf(path, "data/sprites/%03d.png", p->dex_id);
+        surf = IMG_Load(path);
+    }
+
+    if (surf) {
+        find_sprite_bbox(surf, &out->bbox);
+        out->tex = SDL_CreateTextureFromSurface(renderer, surf);
+        SDL_FreeSurface(surf);
+    }
+}
+
+void unload_pokedex_assets() {
+    for (int i = 0; i < 800; i++) {
+        if (sprites[i].tex) {
+            SDL_DestroyTexture(sprites[i].tex);
+            sprites[i].tex = NULL;
+        }
+    }
+}
+
 void find_sprite_bbox(SDL_Surface *surf, SDL_Rect *bbox) {
     if (!surf) return;
     int min_x = surf->w, min_y = surf->h;
@@ -114,6 +269,13 @@ void draw_type_tag(SDL_Renderer *renderer, const char *type, int x, int y, int w
 }
 
 void render_card(SDL_Renderer *renderer, Pokedex *dex, int i, int x, int y, bool selected) {
+    if (i < 0 || i >= dex->count) return;
+
+    // Lazy Loading: Load sprite only when needed
+    if (!sprites[i].tex) {
+        load_sprite(renderer, &dex->pokemon[i], &sprites[i]);
+    }
+
     Pokemon *p = &dex->pokemon[i];
     
     // 1. Overall Card Background (Premium Cream / Parchment)
@@ -125,6 +287,15 @@ void render_card(SDL_Renderer *renderer, Pokedex *dex, int i, int x, int y, bool
     }
     SDL_RenderFillRect(renderer, &card_rect);
     
+    // Selection Highlight Frame (Slate Blue - EXTRA THICK)
+    if (selected) {
+        SDL_SetRenderDrawColor(renderer, 70, 130, 255, 255);
+        for(int t=0; t<4; t++) {
+            SDL_Rect h = {card_rect.x - 6 + t, card_rect.y - 6 + t, card_rect.w + 12 - (t*2), card_rect.h + 12 - (t*2)};
+            SDL_RenderDrawRect(renderer, &h);
+        }
+    }
+
     // DOUBLE LINE BORDER (Card)
     SDL_SetRenderDrawColor(renderer, 80, 70, 60, 255); // Dark brown
     SDL_RenderDrawRect(renderer, &card_rect);
@@ -144,6 +315,7 @@ void render_card(SDL_Renderer *renderer, Pokedex *dex, int i, int x, int y, bool
     SDL_RenderDrawRect(renderer, &h_inner);
     
     SDL_Color brown = {60, 40, 30, 255};
+    if (!font) return; // CRASH PREVENTION
     SDL_Surface *surf = TTF_RenderUTF8_Blended(font, p->name, brown);
     if (surf) {
         SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
@@ -190,7 +362,7 @@ void render_card(SDL_Renderer *renderer, Pokedex *dex, int i, int x, int y, bool
     SDL_RenderFillRect(renderer, &info_rect);
 
     char idbuf[16];
-    sprintf(idbuf, "#%03d", p->dex_id);
+    sprintf(idbuf, "%03d", p->dex_id);
     surf = TTF_RenderUTF8_Blended(font, idbuf, brown);
     if (surf) {
         SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
@@ -238,6 +410,71 @@ void render_card(SDL_Renderer *renderer, Pokedex *dex, int i, int x, int y, bool
     }
 }
 
+void render_game_select(SDL_Renderer *renderer) {
+    static bool logged = false; if (!logged) { fprintf(stderr, "DEBUG: render_game_select() called.\n"); fflush(stderr); logged = true; }
+    int item_h = 100;
+    int spacing = 20;
+    int list_w = screen_w * 0.85;
+    int total_menu_h = game_count * (item_h + spacing) - spacing;
+    int start_y = (screen_h - total_menu_h) / 2;
+    if (start_y < 120) start_y = 120;
+
+    for (int i = 0; i < game_count; i++) {
+        SDL_Rect r = {(screen_w - list_w) / 2, start_y + i * (item_h + spacing), list_w, item_h};
+        bool sel = (i == selected_game_idx);
+
+        // Background
+        if (sel) SDL_SetRenderDrawColor(renderer, 255, 250, 210, 255);
+        else SDL_SetRenderDrawColor(renderer, 245, 242, 220, 255);
+        SDL_RenderFillRect(renderer, &r);
+
+        // Selection Highlight (EXTRA THICK)
+        if (sel) {
+            SDL_SetRenderDrawColor(renderer, 70, 130, 255, 255);
+            for(int t=0; t<4; t++) {
+                SDL_Rect h = {r.x - 6 + t, r.y - 6 + t, r.w + 12 - (t*2), r.h + 12 - (t*2)};
+                SDL_RenderDrawRect(renderer, &h);
+            }
+        }
+
+        // Double Border
+        SDL_SetRenderDrawColor(renderer, 80, 70, 60, 255);
+        SDL_RenderDrawRect(renderer, &r);
+        SDL_Rect ir = {r.x + 3, r.y + 3, r.w - 6, r.h - 6};
+        SDL_RenderDrawRect(renderer, &ir);
+
+        // Text
+        SDL_Color brown = {60, 40, 30, 255};
+        SDL_Surface *surf = TTF_RenderUTF8_Blended(font, games[i].name, brown);
+        if (surf) {
+            SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
+            float s = (float)(item_h - 40) / surf->h;
+            if (s > 1.0f) s = 1.0f; // CAPP FONT SCALING
+            int tw = (int)(surf->w * s), th = (int)(surf->h * s);
+            if (tw > list_w * 0.6) { float s2 = (list_w * 0.6) / tw; tw *= s2; th *= s2; }
+            SDL_Rect tr = {r.x + 20, r.y + (item_h - th)/2, tw, th};
+            SDL_RenderCopy(renderer, tex, NULL, &tr);
+            SDL_FreeSurface(surf);
+            SDL_DestroyTexture(tex);
+        }
+
+        char pbuf[32];
+        sprintf(pbuf, "%d / %d", games[i].caught, games[i].total);
+        surf = TTF_RenderUTF8_Blended(font, pbuf, brown);
+        if (surf) {
+            SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
+            float s = (float)(item_h - 60) / surf->h;
+            int tw = (int)(surf->w * s), th = (item_h - 60);
+            SDL_Rect tr = {r.x + r.w - tw - 30, r.y + (item_h - th) / 2, tw, th};
+            SDL_RenderCopy(renderer, tex, NULL, &tr);
+            SDL_FreeSurface(surf);
+            SDL_DestroyTexture(tex);
+        }
+    }
+
+    render_footer(renderer);
+}
+
 void render_footer(SDL_Renderer *renderer) {
     SDL_Rect r = {0, screen_h - FOOTER_H, screen_w, FOOTER_H};
     SDL_SetRenderDrawColor(renderer, 50, 40, 30, 255); // Darker wood/brown
@@ -246,26 +483,36 @@ void render_footer(SDL_Renderer *renderer) {
     SDL_RenderDrawLine(renderer, 0, screen_h - FOOTER_H, screen_w, screen_h - FOOTER_H);
 
     SDL_Color gray = {200, 180, 160, 255}; // Light parchment-gray
-    SDL_Surface *surf = TTF_RenderUTF8_Blended(font, "[A] Caught Toggle     [B] Back to Menu", gray);
+    SDL_Surface *surf = TTF_RenderUTF8_Blended(font, "[A] Select/Toggle     [B] Back", gray);
     if (surf) {
         SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
-        float scale = (float)(FOOTER_H - 15) / surf->h;
-        SDL_Rect tr = {20, screen_h - FOOTER_H + 7, (int)(surf->w * scale), FOOTER_H - 15};
-        SDL_RenderCopy(renderer, tex, NULL, &tr);
+        if (tex) {
+            float scale = (float)(FOOTER_H - 18) / surf->h;
+            int tw = (int)(surf->w * scale);
+            if (tw > screen_w - 40) {
+                scale = (float)(screen_w - 40) / surf->w;
+                tw = screen_w - 40;
+            }
+            int th = (int)(surf->h * scale);
+            SDL_Rect tr = {(screen_w - tw)/2, screen_h - FOOTER_H + (FOOTER_H - th)/2, tw, th};
+            SDL_RenderCopy(renderer, tex, NULL, &tr);
+            SDL_DestroyTexture(tex);
+        }
         SDL_FreeSurface(surf);
-        SDL_DestroyTexture(tex);
     }
 }
 
 int main(int argc, char *argv[]) {
-    // Redirect stderr to a file so users can check for crashes without a terminal
-    freopen("error.log", "w", stderr);
-    setvbuf(stderr, NULL, _IOLBF, 0); // Line buffered
+    setvbuf(stderr, NULL, _IONBF, 0);
+    fprintf(stderr, "DEBUG: App Started. Pokedex Init.\n");
+    fprintf(stderr, "DEBUG: ENV DISPLAY=%s\n", getenv("DISPLAY"));
+    fprintf(stderr, "DEBUG: ENV SDL_VIDEODRIVER=%s\n", getenv("SDL_VIDEODRIVER"));
+    fflush(stderr);
 
-    if (argc < 3) {
-        printf("Usage: %s <tsv_path> <caught_path>\n", argv[0]);
-        return 1;
-    }
+    // USE HARDWARE IF AVAILABLE (Renderer fallback handles the rest)
+
+    memset(&main_dex, 0, sizeof(Pokedex));
+    memset(sprites, 0, sizeof(sprites));
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) < 0) {
         fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
@@ -273,163 +520,182 @@ int main(int argc, char *argv[]) {
     }
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0"); 
 
-    // Explicitly open the first available game controller
     for (int i = 0; i < SDL_NumJoysticks(); ++i) {
         if (SDL_IsGameController(i)) {
             controller = SDL_GameControllerOpen(i);
-            if (controller) {
-                fprintf(stderr, "DEBUG: Opened GameController 0: %s\n", SDL_GameControllerName(controller));
-                break;
-            }
+            if (controller) break;
         }
     }
     IMG_Init(IMG_INIT_PNG);
-    if (TTF_Init() < 0) {
-        fprintf(stderr, "TTF_Init Error: %s\n", TTF_GetError());
-        return 1;
-    }
+    if (TTF_Init() < 0) return 1;
 
     SDL_Window *window = SDL_CreateWindow("Pokedex", 0, 0, screen_w, screen_h, SDL_WINDOW_FULLSCREEN_DESKTOP);
     if (!window) {
-        fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
+        fprintf(stderr, "ERROR: SDL_CreateWindow failed: %s\n", SDL_GetError()); fflush(stderr);
         return 1;
     }
+    
+    // RENDERER FALLBACK
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) {
-        fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
+        fprintf(stderr, "WARN: Accelerated+VSync failed. Trying Accelerated...\n"); fflush(stderr);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    }
+    if (!renderer) {
+        fprintf(stderr, "WARN: Accelerated failed. Falling back to SOFTWARE renderer.\n"); fflush(stderr);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
+    }
+    if (!renderer) {
+        fprintf(stderr, "ERROR: All renderer attempts failed: %s\n", SDL_GetError()); fflush(stderr);
         return 1;
     }
-
-    // Detect actual screen dimensions for scaling
     SDL_GetRendererOutputSize(renderer, &screen_w, &screen_h);
+    
+    SDL_RendererInfo info;
+    if (SDL_GetRendererInfo(renderer, &info) == 0) {
+        fprintf(stderr, "DEBUG: Active Renderer: %s\n", info.name);
+        fprintf(stderr, "DEBUG: Renderer Flags: 0x%08X\n", info.flags);
+        fprintf(stderr, "DEBUG: Screen Output: %dx%d\n", screen_w, screen_h);
+        fflush(stderr);
+    }
+
     card_w = screen_w / GRID_COLS;
     card_h = (screen_h - FOOTER_H) / GRID_ROWS;
-    fprintf(stderr, "Detected Screen: %dx%d -> Card Size: %dx%d\n", screen_w, screen_h, card_w, card_h);
-
-    printf("Loading Pokedex:\n  TSV: %s\n  CAUGHT: %s\n", argv[1], argv[2]);
-    Pokedex dex;
-    if (load_pokedex(argv[1], argv[2], &dex) != 0) {
-        fprintf(stderr, "Error loading pokedex data from %s\n", argv[1]);
-        return 1;
-    }
 
     font = TTF_OpenFont("data/font.ttf", FONT_SIZE);
-    if (!font) font = TTF_OpenFont("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf", FONT_SIZE);
-    
     if (!font) {
-        fprintf(stderr, "Error: Could not load font. Please ensure data/font.ttf exists.\n");
-        return 1;
+        fprintf(stderr, "WARN: data/font.ttf failed. Trying fallback...\n"); fflush(stderr);
+        font = TTF_OpenFont("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf", FONT_SIZE);
     }
-
-    // Load static assets
-    char path[256];
-    sprintf(path, "data/icons/pokeball.png");
-    ball_tex = IMG_LoadTexture(renderer, path);
-
-    // Load Sprites
-    // Load Sprites with Autocropping
-    for (int i = 0; i < dex.count; i++) {
-        sprintf(path, "data/sprites/%03d.png", dex.pokemon[i].dex_id);
-        SDL_Surface *surf = IMG_Load(path);
-        if (surf) {
-            find_sprite_bbox(surf, &sprites[i].bbox);
-            sprites[i].tex = SDL_CreateTextureFromSurface(renderer, surf);
-            SDL_FreeSurface(surf);
-        } else {
-            sprites[i].tex = NULL;
-        }
+    if (font) {
+        fprintf(stderr, "DEBUG: Font Loaded Successfully.\n"); fflush(stderr);
+    } else {
+        fprintf(stderr, "ERROR: ALL FONTS FAILED.\n"); fflush(stderr);
     }
+    
+    char ppath[256];
+    sprintf(ppath, "data/icons/pokeball.png");
+    ball_tex = IMG_LoadTexture(renderer, ppath);
+    if (ball_tex) { fprintf(stderr, "DEBUG: UI Textures Loaded.\n"); fflush(stderr); } else { fprintf(stderr, "ERROR: UI Texture Load Failed: %s\n", IMG_GetError()); fflush(stderr); }
+
+    find_games();
 
     int selected = 0;
     int scroll = 0;
     bool running = true;
     SDL_Event ev;
-
     Uint32 last_input = 0;
+
     while (running) {
+        static int frame_count = 0; if (frame_count++ % 120 == 0) { fprintf(stderr, "DEBUG: Heartbeat (frame %d)\n", frame_count); fflush(stderr); }
         while (SDL_PollEvent(&ev)) {
             if (ev.type == SDL_QUIT) running = false;
             
-            // Controller Events
             if (ev.type == SDL_CONTROLLERBUTTONDOWN) {
-                fprintf(stderr, "DEBUG: ControllerBtn Down: %d\n", ev.cbutton.button);
-                if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_A) {
-                    toggle_caught(&dex, selected);
-                    save_caught_status(argv[2], &dex);
-                } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_B) {
-                    running = false;
-                } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP) {
-                    if (selected >= GRID_COLS) selected -= GRID_COLS;
-                } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN) {
-                    if (selected < dex.count - GRID_COLS) selected += GRID_COLS;
-                } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT) {
-                    if (selected > 0) selected--;
-                } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT) {
-                    if (selected < dex.count - 1) selected++;
+                if (app_mode == MODE_GAME_SELECT) {
+                    if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP) { if (selected_game_idx > 0) selected_game_idx--; }
+                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN) { if (selected_game_idx < game_count - 1) selected_game_idx++; }
+                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_B) {
+                        fprintf(stderr, "DEBUG: Selection B (Confirm) index %d\n", selected_game_idx); fflush(stderr);
+                        if (load_pokedex(games[selected_game_idx].tsv_path, games[selected_game_idx].caught_path, &main_dex) == 0) {
+                            fprintf(stderr, "DEBUG: TSV Loaded. Count: %d\n", main_dex.count);
+                            unload_pokedex_assets();
+                            fprintf(stderr, "DEBUG: Assets Cleared. Modeswitching...\n"); fflush(stderr);
+                            app_mode = MODE_POKEDEX;
+                            selected = 0; scroll = 0;
+                        } else {
+                            fprintf(stderr, "ERROR: TSV Load Failed\n"); fflush(stderr);
+                        }
+                    } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_A) { running = false; }
+                } else {
+                    if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_B) {
+                        toggle_caught(&main_dex, selected);
+                        save_caught_status(games[selected_game_idx].caught_path, &main_dex);
+                    } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_A) {
+                        save_caught_status(games[selected_game_idx].caught_path, &main_dex);
+                        // Refresh count
+                        games[selected_game_idx].caught = 0;
+                        for(int j=0; j<main_dex.count; j++) if(main_dex.pokemon[j].caught) games[selected_game_idx].caught++;
+                        app_mode = MODE_GAME_SELECT;
+                    } else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_UP) { if (selected >= GRID_COLS) selected -= GRID_COLS; }
+                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_DOWN) { if (selected < main_dex.count - GRID_COLS) selected += GRID_COLS; }
+                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_LEFT) { if (selected > 0) selected--; }
+                    else if (ev.cbutton.button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT) { if (selected < main_dex.count - 1) selected++; }
                 }
             }
-            // For PC testing, we use GetKeyboardState below for navigation.
-            // But we can keep exit/toggle here if we want, or move them too.
         }
 
-        // --- CONSOLIDATED INPUT (Hardware Fallback) ---
-        // This handles both PC keyboard and some handheld buttons mapped to keys.
-        const Uint8 *state = SDL_GetKeyboardState(NULL);
-        if (SDL_GetTicks() - last_input > 180) { // Slight increase to debounce
+        const Uint8 *ks = SDL_GetKeyboardState(NULL);
+        if (SDL_GetTicks() - last_input > 180) {
             bool moved = false;
-            if (state[SDL_SCANCODE_UP])    { if (selected >= GRID_COLS) selected -= GRID_COLS; moved = true; }
-            if (state[SDL_SCANCODE_DOWN])  { if (selected < dex.count - GRID_COLS) selected += GRID_COLS; moved = true; }
-            if (state[SDL_SCANCODE_LEFT])  { if (selected > 0) selected--; moved = true; }
-            if (state[SDL_SCANCODE_RIGHT]) { if (selected < dex.count - 1) selected++; moved = true; }
-            
-            if (state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE] || state[SDL_SCANCODE_Z]) {
-                toggle_caught(&dex, selected);
-                save_caught_status(argv[2], &dex);
-                moved = true;
-            }
-            if (state[SDL_SCANCODE_ESCAPE] || state[SDL_SCANCODE_BACKSPACE] || state[SDL_SCANCODE_X]) {
-                running = false;
-                moved = true;
+            if (app_mode == MODE_GAME_SELECT) {
+                if (ks[SDL_SCANCODE_UP]) { if (selected_game_idx > 0) { selected_game_idx--; moved = true; } }
+                if (ks[SDL_SCANCODE_DOWN]) { if (selected_game_idx < game_count - 1) { selected_game_idx++; moved = true; } }
+                if (ks[SDL_SCANCODE_RETURN] || ks[SDL_SCANCODE_Z]) {
+                    fprintf(stderr, "DEBUG: Keyboard Enter/Z. Loading game index %d\n", selected_game_idx);
+                    if (load_pokedex(games[selected_game_idx].tsv_path, games[selected_game_idx].caught_path, &main_dex) == 0) {
+                        fprintf(stderr, "DEBUG: TSV Load Success. Count: %d\n", main_dex.count);
+                        unload_pokedex_assets();
+                        fprintf(stderr, "DEBUG: Assets Cleared. Modeswitching...\n"); fflush(stderr);
+                        app_mode = MODE_POKEDEX;
+                        selected = 0; scroll = 0; moved = true;
+                    } else {
+                        fprintf(stderr, "ERROR: TSV Load Failed\n"); fflush(stderr);
+                    }
+                }
+                if (ks[SDL_SCANCODE_ESCAPE] || ks[SDL_SCANCODE_X]) { running = false; moved = true; }
+            } else {
+                if (ks[SDL_SCANCODE_UP]) { if (selected >= GRID_COLS) { selected -= GRID_COLS; moved = true; } }
+                if (ks[SDL_SCANCODE_DOWN]) { if (selected < main_dex.count - GRID_COLS) { selected += GRID_COLS; moved = true; } }
+                if (ks[SDL_SCANCODE_LEFT]) { if (selected > 0) { selected--; moved = true; } }
+                if (ks[SDL_SCANCODE_RIGHT]) { if (selected < main_dex.count - 1) { selected++; moved = true; } }
+                if (ks[SDL_SCANCODE_RETURN] || ks[SDL_SCANCODE_Z]) {
+                    toggle_caught(&main_dex, selected);
+                    save_caught_status(games[selected_game_idx].caught_path, &main_dex);
+                    moved = true;
+                }
+                if (ks[SDL_SCANCODE_ESCAPE] || ks[SDL_SCANCODE_X] || ks[SDL_SCANCODE_BACKSPACE]) {
+                    save_caught_status(games[selected_game_idx].caught_path, &main_dex);
+                    games[selected_game_idx].caught = 0;
+                    for(int j=0; j<main_dex.count; j++) if(main_dex.pokemon[j].caught) games[selected_game_idx].caught++;
+                    app_mode = MODE_GAME_SELECT; moved = true;
+                }
             }
             if (moved) last_input = SDL_GetTicks();
         }
 
-        // Grid Auto-scroll (by row)
-        int sel_row = selected / GRID_COLS;
-        if (sel_row < scroll) scroll = sel_row;
-        if (sel_row >= scroll + GRID_ROWS) scroll = sel_row - GRID_ROWS + 1;
-
-        // Background color (Darker parchment / brown)
         SDL_SetRenderDrawColor(renderer, 65, 55, 45, 255); 
         SDL_RenderClear(renderer);
 
-        // Render visible grid cards
-        for (int r = 0; r < GRID_ROWS + 1; r++) {
-            int row_idx = scroll + r;
-            if (row_idx * GRID_COLS >= dex.count) break;
-            
-            for (int c = 0; c < GRID_COLS; c++) {
-                int i = row_idx * GRID_COLS + c;
-                if (i >= dex.count) break;
-                
-                render_card(renderer, &dex, i, c * card_w, r * card_h, i == selected);
-            }
-        }
+        if (app_mode == MODE_GAME_SELECT) {
+            render_game_select(renderer);
+        } else {
+            int sel_row = selected / GRID_COLS;
+            if (sel_row < scroll) scroll = sel_row;
+            if (sel_row >= scroll + GRID_ROWS) scroll = sel_row - GRID_ROWS + 1;
 
-        render_footer(renderer);
+            for (int r = 0; r < GRID_ROWS + 1; r++) {
+                int row_idx = scroll + r;
+                if (row_idx * GRID_COLS >= main_dex.count) break;
+                for (int c = 0; c < GRID_COLS; c++) {
+                    int i = row_idx * GRID_COLS + c;
+                    if (i >= main_dex.count) break;
+                    render_card(renderer, &main_dex, i, c * card_w, r * card_h, i == selected);
+                }
+            }
+
+            render_footer(renderer);
+        }
 
         SDL_RenderPresent(renderer);
         SDL_Delay(16);
     }
 
-    // Cleanup
-    save_caught_status(argv[2], &dex);
+    unload_pokedex_assets();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    TTF_CloseFont(font);
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();
-
     return 0;
 }

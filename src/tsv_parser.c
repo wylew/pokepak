@@ -28,13 +28,20 @@ int load_pokedex(const char *tsv_path, const char *caught_path, Pokedex *dex) {
 
     while (fgets(line, sizeof(line), f) && dex->count < MAX_POKEMON) {
         Pokemon *p = &dex->pokemon[dex->count];
-        char *token;
-        char *rest = line;
+        memset(p, 0, sizeof(Pokemon)); // Ensure clear
+        char *line_ptr = line;
         int col = 0;
 
-        while ((token = strtok_r(rest, "\t", &rest)) && col < 24) {
+        while (line_ptr && col < 24) {
+            char *tab = strchr(line_ptr, '\t');
+            char *next_line_ptr = NULL;
+            if (tab) {
+                *tab = '\0';
+                next_line_ptr = tab + 1;
+            }
+            
+            char *val = trim(line_ptr);
             col++;
-            char *val = trim(token);
             switch (col) {
                 case 1: p->dex_id = atoi(val); break;
                 case 3: strncpy(p->name, val, MAX_STR); break;
@@ -42,6 +49,7 @@ int load_pokedex(const char *tsv_path, const char *caught_path, Pokedex *dex) {
                 case 5: strncpy(p->type2, val, MAX_STR); break;
                 case 6: strncpy(p->form_tag, val, MAX_STR); break;
             }
+            line_ptr = next_line_ptr;
         }
         if (p->dex_id > 0) dex->count++;
     }

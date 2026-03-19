@@ -1,0 +1,46 @@
+gcc -Iinclude -Wall -O2 -I/usr/include/SDL2 -c -o src/main.o src/main.c
+src/main.c: In function ‘main’:
+src/main.c:412:5: warning: ignoring return value of ‘freopen’, declared with attribute warn_unused_result [-Wunused-result]
+  412 |     freopen("error.log", "w", stderr);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/main.c: In function ‘find_games’:
+src/main.c:92:61: warning: ‘%s’ directive writing up to 255 bytes into a region of size 245 [-Wformat-overflow=]
+   92 |             sprintf(games[game_count].tsv_path, "data/games/%s/pokemon.tsv", dir->d_name);
+      |                                                             ^~
+In file included from /usr/include/stdio.h:867,
+                 from /usr/include/SDL2/SDL_stdinc.h:37,
+                 from /usr/include/SDL2/SDL_main.h:25,
+                 from /usr/include/SDL2/SDL.h:32,
+                 from src/main.c:1:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output between 24 and 279 bytes into a destination of size 256
+   36 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |       __bos (__s), __fmt, __va_arg_pack ());
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+src/main.c:93:64: warning: ‘%s’ directive writing up to 255 bytes into a region of size 245 [-Wformat-overflow=]
+   93 |             sprintf(games[game_count].caught_path, "data/games/%s/caught.txt", dir->d_name);
+      |                                                                ^~
+In file included from /usr/include/stdio.h:867,
+                 from /usr/include/SDL2/SDL_stdinc.h:37,
+                 from /usr/include/SDL2/SDL_main.h:25,
+                 from /usr/include/SDL2/SDL.h:32,
+                 from src/main.c:1:
+/usr/include/x86_64-linux-gnu/bits/stdio2.h:36:10: note: ‘__builtin___sprintf_chk’ output between 23 and 278 bytes into a destination of size 256
+   36 |   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   37 |       __bos (__s), __fmt, __va_arg_pack ());
+      |       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/string.h:495,
+                 from /usr/include/SDL2/SDL_stdinc.h:60,
+                 from /usr/include/SDL2/SDL_main.h:25,
+                 from /usr/include/SDL2/SDL.h:32,
+                 from src/main.c:1:
+In function ‘strncpy’,
+    inlined from ‘find_games’ at src/main.c:91:13:
+/usr/include/x86_64-linux-gnu/bits/string_fortified.h:106:10: warning: ‘__builtin_strncpy’ output may be truncated copying 128 bytes from a string of length 255 [-Wstringop-truncation]
+  106 |   return __builtin___strncpy_chk (__dest, __src, __len, __bos (__dest));
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gcc -Iinclude -Wall -O2 -I/usr/include/SDL2 -c -o src/tsv_parser.o src/tsv_parser.c
+mkdir -p bin
+gcc -o bin/pokedex src/main.o src/tsv_parser.o -lSDL2 -lSDL2_image -lSDL2_ttf -lm
+strip bin/pokedex

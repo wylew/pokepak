@@ -1,0 +1,367 @@
+[INFO] MinArch
+[INFO] minarch: need asoundrc at /mnt/SDCARD/.userdata/tg5040/.asoundrc
+[INFO] asoundrc does not exist at /mnt/SDCARD/.userdata/tg5040/.asoundrc
+[INFO] rom_path: /mnt/SDCARD/Roms/Sony PlayStation (PS)/Project Overkill (USA).chd
+[WARN] LEDS_applyRules called before PWR_init
+[WARN] LEDS_applyRules called before InitSettings
+current_mode 1024x768
+SDL_UDEV_DEVICEADDED 2 /dev/input/event1
+SDL_UDEV_DEVICEADDED 8 /dev/audio
+SDL_UDEV_DEVICEADDED 8 /dev/dsp
+SDL_UDEV_DEVICEADDED 2 /dev/input/event2
+SDL_UDEV_DEVICEADDED 8 /dev/mixer
+SDL_UDEV_DEVICEADDED 8 /dev/snd/pcmC0D0c
+SDL_UDEV_DEVICEADDED 8 /dev/snd/pcmC0D0p
+SDL_UDEV_DEVICEADDED 8 /dev/snd/controlC0
+SDL_UDEV_DEVICEADDED 2 /dev/input/event0
+SDL_UDEV_DEVICEADDED 6 /dev/input/event3
+SDL_UDEV_DEVICEADDED 6 /dev/input/js0
+SDL_UDEV_DEVICEADDED 8 /dev/snd/seq
+SDL_UDEV_DEVICEADDED 8 /dev/sequencer
+SDL_UDEV_DEVICEADDED 8 /dev/sequencer2
+SDL_UDEV_DEVICEADDED 8 /dev/snd/timer
+SDL2: set EGL_OPENGL_ES3_BIT_KHR
+MALI_CreateWindow:0x55a5da9340 done.
+[INFO] load shader from file /mnt/SDCARD/.system/tg5040/shaders/default.glsl
+[INFO] load shader from file /mnt/SDCARD/.system/tg5040/shaders/default.glsl
+[INFO] Loaded shader program from cache: defaultv2.glsl
+[INFO] load shader from file /mnt/SDCARD/.system/tg5040/shaders/overlay.glsl
+[INFO] load shader from file /mnt/SDCARD/.system/tg5040/shaders/overlay.glsl
+[INFO] Loaded shader program from cache: overlay.glsl
+[INFO] load shader from file /mnt/SDCARD/.system/tg5040/shaders/noshader.glsl
+[INFO] load shader from file /mnt/SDCARD/.system/tg5040/shaders/noshader.glsl
+[INFO] Loaded shader program from cache: noshader.glsl
+[INFO] default shaders loaded, 3
+
+SDL_UDEV_DEVICEADDED 2 /dev/input/event1
+SDL_UDEV_DEVICEADDED 8 /dev/audio
+SDL_UDEV_DEVICEADDED 8 /dev/dsp
+SDL_UDEV_DEVICEADDED 2 /dev/input/event2
+SDL_UDEV_DEVICEADDED 8 /dev/mixer
+SDL_UDEV_DEVICEADDED 8 /dev/snd/pcmC0D0c
+SDL_UDEV_DEVICEADDED 8 /dev/snd/pcmC0D0p
+SDL_UDEV_DEVICEADDED 8 /dev/snd/controlC0
+SDL_UDEV_DEVICEADDED 2 /dev/input/event0
+SDL_UDEV_DEVICEADDED 6 /dev/input/event3
+SDL_UDEV_DEVICEADDED 6 /dev/input/js0
+SDL_UDEV_DEVICEADDED 8 /dev/snd/seq
+SDL_UDEV_DEVICEADDED 8 /dev/sequencer
+SDL_UDEV_DEVICEADDED 8 /dev/sequencer2
+SDL_UDEV_DEVICEADDED 8 /dev/snd/timer
+[INFO] Opening joystick 0: Xbox 360 Controller
+[WARN] LEDS_applyRules called before PWR_init
+[WARN] LEDS_applyRules called before InitSettings
+[WARN] LEDS_applyRules called before InitSettings
+[INFO] PWR_init complete
+[INFO] Core_open
+[INFO] Block Extract: 0
+[INFO] core: pcsx_rearmed version: PCSX-ReARMed (r25 9059485) tag: PS (valid_extensions: bin|cue|img|mdf|pbp|toc|cbn|m3u|chd|iso|exe need_fullpath: 1)
+[INFO] OptionList_v2_init
+CATEGORY system
+CATEGORY video
+CATEGORY gpu_neon
+CATEGORY audio
+CATEGORY input
+CATEGORY compat_hack
+CATEGORY speed_hack
+[INFO] Core asked for option key pcsx_rearmed_show_input_settings to be invisible
+[INFO] Requested pixel format by core: 1
+[INFO] Format supported: RETRO_PIXEL_FORMAT_XRGB8888
+[INFO] Game_open
+opendir: No such file or directory
+File does not exist in /tmp/nextarch/PS
+[INFO] Config_load
+[INFO] config.device_tag brick
+[INFO] usng device_system_path: /mnt/SDCARD/.system/tg5040/system-brick.cfg
+[INFO] usng device_default_path: /mnt/SDCARD/.system/tg5040/paks/Emus/PS.pak/default-brick.cfg
+[INFO] Config_getPath /mnt/SDCARD/.userdata/tg5040/PS-pcsx_rearmed/Project Overkill (USA).chd-brick.cfg
+[INFO] Config_getPath /mnt/SDCARD/.userdata/tg5040/PS-pcsx_rearmed/minarch-brick.cfg
+[INFO] Config_init
+[INFO] 	bind Up (UP) 0:4
+[INFO] 	bind Down (DOWN) 1:5
+[INFO] 	bind Left (LEFT) 2:6
+[INFO] 	bind Right (RIGHT) 3:7
+[INFO] 	bind Select (SELECT) 9:2
+[INFO] 	bind Start (START) 8:3
+[INFO] 	bind Circle (A) 4:8
+[INFO] 	bind Cross (B) 5:0
+[INFO] 	bind Triangle (X) 6:9
+[INFO] 	bind Square (Y) 7:1
+[INFO] 	bind L1 Button (L1) 10:10
+[INFO] 	bind R1 Button (R1) 11:11
+[INFO] 	bind L2 Button (L2) 12:12
+[INFO] 	bind R2 Button (R2) 13:13
+opendir: No such file or directory
+[INFO] Config_readOptions
+[INFO] Config_readOptions
+[INFO] port: 1  device: dualshock
+[INFO] Core_init
+[INFO] Memcard 2: disabled
+[INFO] Starting PCSX-ReARMed 9059485 (cc 8.3.0 64bit pic arm64v8 neon ari64 gpu=neon)
+[INFO] build time: Dec  2 2025 18:06:57
+[INFO] 4 cpu core(s) detected
+[INFO] Init new dynarec, ndrc size 1001000, pgsize 4096
+[INFO] ndrc config: mul=175, ha=0, pex=0
+[INFO] (0x7f81d99590) testing if we can run recompiled code @0x7f825aa000...
+[INFO] test passed.
+[INFO] Mapped (RAM/scrp/ROM/LUTs/TC):
+[INFO] 0x80000000/0x1f800000/0x1fc00000/(nil)/0x7f825aa000
+[INFO] compiler thread enabled
+[INFO] No BIOS files found.
+[INFO] No PlayStation BIOS file found - add for better compatibility
+[INFO] Core_load
+[INFO] game path: /mnt/SDCARD/Roms/Sony PlayStation (PS)/Project Overkill (USA).chd (0)
+[INFO] Input_init
+---------------------------------
+---------------------------------
+---------------------------------
+---------------------------------
+[INFO] Requested pixel format by core: 2
+[INFO] Format supported: RETRO_PIXEL_FORMAT_RGB565
+[INFO] Using PIXEL_FORMAT 2
+[INFO] cdrom precache: 12 buffers
+[INFO] plugin: /builtin_gpu
+[INFO] plugin: /builtin_spu
+[INFO] Plugins loaded.
+[INFO] chd: TRACK:1 TYPE:MODE2_RAW SUBTYPE:NONE FRAMES:56870 PREGAP:0 PGTYPE:MODE1 PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:2 TYPE:AUDIO SUBTYPE:NONE FRAMES:13605 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:3 TYPE:AUDIO SUBTYPE:NONE FRAMES:13506 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:4 TYPE:AUDIO SUBTYPE:NONE FRAMES:13651 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:5 TYPE:AUDIO SUBTYPE:NONE FRAMES:13491 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:6 TYPE:AUDIO SUBTYPE:NONE FRAMES:4896 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:7 TYPE:AUDIO SUBTYPE:NONE FRAMES:12276 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:8 TYPE:AUDIO SUBTYPE:NONE FRAMES:12893 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:9 TYPE:AUDIO SUBTYPE:NONE FRAMES:13158 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:10 TYPE:AUDIO SUBTYPE:NONE FRAMES:13382 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:11 TYPE:AUDIO SUBTYPE:NONE FRAMES:4646 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:12 TYPE:AUDIO SUBTYPE:NONE FRAMES:5745 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:13 TYPE:AUDIO SUBTYPE:NONE FRAMES:10389 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:14 TYPE:AUDIO SUBTYPE:NONE FRAMES:5110 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:15 TYPE:AUDIO SUBTYPE:NONE FRAMES:3747 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:16 TYPE:AUDIO SUBTYPE:NONE FRAMES:4655 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:17 TYPE:AUDIO SUBTYPE:NONE FRAMES:4653 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:18 TYPE:AUDIO SUBTYPE:NONE FRAMES:4741 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:19 TYPE:AUDIO SUBTYPE:NONE FRAMES:4650 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:20 TYPE:AUDIO SUBTYPE:NONE FRAMES:4651 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] chd: TRACK:21 TYPE:AUDIO SUBTYPE:NONE FRAMES:4695 PREGAP:150 PGTYPE:VAUDIO PGSUB:NONE POSTGAP:0
+[INFO] Loaded CD Image: /mnt/SDCARD/Roms/Sony PlayStation (PS)/Project Overkill (USA).chd[+chd] (298041355 bytes).
+[INFO] Track 01 (DATA) - Start 00:02:00, Length 12:38:20
+[INFO] Track 02 (AUDIO) - Start 12:42:20, Length 03:01:30
+[INFO] Track 03 (AUDIO) - Start 15:43:50, Length 03:00:06
+[INFO] Track 04 (AUDIO) - Start 18:43:56, Length 03:02:01
+[INFO] Track 05 (AUDIO) - Start 21:45:57, Length 02:59:66
+[INFO] Track 06 (AUDIO) - Start 24:45:48, Length 01:05:21
+[INFO] Track 07 (AUDIO) - Start 25:50:69, Length 02:43:51
+[INFO] Track 08 (AUDIO) - Start 28:34:45, Length 02:51:68
+[INFO] Track 09 (AUDIO) - Start 31:26:38, Length 02:55:33
+[INFO] Track 10 (AUDIO) - Start 34:21:71, Length 02:58:32
+[INFO] Track 11 (AUDIO) - Start 37:20:28, Length 01:01:71
+[INFO] Track 12 (AUDIO) - Start 38:22:24, Length 01:16:45
+[INFO] Track 13 (AUDIO) - Start 39:38:69, Length 02:18:39
+[INFO] Track 14 (AUDIO) - Start 41:57:33, Length 01:08:10
+[INFO] Track 15 (AUDIO) - Start 43:05:43, Length 00:49:72
+[INFO] Track 16 (AUDIO) - Start 43:55:40, Length 01:02:05
+[INFO] Track 17 (AUDIO) - Start 44:57:45, Length 01:02:03
+[INFO] Track 18 (AUDIO) - Start 45:59:48, Length 01:03:16
+[INFO] Track 19 (AUDIO) - Start 47:02:64, Length 01:02:00
+[INFO] Track 20 (AUDIO) - Start 48:04:64, Length 01:02:01
+[INFO] Track 21 (AUDIO) - Start 49:06:65, Length 01:02:45
+[INFO] cdrom precache: 12 buffers
+[INFO] CD-ROM Label: SLUS00045                       
+[INFO] CD-ROM ID: SLUS00045
+[INFO] CD-ROM EXE Name: SLUS_000.45;1
+[INFO] Init new dynarec, ndrc size 1001000, pgsize 4096
+[INFO] (0x7f81d99590) testing if we can run recompiled code @0x7f825aa000...
+[INFO] test passed.
+[INFO] Mapped (RAM/scrp/ROM/LUTs/TC):
+[INFO] 0x80000000/0x1f800000/0x1fc00000/0x8000000/0x7f825aa000
+[INFO] compiler thread enabled
+[INFO] manual booting 'SLUS_000.45;1' pc=80043134
+[INFO] HLE vsync @00046a58
+[INFO] note: running with HLE BIOS, expect compatibility problems
+[INFO] ----------------------------------------------------------
+[INFO] Cheat paths to check: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).chd.cht, /mnt/SDCARD/Cheats/PS/Project Overkill (USA).bin.cht, /mnt/SDCARD/Cheats/PS/Project Overkill (USA).cue.cht, /mnt/SDCARD/Cheats/PS/Project Overkill (USA).img.cht, /mnt/SDCARD/Cheats/PS/Project Overkill (USA).mdf.cht, /mnt/SDCARD/Cheats/PS/Project Overkill (USA).pbp.cht, /mnt/SDCARD/Cheats/PS/Project Overkill (USA).toc.cht, /mnt/SDCARD/Cheats/PS/Project Overkill (USA).cbn.cht, /mnt/SDCARD/Cheats/PS/Project Overkill (USA).m3u.cht, /mnt/SDCARD/Cheats/PS/Project Overkill (USA).chd.cht, /mnt/SDCARD/Cheats/PS/Project Overkill (USA).iso.cht, /mnt/SDCARD/Cheats/PS/Project Overkill (USA).exe.cht, /mnt/SDCARD/Cheats/PS/Project Overkill.cht, /mnt/SDCARD/Cheats/PS/Project Overkill*.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).chd.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).bin.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).cue.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).img.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).mdf.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).pbp.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).toc.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).cbn.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).m3u.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).chd.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).iso.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill (USA).exe.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill.cht
+[INFO] Checking cheat path: /mnt/SDCARD/Cheats/PS/Project Overkill*.cht
+[INFO] No cheat file found
+[INFO] SRAM_getPath /mnt/SDCARD/Saves/PS/Project Overkill (USA).chd.sav
+sav path (read): /mnt/SDCARD/Saves/PS/Project Overkill (USA).chd.sav
+[INFO] port: 1  device: standard
+[INFO] aspect_ratio: 1.333333 (256x240) fps: 60.000000
+[INFO] Config_readOptions
+[INFO] Config_readOptions
+[INFO] port: 1  device: dualshock
+[INFO] Config_readControlsString
+[INFO] SND_init
+[INFO] Available audio drivers:
+[INFO] - alsa
+[INFO] - dsp
+[INFO] - disk
+[INFO] - dummy
+[INFO] Current audio driver: alsa
+[INFO] Available audio devices:
+[INFO] - audiocodec, 
+[INFO] We now have audio device #2
+[INFO] Resizing audio buffer for new frame count: 5857
+[INFO] Resized audio buffer to: 23428 bytes
+[INFO] sample rate: 44100 (req) 44100 (rec) [samples 512]
+[INFO] PLAT_audioDeviceWatchRegister: Watching directory /mnt/SDCARD/.userdata/tg5040
+[INFO] PLAT_audioDeviceWatchRegister: Watching file /mnt/SDCARD/.userdata/tg5040/.asoundrc
+Simple mixer control 'Headphone',0
+  Capabilities: volume volume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 7
+  Mono: 0 [0%] [-42.00dB] Playback [on]
+Simple mixer control 'ADC Swap',0
+  Capabilities: enum
+  Items: 'Off' 'On'
+  Item0: 'Off'
+Simple mixer control 'ADC volume',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 255
+  Front Left: 160 [63%]
+  Front Right: 160 [63%]
+Simple mixer control 'ADCL Input MIC1 Boost',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'ADCR Input MIC2 Boost',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'DAC Swap',0
+  Capabilities: enum
+  Items: 'Off' 'On'
+  Item0: 'Off'
+Simple mixer control 'DAC volume',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 255
+  Front Left: 160 [63%]
+  Front Right: 160 [63%]
+Simple mixer control 'HpSpeaker',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'LINEOUT',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'LINEOUT Output Select',0
+  Capabilities: enum
+  Items: 'DAC_SINGLE' 'DAC_DIFFER'
+  Item0: 'DAC_SINGLE'
+Simple mixer control 'LINEOUT volume',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 31
+  Mono: 26 [84%]
+Simple mixer control 'MIC1 gain volume',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 31
+  Mono: 0 [0%]
+Simple mixer control 'MIC2 gain volume',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 31
+  Mono: 0 [0%]
+Simple mixer control 'Soft Volume Master',0
+  Capabilities: volume
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: 0 - 255
+  Front Left: 255 [100%]
+  Front Right: 255 [100%]
+Simple mixer control 'codec hub mode',0
+  Capabilities: enum
+  Items: 'hub_disable' 'hub_enable'
+  Item0: 'hub_disable'
+Simple mixer control 'digital volume',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 63
+  Mono: 31 [49%]
+Simple mixer control 'Headphone',0
+  Capabilities: volume volume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 7
+  Mono: 0 [0%] [-42.00dB] Playback [on]
+Simple mixer control 'digital volume',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Limits: 0 - 63
+  Mono: 0 [0%]
+Simple mixer control 'DAC Swap',0
+  Capabilities: enum
+  Items: 'Off' 'On'
+  Item0: 'Off'
+SetRawBrightness(16)
+SetRawColortemp(0)
+SetRawContrast(50)
+SetRawSaturation(50)
+SetRawExposure(50)
+[INFO] chooseSyncRef: sync_ref is set to Auto, game region is NTSC, use core fps = no
+[INFO] Starting shaders 1460ms
+
+[INFO] set nr of shaders to 0
+[INFO] minarch: updating shader 1 - 17
+[INFO] minarch: updating shader 2 - 17
+[INFO] minarch: updating shader 3 - 17
+[INFO] Config_readOptions
+[INFO] Config_readOptions
+[INFO] port: 1  device: dualshock
+[INFO] total startup time 1474ms
+
+[INFO] Joystick added at index 0: Xbox 360 Controller
+[INFO] vsync @80046a58
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+ALSA lib pcm.c:8449:(snd_pcm_recover) underrun occurred
+[INFO] SRAM_getPath /mnt/SDCARD/Saves/PS/Project Overkill (USA).chd.sav
+sav path (write): /mnt/SDCARD/Saves/PS/Project Overkill (USA).chd.sav
+Overlay path set to: /mnt/SDCARD/Overlays/PS/None
+[INFO] screenx: 0 64
+[INFO] screeny: 0 64
+[INFO] chooseSyncRef: sync_ref is set to Auto, game region is NTSC, use core fps = no
+[INFO] overlay updated
+[INFO] SRAM_getPath /mnt/SDCARD/Saves/PS/Project Overkill (USA).chd.sav
+sav path (write): /mnt/SDCARD/Saves/PS/Project Overkill (USA).chd.sav
+[INFO] Closing joystick 0: Xbox 360 Controller
+[INFO] Closing joystick 1: Xbox 360 Controller

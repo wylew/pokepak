@@ -1,0 +1,8 @@
+make CROSS_COMPILE=aarch64-linux-gnu-
+make[1]: Entering directory '/home/wlewin/Documents/Code/pokepak'
+mkdir -p bin
+aarch64-linux-gnu-gcc -o bin/pokedex src/main.o src/tsv_parser.o -lSDL2 -lSDL2_image -lSDL2_ttf -lm
+aarch64-linux-gnu-strip bin/pokedex
+make[1]: Leaving directory '/home/wlewin/Documents/Code/pokepak'
+mkdir -p Pokedex.pak/bin/arm64
+mv bin/pokedex Pokedex.pak/bin/arm64/pokedex

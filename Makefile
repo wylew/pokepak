@@ -4,8 +4,8 @@
 # Default to local build
 CC = gcc
 STRIP = strip
-CFLAGS = -Iinclude -Wall -O2 $(shell sdl2-config --cflags)
-LIBS = $(shell sdl2-config --libs) -lSDL2_image -lSDL2_ttf -lm
+CFLAGS = -Iinclude -Wall -O2 -I/usr/include/SDL2
+LIBS = -lSDL2 -lSDL2_image -lSDL2_ttf -lm
 
 SRC = src/main.c src/tsv_parser.c
 OBJ = $(SRC:.c=.o)

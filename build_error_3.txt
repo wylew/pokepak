@@ -1,0 +1,39 @@
+gcc -Iinclude -Wall -O2 -I/usr/include/SDL2 -c -o src/main.o src/main.c
+src/main.c:391:22: error: initializer element is not constant
+  391 |     SDL_Rect r = {0, screen_h - FOOTER_H, screen_w, FOOTER_H};
+      |                      ^~~~~~~~
+src/main.c:391:22: note: (near initialization for ‘r.y’)
+src/main.c:391:43: error: initializer element is not constant
+  391 |     SDL_Rect r = {0, screen_h - FOOTER_H, screen_w, FOOTER_H};
+      |                                           ^~~~~~~~
+src/main.c:391:43: note: (near initialization for ‘r.w’)
+src/main.c:392:37: error: expected ‘)’ before numeric constant
+  392 |     SDL_SetRenderDrawColor(renderer, 50, 40, 30, 255); // Darker wood/brown
+      |                                     ^~~
+      |                                     )
+src/main.c:393:33: error: expected ‘)’ before ‘&’ token
+  393 |     SDL_RenderFillRect(renderer, &r);
+      |                                 ^~
+      |                                 )
+src/main.c:394:37: error: expected ‘)’ before numeric constant
+  394 |     SDL_SetRenderDrawColor(renderer, 100, 80, 60, 255); // Accent line
+      |                                     ^~~~
+      |                                     )
+src/main.c:395:33: error: expected ‘)’ before numeric constant
+  395 |     SDL_RenderDrawLine(renderer, 0, screen_h - FOOTER_H, screen_w, screen_h - FOOTER_H);
+      |                                 ^~
+      |                                 )
+src/main.c:398:25: error: initializer element is not constant
+  398 |     SDL_Surface *surf = TTF_RenderUTF8_Blended(font, "[A] Caught Toggle     [B] Back to Menu", gray);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~
+src/main.c:399:5: error: expected identifier or ‘(’ before ‘if’
+  399 |     if (surf) {
+      |     ^~
+src/main.c:407:1: error: expected identifier or ‘(’ before ‘}’ token
+  407 | }
+      | ^
+src/main.c: In function ‘main’:
+src/main.c:410:5: warning: ignoring return value of ‘freopen’, declared with attribute warn_unused_result [-Wunused-result]
+  410 |     freopen("error.log", "w", stderr);
+      |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+make: *** [Makefile:35: src/main.o] Error 1
