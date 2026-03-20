@@ -7,8 +7,8 @@
 #define MAX_STR 128
 
 typedef struct {
-    int dex_id;
-    int national_id;
+    char dex_id[16];
+    char national_id[16];
     char name[MAX_STR];
     char type1[MAX_STR];
     char type2[MAX_STR];

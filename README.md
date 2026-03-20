@@ -93,6 +93,7 @@ For a Pokémon named `"Hisuian Decidueye"` with National ID `1025`, the app chec
 - **Font**: [Pokémon BW 9](https://fontstruct.com/fontstructions/show/2370205/pokemon-bw-9)
 - **Sprite Package**: [EeveeExpo](https://eeveeexpo.com/resources/1101/)
 - **Supplemental Sprites (Lazarus Beta)**: [Mr. Walkthroughs](https://mrwalkthroughs.com/pokemon-lazarus/pokedex/)
+- **Sprite Package (Fool's Gold)**: [Fool's Gold Wiki](https://foolsgold.miraheze.org/wiki/List_of_Pok%C3%A9mon)
 - **Engine**: Built with SDL2, SDL_image, and SDL_ttf.
 
 Pokémon © Nintendo / Game Freak / Creatures Inc.

@@ -43,8 +43,8 @@ int load_pokedex(const char *tsv_path, const char *caught_path, Pokedex *dex) {
             char *val = trim(line_ptr);
             col++;
             switch (col) {
-                case 1: p->dex_id = atoi(val); break;
-                case 2: p->national_id = atoi(val); break;
+                case 1: strncpy(p->dex_id, val, 15); break;
+                case 2: strncpy(p->national_id, val, 15); break;
                 case 3: strncpy(p->name, val, MAX_STR); break;
                 case 4: strncpy(p->type1, val, MAX_STR); break;
                 case 5: strncpy(p->type2, val, MAX_STR); break;
@@ -52,17 +52,17 @@ int load_pokedex(const char *tsv_path, const char *caught_path, Pokedex *dex) {
             }
             line_ptr = next_line_ptr;
         }
-        if (p->dex_id > 0) dex->count++;
+        if (p->dex_id[0] != '\0') dex->count++;
     }
     fclose(f);
 
-    // Load caught status
+    // Load caught status (Match alphanumeric IDs)
     FILE *cf = fopen(caught_path, "r");
     if (cf) {
-        int id;
-        while (fscanf(cf, "%d", &id) == 1) {
+        char cid[16];
+        while (fscanf(cf, "%15s", cid) == 1) {
             for (int i = 0; i < dex->count; i++) {
-                if (dex->pokemon[i].dex_id == id) {
+                if (strcmp(dex->pokemon[i].dex_id, cid) == 0) {
                     dex->pokemon[i].caught = true;
                 }
             }
@@ -85,9 +85,10 @@ int save_caught_status(const char *caught_path, Pokedex *dex) {
 
     for (int i = 0; i < dex->count; i++) {
         if (dex->pokemon[i].caught) {
-            fprintf(f, "%d\n", dex->pokemon[i].dex_id);
+            fprintf(f, "%s\n", dex->pokemon[i].dex_id);
         }
     }
     fclose(f);
     return 0;
 }
+

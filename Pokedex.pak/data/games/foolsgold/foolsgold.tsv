@@ -1,0 +1,488 @@
+dex_id	dex_id	name	type1	type2	form_tag	hp	atk	def	spa	spd	spe	ability1	ability2	hidden_ability	evo_from	evo_method	evo_into	location	catch_rate	gender_ratio	egg_group1	egg_group2	description
+001	001	Bulbasaur	Grass	Fire																			
+002	002	Ivysaur	Grass	Fire																			
+003	003	Venusaur	Grass	Fire																			
+003s	003s	Seviian Venusaur	Poison	Fire																			
+004	004	Charmander	Fire	Dark																			
+005	005	Charmeleon	Fire	Dark																			
+006	006	Charizard	Fire	Dark																			
+006s	006s	Seviian Charizard	Fire	Ghost																			
+007	007	Squirtle	Water	Dragon																			
+008	008	Wartortle	Water	Dragon																			
+009	009	Blastoise	Water	Dragon																			
+009s	009s	Seviian Blastoise	Dark	Dragon																			
+010	010	Caterpie	Bug	Rock																			
+011	011	Metapod	Bug	Rock																			
+012	012	Butterfree	Bug	Rock																			
+013	013	Weedle	Bug																				
+014	014	Kakuna	Bug																				
+015	015	Beedrill	Bug	Dark																			
+016	016	Pidgey	Fighting	Flying																			
+016k	016k	Kantonian Pidgey	Dark	Flying																			
+017	017	Pidgeotto	Fighting	Flying																			
+017k	017k	Kantonian Pidgeotto	Dark	Flying																			
+018	018	Pidgeot	Fighting	Flying																			
+018k	018k	Kantonian Pidgeot	Dark	Flying																			
+019	019	Rattata	Electric																				
+020	020	Raticate	Electric																				
+021	021	Spearow	Dragon	Flying																			
+022	022	Fearow	Dragon	Flying																			
+023	023	Ekans	Water	Poison																			
+024	024	Arbok	Water	Poison																			
+025	025	Pikachu	Normal	Ice																			
+026	026	Raichu	Normal	Ice																			
+027	027	Sandshrew	Normal																				
+028	028	Sandslash	Normal	Dark																			
+028k	028k	Kantonian Sandslash	Normal	Poison																			
+029	029	Nidoran♀	Grass	Dragon																			
+030	030	Nidorina	Grass	Dragon																			
+031	031	Nidoqueen	Grass	Dragon																			
+032	032	Nidoran♂	Steel	Electric																			
+033	033	Nidorino	Steel	Electric																			
+034	034	Nidoking	Steel	Electric																			
+035	035	Clefairy	Fire																				
+036	036	Clefable	Fire																				
+037	037	Vulpix	Fighting																				
+038	038	Ninetales	Fighting																				
+039	039	Jigglypuff	Electric																				
+040	040	Wigglytuff	Electric																				
+041	041	Zubat	Psychic	Flying																			
+042	042	Golbat	Psychic	Flying																			
+043	043	Oddish	Grass	Ice																			
+044	044	Gloom	Grass	Ice																			
+045	045	Vileplume	Grass	Ice																			
+046	046	Paras	Poison	Bug																			
+047	047	Parasect	Poison	Bug																			
+047s	047s	Seviian Parasect	Steel	Bug																			
+048	048	Venonat	Bug																				
+049	049	Venomoth	Bug																				
+049k	049k	Kantonian Venomoth	Bug	Grass																			
+050	050	Diglett	Rock																				
+051	051	Dugtrio	Rock																				
+051k	051k	Kantonian Dugtrio	Rock	Electric																			
+052	052	Meowth	Psychic	Dark																			
+053	053	Persian	Psychic	Dark																			
+054	054	Psyduck	Normal	Steel																			
+055	055	Golduck	Normal	Steel																			
+056	056	Mankey	Grass																				
+057	057	Primeape	Grass																				
+058	058	Growlithe	Fire	Ice																			
+059	059	Arcanine	Fire	Ice																			
+060	060	Poliwag	Ground																				
+061	061	Poliwhirl	Ground																				
+062	062	Poliwrath	Ground																				
+063	063	Abra	Dark																				
+064	064	Kadabra	Dark																				
+065	065	Alakazam	Dark																				
+065s	065s	Seviian Alakazam	Dark	Dragon																			
+066	066	Machop	Water																				
+067	067	Machoke	Water																				
+068	068	Machamp	Water	Steel																			
+069	069	Bellsprout	Steel																				
+070	070	Weepinbell	Steel																				
+071	071	Victreebel	Steel																				
+072	072	Tentacool	Water	Psychic																			
+072k	072k	Kantonian Tentacool	Water	Electric																			
+073	073	Tentacruel	Water	Psychic																			
+073k	073k	Kantonian Tentacruel	Water	Electric																			
+074	074	Geodude	Fire	Rock																			
+074	074	Graveler	Fire	Rock																			
+076	076	Golem	Fire	Rock																			
+077	077	Ponyta	Psychic	Flying																			
+078	078	Rapidash	Psychic	Flying																			
+079	079	Slowpoke	Electric																				
+080	080	Slowbro	Electric	Steel																			
+081	081	Magnemite	Psychic																				
+082	082	Magneton	Psychic																				
+083	083	Farfetch'd	Normal																				
+084	084	Doduo	Poison	Flying																			
+085	085	Dodrio	Poison	Flying																			
+086	086	Seel	Normal																				
+087	087	Dewgong	Normal	Fire																			
+088	088	Grimer	Dragon																				
+088k	088k	Kantonian Grimer	Fighting																				
+089	089	Muk	Dragon																				
+089k	089k	Kantonian Muk	Fighting																				
+090	090	Shellder	Fighting	Steel																			
+090s	090s	Seviian Shellder	Fighting	Steel																			
+091	091	Cloyster	Fighting	Steel																			
+091s	091s	Seviian Cloyster	Fighting	Steel																			
+092	092	Gastly	Normal																				
+093	093	Haunter	Normal																				
+094	094	Gengar	Normal																				
+095	095	Onix	Ground																				
+096	096	Drowzee	Water																				
+097	097	Hypno	Water	Poison																			
+098	098	Krabby	Normal																				
+098k	098k	Kantonian Krabby	Grass																				
+099	099	Kingler	Normal	Electric																			
+099k	099k	Kantonian Kingler	Grass	Electric																			
+100	100	Voltorb	Rock	Flying																			
+101	101	Electrode	Rock	Flying																			
+102	102	Exeggcute	Grass																				
+103	103	Exeggutor	Grass																				
+104	104	Cubone	Ghost																				
+105	105	Marowak	Ghost																				
+106	106	Hitmonlee	Water	Fighting																			
+107	107	Hitmonchan	Fire	Fighting																			
+108	108	Lickitung	Water																				
+109	109	Koffing	Normal	Flying																			
+110	110	Weezing	Normal	Flying																			
+110k	110k	Kantonian Weezing	Fire	Flying																			
+111	111	Rhyhorn	Bug																				
+112	112	Rhydon	Bug	Fighting																			
+113	113	Chansey	Dark	Poison																			
+114	114	Tangela	Rock	Poison																			
+115	115	Kangaskhan	Rock	Dark																			
+116	116	Horsea	Electric	Dragon																			
+117	117	Seadra	Electric	Dragon																			
+118	118	Goldeen	Ghost																				
+119	119	Seaking	Ghost	Poison																			
+120	120	Staryu	Water	Ground																			
+120s	120s	Seviian Staryu	Psychic	Dark																			
+121	121	Starmie	Water	Ground																			
+121s	121s	Seviian Starmie	Psychic	Dark																			
+122	122	Mr. Mime	Ground																				
+123	123	Scyther	Bug	Fire																			
+124	124	Jynx	Ice	Dark																			
+125	125	Electabuzz	Dark																				
+126	126	Magmar	Fighting	Poison																			
+127	127	Pinsir	Bug	Rock																			
+128	128	Tauros	Normal	Psychic																			
+129	129	Magikarp	Ground																				
+130	130	Gyarados	Ground	Dragon																			
+130s	130s	Seviian Gyarados	Ground	Psychic																			
+131	131	Lapras	Dragon																				
+132	132	Ditto	Steel																				
+133	133	Eevee																					
+134	134	Vaporeon	Ice																				
+135	135	Jolteon	Steel																				
+136	136	Flareon	Dragon																				
+137	137	Porygon	Normal	Water																			
+138	138	Omanyte	Water																				
+139	139	Omastar	Water	Steel																			
+140	140	Kabuto	Water	Bug																			
+141	141	Kabutops	Water	Bug																			
+142	142	Aerodactyl																					
+143	143	Snorlax	Fighting																				
+144	144	Articuno	Fighting	Water																			
+145	145	Zapdos	Poison	Water																			
+146	146	Moltres	Psychic	Water																			
+147	147	Dratini	Poison																				
+148	148	Dragonair	Poison																				
+149	149	Dragonite	Poison	Psychic																			
+150	150	Mewtwo	Dark																				
+151	151	Mew	Dark																				
+152	152	Chikorita	Fighting																				
+152s	152s	Seviian Chikorita																					
+153	153	Bayleef	Fighting																				
+153s	153s	Seviian Bayleef																					
+154	154	Meganium	Fighting																				
+154k	154k	Kantonian Meganium	Fighting	Ground																			
+154s	154s	Seviian Meganium																					
+155	155	Cyndaquil	Ice																				
+155s	155s	Seviian Cyndaquil	Ground																				
+156	156	Quilava	Ice																				
+156s	156s	Seviian Quilava	Ground	Steel																			
+157	157	Typhlosion	Ice																				
+157k	157k	Kantonian Typhlosion	Ice	Water																			
+157s	157s	Seviian Typhlosion	Ground	Steel																			
+158	158	Totodile	Flying																				
+158s	158s	Seviian Totodile	Normal	Electric																			
+159	159	Croconaw	Flying																				
+159s	159s	Seviian Croconaw	Flying	Electric																			
+160	160	Feraligatr	Flying																				
+160k	160k	Kantonian Feraligatr	Flying	Ghost																			
+160s	160s	Seviian Feraligatr	Flying	Bug																			
+161	161	Sentret	Normal	Flying																			
+161k	161k	Kantonian Sentret	Poison	Flying																			
+162	162	Furret	Normal	Flying																			
+162k	162k	Kantonian Furret	Poison	Flying																			
+163	163	Hoothoot	Steel	Flying																			
+164	164	Noctowl	Steel	Flying																			
+165	165	Ledyba	Bug	Electric																			
+166	166	Ledian	Bug	Electric																			
+167	167	Spinarak	Bug	Ghost																			
+168	168	Ariados	Bug	Ghost																			
+169	169	Crobat	Psychic	Flying																			
+169s	169s	Seviian Crobat	Psychic	Rock																			
+170	170	Chinchou	Water	Dark																			
+171	171	Lanturn	Water	Dark																			
+172	172	Pichu	Normal																				
+173	173	Cleffa	Fire																				
+174	174	Igglybuff	Electric																				
+175	175	Togepi	Ground																				
+176	176	Togetic	Ground																				
+176k	176k	Kantonian Togetic	Poison	Dragon																			
+177	177	Natu	Psychic	Ghost																			
+178	178	Xatu	Psychic	Ghost																			
+179	179	Mareep	Ghost																				
+180	180	Flaaffy	Ghost																				
+181	181	Ampharos	Ghost	Ground																			
+182	182	Bellossom	Grass	Water																			
+183	183	Marill	Normal	Flying																			
+184	184	Azumarill	Normal	Flying																			
+185	185	Sudowoodo	Grass	Ghost																			
+186	186	Politoed	Ground	Rock																			
+187	187	Hoppip	Grass	Ground																			
+187s	187s	Seviian Hoppip	Grass																				
+188	188	Skiploom	Grass	Ground																			
+188s	188s	Seviian Skiploom	Grass																				
+189	189	Jumpluff	Grass	Ground																			
+189s	189s	Seviian Jumpluff	Grass																				
+190	190	Aipom	Psychic																				
+191	191	Sunkern	Grass	Psychic																			
+192	192	Sunflora	Grass	Psychic																			
+193	193	Yanma	Grass	Flying																			
+194	194	Wooper	Flying																				
+195	195	Quagsire	Flying																				
+196	196	Espeon	Bug																				
+197	197	Umbreon	Ghost																				
+198	198	Murkrow	Ghost	Flying																			
+199	199	Slowking	Electric	Dark																			
+200	200	Misdreavus	Electric	Ghost																			
+201	201	Unown	Psychic	Rock																			
+202	202	Wobbuffet	Fighting	Ghost																			
+203	203	Girafarig	Normal	Ghost																			
+204	204	Pineco	Bug	Grass																			
+204k	204k	Kantonian Pineco	Water																				
+205	205	Forretress	Bug	Flying																			
+205k	205k	Kantonian Forretress	Water																				
+206	206	Dunsparce	Fire	Steel																			
+207	207	Gligar	Rock																				
+208	208	Steelix	Ground	Poison																			
+209	209	Snubbull	Normal	Fighting																			
+209k	209k	Kantonian Snubbull	Dark																				
+210	210	Granbull	Normal	Fighting																			
+210k	210k	Kantonian Granbull	Dark	Ghost																			
+211	211	Qwilfish	Water	Steel																			
+211s	211s	Seviian Qwilfish	Fairy																				
+212	212	Scizor	Bug	Fighting																			
+213	213	Shuckle	Rock																				
+213k	213k	Kantonian Shuckle	Rock	Steel																			
+214	214	Heracross	Bug	Poison																			
+215	215	Sneasel	Bug	Dragon																			
+216	216	Teddiursa	Ice																				
+216k	216k	Kantonian Teddiursa	Ice	Psychic																			
+217	217	Ursaring	Ice																				
+217k	217k	Kantonian Ursaring	Ice	Psychic																			
+218	218	Slugma	Poison																				
+219	219	Magcargo	Poison																				
+220	220	Swinub	Rock																				
+221	221	Piloswine	Rock																				
+222	222	Corsola	Fire																				
+223	223	Remoraid	Poison																				
+224	224	Octillery	Poison																				
+225	225	Delibird	Ghost	Ice																			
+226	226	Mantine	Normal	Flying																			
+227	227	Skarmory	Ice	Rock																			
+228	228	Houndour	Grass																				
+229	229	Houndoom	Grass	Dark																			
+230	230	Kingdra	Electric	Dragon																			
+231	231	Phanpy	Psychic																				
+232	232	Donphan	Psychic																				
+233	233	Porygon2	Normal	Water																			
+234	234	Stantler	Normal	Ice																			
+235	235	Smeargle	Fighting																				
+236	236	Tyrogue	Normal	Fighting																			
+237	237	Hitmontop	Grass	Fighting																			
+238	238	Smoochum	Ice																				
+239	239	Elekid	Dark																				
+240	240	Magby	Fighting	Poison																			
+241	241	Miltank	Ghost	Ground																			
+242	242	Blissey	Dark	Poison																			
+243	243	Raikou	Dark	Steel																			
+244	244	Entei	Flying	Dragon																			
+245	245	Suicune	Psychic	Ice																			
+246	246	Larvitar	Dark	Ghost																			
+247	247	Pupitar	Dark	Ghost																			
+248	248	Tyranitar	Dark	Ghost																			
+249	249	Lugia	Water	Dragon																			
+250	250	Ho-Oh	Dark	Flying																			
+251	251	Celebi	Ghost	Grass																			
+252	252	Treecko	Poison																				
+253	253	Grovyle	Poison																				
+254	254	Sceptile	Poison	Steel																			
+255	255	Torchic	Normal	Flying																			
+256	256	Combusken	Ground	Flying																			
+257	257	Blaziken	Ground	Flying																			
+258	258	Mudkip	Water	Electric																			
+259	259	Marshtomp	Water	Electric																			
+260	260	Swampert	Water	Electric																			
+261	261	Poochyena	Normal																				
+262	262	Mightyena	Normal																				
+263	263	Zigzagoon	Water																				
+264	264	Linoone	Water	Ground																			
+265	265	Wurmple	Bug	Normal																			
+266	266	Silcoon	Bug	Normal																			
+267	267	Beautifly	Bug	Fighting																			
+268	268	Cascoon	Bug	Normal																			
+269	269	Dustox	Bug	Dark																			
+270	270	Lotad	Ground																				
+271	271	Lombre	Ground																				
+272	272	Ludicolo	Ground	Fire																			
+273	273	Seedot	Fire	Steel																			
+274	274	Nuzleaf	Fire	Steel																			
+275	275	Shiftry	Fire	Steel																			
+276	276	Taillow	Fire	Flying																			
+277	277	Swellow	Fire	Flying																			
+278	278	Wingull	Normal	Flying																			
+279	279	Pelipper	Normal	Flying																			
+280	280	Ralts	Grass	Poison																			
+281	281	Kirlia	Grass	Poison																			
+282	282	Gardevoir	Grass	Poison																			
+283	283	Surskit	Bug	Poison																			
+284	284	Masquerain	Bug	Poison																			
+285	285	Shroomish	Normal																				
+286	286	Breloom	Normal																				
+287	287	Slakoth	Normal	Grass																			
+288	288	Vigoroth	Normal	Grass																			
+289	289	Slaking	Normal	Grass																			
+290	290	Nincada	Bug																				
+291	291	Ninjask	Bug																				
+292	292	Shedinja	Bug																				
+293	293	Whismur	Dark																				
+294	294	Loudred	Dark																				
+295	295	Exploud	Dark	Fire																			
+296	296	Makuhita	Dark																				
+297	297	Hariyama	Dark	Fighting																			
+298	298	Azurill	Water	Flying																			
+299	299	Nosepass	Ghost	Normal																			
+300	300	Skitty	Electric																				
+301	301	Delcatty	Electric																				
+302	302	Sableye	Ice																				
+303	303	Mawile	Grass	Steel																			
+304	304	Aron	Bug																				
+305	305	Lairon	Bug																				
+306	306	Aggron	Bug	Poison																			
+307	307	Meditite	Psychic																				
+308	308	Medicham	Psychic																				
+309	309	Electrike	Ice	Electric																			
+310	310	Manectric	Ice	Electric																			
+311	311	Plusle	Normal																				
+312	312	Minun	Dark																				
+313	313	Volbeat	Rock	Water																			
+314	314	Illumise	Rock	Grass																			
+315	315	Roselia	Grass																				
+316	316	Gulpin	Ground																				
+317	317	Swalot	Ground																				
+318	318	Carvanha	Water	Ice																			
+319	319	Sharpedo	Water	Ice																			
+320	320	Wailmer	Steel																				
+321	321	Wailord	Steel																				
+322	322	Numel	Water	Grass																			
+323	323	Camerupt	Water	Fire																			
+324	324	Torkoal	Fire	Poison																			
+325	325	Spoink	Electric																				
+326	326	Grumpig	Electric	Psychic																			
+327	327	Spinda	Poison																				
+328	328	Trapinch	Grass	Ground																			
+329	329	Vibrava	Grass	Psychic																			
+330	330	Flygon	Dragon	Psychic																			
+331	331	Cacnea	Ice																				
+332	332	Cacturne	Ice	Ghost																			
+333	333	Swablu	Poison	Flying																			
+334	334	Altaria	Poison	Ghost																			
+335	335	Zangoose	Ghost																				
+336	336	Seviper	Dark	Grass																			
+337	337	Lunatone	Dark	Electric																			
+338	338	Solrock	Dark	Electric																			
+339	339	Barboach	Water	Ice																			
+340	340	Whiscash	Water	Ice																			
+341	341	Corphish	Ghost																				
+342	342	Crawdaunt	Ghost	Water																			
+343	343	Baltoy	Steel	Normal																			
+344	344	Claydol	Steel	Fighting																			
+345	345	Lileep	Ghost	Rock																			
+346	346	Cradily	Ghost	Steel																			
+347	347	Anorith	Bug																				
+348	348	Armaldo	Bug	Ground																			
+349	349	Feebas	Water	Fighting																			
+350	350	Milotic	Fighting																				
+351	351	Castform																					
+352	352	Kecleon	Rock																				
+353	353	Shuppet	Water	Bug																			
+354	354	Banette	Water	Flying																			
+355	355	Duskull	Ghost	Fighting																			
+356	356	Dusclops	Ghost	Fighting																			
+357	357	Tropius	Dark	Dragon																			
+358	358	Chimecho	Psychic	Ghost																			
+359	359	Absol	Flying																				
+360	360	Wynaut	Normal	Flying																			
+361	361	Snorunt	Dark	Flying																			
+362	362	Glalie	Dark																				
+363	363	Spheal	Dark	Water																			
+364	364	Sealeo	Water	Dark																			
+365	365	Walrein	Water																				
+366	366	Clamperl	Dragon																				
+367	367	Huntail	Ice	Dragon																			
+368	368	Gorebyss	Fire	Dragon																			
+369	369	Relicanth	Water	Psychic																			
+370	370	Luvdisc	Fire																				
+371	371	Bagon	Ghost	Dragon																			
+372	372	Shelgon	Ghost	Dragon																			
+373	373	Salamence	Ghost	Dragon																			
+374	374	Beldum	Rock																				
+375	375	Metang	Rock																				
+376	376	Metagross	Rock																				
+377	377	Regirock	Rock	Fire																			
+378	378	Regice	Ice	Water																			
+379	379	Registeel	Steel	Poison																			
+380	380	Latias	Electric	Flying																			
+381	381	Latios	Ice	Flying																			
+382	382	Kyogre	Water	Steel																			
+383	383	Groudon	Fire	Fighting																			
+384	384	Rayquaza	Grass	Dragon																			
+385	385	Jirachi	Ghost	Psychic																			
+386	386	Deoxys																					
+387	387	Perrserker	Psychic	Dark																			
+388	388	Magnezone	Psychic																				
+389	389	Sirfetch'd	Normal																				
+390	390	Lickilicky	Water	Ice																			
+390s	390s	Seviian Lickilicky	Water	Poison																			
+391	391	Rhyperior	Bug	Fighting																			
+392	392	Happiny	Dark	Poison																			
+393	393	Tangrowth	Rock	Poison																			
+394	394	Mime Jr.	Ground																				
+395	395	Mr. Rime	Ground	Dark																			
+396	396	Electivire	Dark																				
+397	397	Magmortar	Fighting	Poison																			
+398	398	Leafeon	Normal	Poison																			
+399	399	Glaceon	Normal	Flying																			
+400	400	Sylveon	Normal	Fighting																			
+401	401	Porygon-Z	Normal	Water																			
+402	402	Munchlax	Fighting																				
+403	403	Togekiss	Ground																				
+403k	403k	Kantonian Togekiss	Poison	Dragon																			
+404	404	Bonsly	Grass	Ghost																			
+405	405	Ambipom	Psychic																				
+406	406	Yanmega	Steel	Flying																			
+407	407	Honchkrow	Ghost	Flying																			
+408	408	Mismagius	Electric	Ghost																			
+409	409	Gliscor	Rock	Flying																			
+410	410	Weavile	Bug	Dragon																			
+411	411	Mamoswine	Rock	Ice																			
+412	412	Cursola	Fire	Ghost																			
+413	413	Mantyke	Normal																				
+414	414	Obstagoon	Water	Ground																			
+415	415	Gallade	Grass	Poison																			
+416	416	Probopass	Ghost	Normal																			
+417	417	Budew	Grass																				
+418	418	Roserade	Grass																				
+419	419	Dusknoir	Ghost	Fighting																			
+420	420	Chingling	Psychic	Ghost																			
+421	421	Froslass	Flying																				
+422	422	Annihilape	Grass	Dark																			
+423	423	Clodsire	Flying	Ghost																			
+424	424	Farigiraf	Normal	Ghost																			
+425	425	Dudunsparce	Steel	Fire																			
+426	426	Overqwil	Water	Steel																			
+426s	426s	Seviian Overqwil	Fairy																				
+427	427	Sneasler	Bug	Dragon																			
+428	428	Ursaluna	Ice	Steel																			
+428k	428k	Kantonian Ursaluna	Ice	Psychic																			
+429	429	Wyrdeer	Psychic	Ice																			
+430	430	Kleavor	Bug	Psychic																			
+431	431	Arceus																					
+000	000	Missingno.																					
+???	000a	Dhelmise	Dragon																				

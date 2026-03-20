@@ -195,6 +195,24 @@ SDL_Surface* try_load_from_dir(const char *dir, Pokemon *p) {
     char sname[128];
     SDL_Surface *surf = NULL;
 
+    bool has_letter = false;
+    for (int i=0; p->national_id[i]; i++) {
+        if ((p->national_id[i] >= 'a' && p->national_id[i] <= 'z') || (p->national_id[i] >= 'A' && p->national_id[i] <= 'Z')) {
+            has_letter = true; break;
+        }
+    }
+
+    // A. HIGH PRIORITY: Alphanumeric ID Match
+    // If the ID contains letters (like 201s), it's a specific identifier. Check it first.
+    if (has_letter) {
+        sprintf(path, "%s/%s.png", dir, p->national_id);
+        surf = IMG_Load(path);
+        if (surf) return surf;
+        sprintf(path, "%s/%s.PNG", dir, p->national_id);
+        surf = IMG_Load(path);
+        if (surf) return surf;
+    }
+
     // 1. Original Case .png
     sanitize_pokemon_name(p->name, sname, 2);
     sprintf(path, "%s/%s.png", dir, sname);
@@ -224,9 +242,17 @@ SDL_Surface* try_load_from_dir(const char *dir, Pokemon *p) {
     surf = IMG_Load(path);
     if (surf) return surf;
 
-    // 6. National ID
-    sprintf(path, "%s/%d.png", dir, p->national_id);
-    surf = IMG_Load(path);
+    // B. LOW PRIORITY: Numeric ID Fallback
+    // Strictly numeric IDs (like 025) are checked last so names (like Alolan_Vulpix) can override them.
+    if (!has_letter) {
+        sprintf(path, "%s/%s.png", dir, p->national_id);
+        surf = IMG_Load(path);
+        if (surf) return surf;
+        sprintf(path, "%s/%s.PNG", dir, p->national_id);
+        surf = IMG_Load(path);
+        if (surf) return surf;
+    }
+
     return surf;
 }
 
@@ -326,7 +352,9 @@ void cache_game_textures(SDL_Renderer *renderer) {
         if (pk_id_tex[i]) SDL_DestroyTexture(pk_id_tex[i]);
         if (pk_name_tex[i]) SDL_DestroyTexture(pk_name_tex[i]);
         
-        char id_str[16]; sprintf(id_str, "#%03d", main_dex.pokemon[i].dex_id);
+        const char *id_ptr = main_dex.pokemon[i].dex_id;
+        while (*id_ptr == '0' && *(id_ptr + 1) != '\0') id_ptr++;
+        char id_str[32]; sprintf(id_str, "#%s", id_ptr);
         SDL_Surface *s1 = TTF_RenderUTF8_Blended(font_list, id_str, gray_c);
         if (s1) { pk_id_tex[i] = SDL_CreateTextureFromSurface(renderer, s1); SDL_FreeSurface(s1); }
         
