@@ -1,0 +1,152 @@
+dex_id	national_id	name	type1	type2	form_tag	hp	atk	def	spa	spd	spe	ability1	ability2	hidden_ability	evo_from	evo_method	evo_into	location	catch_rate	gender_ratio	egg_group1	egg_group2	description
+1	1	Bulbasaur	Grass	Poison									
+2	2	Ivysaur	Grass	Poison								Bulbasaur			
+3	3	Venusaur	Grass	Poison								Ivysaur			
+4	4	Charmander	Fire									
+5	5	Charmeleon	Fire								Charmander			
+6	6	Charizard	Fire	Flying								Charmeleon			
+7	7	Squirtle	Water									
+8	8	Wartortle	Water								Squirtle			
+9	9	Blastoise	Water								Wartortle			
+10	10	Caterpie	Bug									
+11	11	Metapod	Bug								Caterpie			
+12	12	Butterfree	Bug	Flying								Metapod			
+13	13	Weedle	Bug	Poison									
+14	14	Kakuna	Bug	Poison								Weedle			
+15	15	Beedrill	Bug	Poison								Kakuna			
+16	16	Pidgey	Normal	Flying									
+17	17	Pidgeotto	Normal	Flying								Pidgey			
+18	18	Pidgeot	Normal	Flying								Pidgeotto			
+19	19	Rattata	Normal									
+20	20	Raticate	Normal								Rattata			
+21	21	Spearow	Normal	Flying									
+22	22	Fearow	Normal	Flying								Spearow			
+23	23	Ekans	Poison									
+24	24	Arbok	Poison								Ekans			
+25	25	Pikachu	Electric									
+26	26	Raichu	Electric								Pikachu			
+27	27	Sandshrew	Ground									
+28	28	Sandslash	Ground								Sandshrew			
+29	29	Nidoran♀	Poison									
+30	30	Nidorina	Poison								Nidoran♀			
+31	31	Nidoqueen	Poison	Ground								Nidorina			
+32	32	Nidoran♂	Poison									
+33	33	Nidorino	Poison								Nidoran♂			
+34	34	Nidoking	Poison	Ground								Nidorino			
+35	35	Clefairy	Normal									
+36	36	Clefable	Normal								Clefairy			
+37	37	Vulpix	Fire									
+38	38	Ninetales	Fire								Vulpix			
+39	39	Jigglypuff	Normal									
+40	40	Wigglytuff	Normal								Jigglypuff			
+41	41	Zubat	Poison	Flying									
+42	42	Golbat	Poison	Flying								Zubat			
+43	43	Oddish	Grass	Poison									
+44	44	Gloom	Grass	Poison								Oddish			
+45	45	Vileplume	Grass	Poison								Gloom			
+46	46	Paras	Bug	Grass									
+47	47	Parasect	Bug	Grass								Paras			
+48	48	Venonat	Bug	Poison									
+49	49	Venomoth	Bug	Poison								Venonat			
+50	50	Diglett	Ground									
+51	51	Dugtrio	Ground								Diglett			
+52	52	Meowth	Normal									
+53	53	Persian	Normal								Meowth			
+54	54	Psyduck	Water									
+55	55	Golduck	Water								Psyduck			
+56	56	Mankey	Fighting									
+57	57	Primeape	Fighting								Mankey			
+58	58	Growlithe	Fire									
+59	59	Arcanine	Fire								Growlithe			
+60	60	Poliwag	Water									
+61	61	Poliwhirl	Water								Poliwag			
+62	62	Poliwrath	Water	Fighting								Poliwhirl			
+63	63	Abra	Psychic									
+64	64	Kadabra	Psychic								Abra			
+65	65	Alakazam	Psychic								Kadabra			
+66	66	Machop	Fighting									
+67	67	Machoke	Fighting								Machop			
+68	68	Machamp	Fighting								Machoke			
+69	69	Bellsprout	Grass	Poison									
+70	70	Weepinbell	Grass	Poison								Bellsprout			
+71	71	Victreebel	Grass	Poison								Weepinbell			
+72	72	Tentacool	Water	Poison									
+73	73	Tentacruel	Water	Poison								Tentacool			
+74	74	Geodude	Rock	Ground									
+75	75	Graveler	Rock	Ground								Geodude			
+76	76	Golem	Rock	Ground								Graveler			
+77	77	Ponyta	Fire									
+78	78	Rapidash	Fire								Ponyta			
+79	79	Slowpoke	Water	Psychic									
+80	80	Slowbro	Water	Psychic								Slowpoke			
+81	81	Magnemite	Electric									
+82	82	Magneton	Electric								Magnemite			
+83	83	Farfetch'd	Normal	Flying									
+84	84	Doduo	Normal	Flying									
+85	85	Dodrio	Normal	Flying								Doduo			
+86	86	Seel	Water									
+87	87	Dewgong	Water	Ice								Seel			
+88	88	Grimer	Poison									
+89	89	Muk	Poison								Grimer			
+90	90	Shellder	Water									
+91	91	Cloyster	Water	Ice								Shellder			
+92	92	Gastly	Ghost	Poison									
+93	93	Haunter	Ghost	Poison								Gastly			
+94	94	Gengar	Ghost	Poison								Haunter			
+95	95	Onix	Rock	Ground									
+96	96	Drowzee	Psychic									
+97	97	Hypno	Psychic								Drowzee			
+98	98	Krabby	Water									
+99	99	Kingler	Water								Krabby			
+100	100	Voltorb	Electric									
+101	101	Electrode	Electric								Voltorb			
+102	102	Exeggcute	Grass	Psychic									
+103	103	Exeggutor	Grass	Psychic								Exeggcute			
+104	104	Cubone	Ground									
+105	105	Marowak	Ground								Cubone			
+106	106	Hitmonlee	Fighting									
+107	107	Hitmonchan	Fighting									
+108	108	Lickitung	Normal									
+109	109	Koffing	Poison									
+110	110	Weezing	Poison								Koffing			
+111	111	Rhyhorn	Ground	Rock									
+112	112	Rhydon	Ground	Rock								Rhyhorn			
+113	113	Chansey	Normal									
+114	114	Tangela	Grass									
+115	115	Kangaskhan	Normal									
+116	116	Horsea	Water									
+117	117	Seadra	Water								Horsea			
+118	118	Goldeen	Water									
+119	119	Seaking	Water								Goldeen			
+120	120	Staryu	Water									
+121	121	Starmie	Water	Psychic								Staryu			
+122	122	Mr. Mime	Psychic									
+123	123	Scyther	Bug	Flying									
+124	124	Jynx	Ice	Psychic									
+125	125	Electabuzz	Electric									
+126	126	Magmar	Fire									
+127	127	Pinsir	Bug									
+128	128	Tauros	Normal									
+129	129	Magikarp	Water									
+130	130	Gyarados	Water	Flying								Magikarp			
+131	131	Lapras	Water	Ice									
+132	132	Ditto	Normal									
+133	133	Eevee	Normal									
+134	134	Vaporeon	Water								Eevee			
+135	135	Jolteon	Electric								Eevee			
+136	136	Flareon	Fire								Eevee			
+137	137	Porygon	Normal									
+138	138	Omanyte	Rock	Water									
+139	139	Omastar	Rock	Water								Omanyte			
+140	140	Kabuto	Rock	Water									
+141	141	Kabutops	Rock	Water								Kabuto			
+142	142	Aerodactyl	Rock	Flying									
+143	143	Snorlax	Normal									
+144	144	Articuno	Ice	Flying									
+145	145	Zapdos	Electric	Flying									
+146	146	Moltres	Fire	Flying									
+147	147	Dratini	Dragon									
+148	148	Dragonair	Dragon								Dratini			
+149	149	Dragonite	Dragon	Flying								Dragonair			
+150	150	Mewtwo	Psychic									
+151	151	Mew	Psychic									

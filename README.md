@@ -46,8 +46,8 @@ name=My Custom ROM Hack
 ```
 *(Currently, only `name=` is parsed by the C application, but you can include others for future-proofing.)*
 
-### 3. `pokemon.tsv` Format
-The application expects a **Tab-Separated** file with a header row. Columns MUST follow this order:
+### 3. Pokémon Data Table (.tsv)
+The application expects a **Tab-Separated** file with a header row. You can name this file anything as long as it ends in **`.tsv`** (e.g. `lazarus.tsv` or `national_dex.tsv`).
 
 | Column | Name | Description |
 | :--- | :--- | :--- |

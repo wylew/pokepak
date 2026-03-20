@@ -113,11 +113,31 @@ void find_games() {
         if (f) {
             strncpy(games[game_count].slug, dir->d_name, MAX_STR - 1);
             games[game_count].slug[MAX_STR - 1] = 0;
-            snprintf(games[game_count].tsv_path, 512, "data/games/%s/pokemon.tsv", dir->d_name);
             snprintf(games[game_count].caught_path, 512, "data/games/%s/caught.txt", dir->d_name);
-            
             snprintf(games[game_count].custom_sprites_path, 512, "data/games/%s/custom_sprites", dir->d_name);
             
+            // Flexible TSV detection: find first .tsv in the game directory
+            char game_dir[512]; sprintf(game_dir, "data/games/%s", dir->d_name);
+            DIR *gd = opendir(game_dir);
+            bool found_tsv = false;
+            if (gd) {
+                struct dirent *gent;
+                while ((gent = readdir(gd)) != NULL) {
+                    char *dot = strrchr(gent->d_name, '.');
+                    if (dot && strcmp(dot, ".tsv") == 0) {
+                        snprintf(games[game_count].tsv_path, 512, "%s/%s", game_dir, gent->d_name);
+                        found_tsv = true;
+                        break;
+                    }
+                }
+                closedir(gd);
+            }
+            if (!found_tsv) {
+                // Skip this game folder if no TSV found
+                fclose(f);
+                continue;
+            }
+
             char line[256];
             while (fgets(line, sizeof(line), f)) {
                 if (strncmp(line, "name=", 5) == 0) {

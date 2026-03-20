@@ -1,0 +1,917 @@
+dex_id	national_id	name	type1	type2	form_tag	hp	atk	def	spa	spd	spe	ability1	ability2	hidden_ability	evo_from	evo_method	evo_into	location	catch_rate	gender_ratio	egg_group1	egg_group2	description
+1	810	Grookey	Grass									
+2	811	Thwackey	Grass								Grookey			
+3	812	Rillaboom	Grass								Thwackey			
+4	813	Scorbunny	Fire									
+5	814	Raboot	Fire								Scorbunny			
+6	815	Cinderace	Fire								Raboot			
+7	816	Sobble	Water									
+8	817	Drizzile	Water								Sobble			
+9	818	Inteleon	Water								Drizzile			
+10	819	Skwovet	Normal									
+11	820	Greedent	Normal								Skwovet			
+12	821	Rookidee	Flying									
+13	822	Corvisquire	Flying								Rookidee			
+14	823	Corviknight	Flying	Steel								Corvisquire			
+15	824	Blipbug	Bug									
+16	825	Dottler	Bug	Psychic								Blipbug			
+17	826	Orbeetle	Bug	Psychic								Dottler			
+18	827	Nickit	Dark									
+19	828	Thievul	Dark								Nickit			
+20	829	Gossifleur	Grass									
+21	830	Eldegoss	Grass								Gossifleur			
+22	831	Wooloo	Normal									
+23	832	Dubwool	Normal								Wooloo			
+24	833	Chewtle	Water									
+25	834	Drednaw	Water	Rock								Chewtle			
+26	835	Yamper	Electric									
+27	836	Boltund	Electric								Yamper			
+28	837	Rolycoly	Rock									
+29	838	Carkol	Rock	Fire								Rolycoly			
+30	839	Coalossal	Rock	Fire								Carkol			
+31	840	Applin	Grass	Dragon									
+32	841	Flapple	Grass	Dragon								Applin			
+33	842	Appletun	Grass	Dragon								Applin			
+34	843	Silicobra	Ground									
+35	844	Sandaconda	Ground								Silicobra			
+36	845	Cramorant	Flying	Water									
+37	846	Arrokuda	Water									
+38	847	Barraskewda	Water								Arrokuda			
+39	848	Toxel	Electric	Poison									
+40	849	Toxtricity	Electric	Poison								Toxel			
+41	850	Sizzlipede	Fire	Bug									
+42	851	Centiskorch	Fire	Bug								Sizzlipede			
+43	852	Clobbopus	Fighting									
+44	853	Grapploct	Fighting								Clobbopus			
+45	854	Sinistea	Ghost									
+46	855	Polteageist	Ghost								Sinistea			
+47	856	Hatenna	Psychic									
+48	857	Hattrem	Psychic								Hatenna			
+49	858	Hatterene	Psychic	Fairy								Hattrem			
+50	859	Impidimp	Dark	Fairy									
+51	860	Morgrem	Dark	Fairy								Impidimp			
+52	861	Grimmsnarl	Dark	Fairy								Morgrem			
+53	862	Obstagoon	Dark	Normal								Galarian Linoone			
+54	863	Perrserker	Steel								Galarian Meowth			
+55	864	Cursola	Ghost								Galarian Corsola			
+56	865	Sirfetch'd	Fighting								Galarian Farfetch'd			
+57	866	Mr. Rime	Ice	Psychic								Mime Jr.			
+58	867	Runerigus	Ground	Ghost								Galarian Yamask			
+59	868	Milcery	Fairy									
+60	869	Alcremie	Fairy								Milcery			
+61	870	Falinks	Fighting									
+62	871	Pincurchin	Electric									
+63	872	Snom	Ice	Bug									
+64	873	Frosmoth	Ice	Bug								Snom			
+65	874	Stonjourner	Rock									
+66	875	Eiscue	Ice									
+67	876	Indeedee	Psychic	Normal									
+68	877	Morpeko	Electric	Dark									
+69	878	Cufant	Steel									
+70	879	Copperajah	Steel								Cufant			
+71	880	Dracozolt	Electric	Dragon									
+72	881	Arctozolt	Electric	Ice									
+73	882	Dracovish	Water	Dragon									
+74	883	Arctovish	Water	Ice									
+75	884	Duraludon	Steel	Dragon									
+76	885	Dreepy	Dragon	Ghost									
+77	886	Drakloak	Dragon	Ghost								Dreepy			
+78	887	Dragapult	Dragon	Ghost								Drakloak			
+79	888	Zacian	Fairy									
+80	889	Zamazenta	Fighting									
+81	890	Eternatus	Poison	Dragon									
+82	891	Kubfu	Fighting									
+83	892	Urshifu	Fighting	Dark								Kubfu			
+84	893	Zarude	Dark	Grass									
+85	894	Regieleki	Electric									
+86	895	Regidrago	Dragon									
+87	896	Glastrier	Ice									
+88	897	Spectrier	Ghost									
+89	898	Calyrex	Psychic	Grass									
+90	52	Galarian Meowth	Steel	Regional								
+91	77	Galarian Ponyta	Psychic	Fairy	Regional								
+92	78	Galarian Rapidash	Psychic	Fairy	Regional							Galarian Ponyta			
+93	79	Galarian Slowpoke	Psychic	Regional								
+94	80	Galarian Slowbro	Poison	Psychic	Regional							Galarian Slowpoke			
+95	83	Galarian Farfetch'd	Fighting	Regional								
+96	110	Galarian Weezing	Poison	Fairy	Regional								
+97	122	Galarian Mr. Mime	Ice	Psychic	Regional								
+98	144	Galarian Articuno	Psychic	Flying	Regional								
+99	145	Galarian Zapdos	Fighting	Flying	Regional								
+100	146	Galarian Moltres	Dark	Flying	Regional								
+101	199	Galarian Slowking	Poison	Psychic	Regional							Galarian Slowpoke			
+102	263	Galarian Zigzagoon	Dark	Normal	Regional								
+103	264	Galarian Linoone	Dark	Normal	Regional							Galarian Zigzagoon			
+104	554	Galarian Darumaka	Ice	Regional								
+105	555	Galarian Darmanitan	Ice	Regional							Galarian Darumaka			
+106	562	Galarian Yamask	Ghost	Regional								
+107	618	Galarian Stunfisk	Ground	Steel	Regional								
+108	1	Bulbasaur	Grass	Poison									
+109	2	Ivysaur	Grass	Poison								Bulbasaur			
+110	3	Venusaur	Grass	Poison								Ivysaur			
+111	4	Charmander	Fire									
+112	5	Charmeleon	Fire								Charmander			
+113	6	Charizard	Fire	Flying								Charmeleon			
+114	7	Squirtle	Water									
+115	8	Wartortle	Water								Squirtle			
+116	9	Blastoise	Water								Wartortle			
+117	10	Caterpie	Bug									
+118	11	Metapod	Bug								Caterpie			
+119	12	Butterfree	Bug	Flying								Metapod			
+120	13	Weedle	Bug	Poison									
+121	14	Kakuna	Bug	Poison								Weedle			
+122	15	Beedrill	Bug	Poison								Kakuna			
+123	16	Pidgey	Normal	Flying									
+124	17	Pidgeotto	Normal	Flying								Pidgey			
+125	18	Pidgeot	Normal	Flying								Pidgeotto			
+126	19	Rattata	Normal									
+127	20	Raticate	Normal								Rattata			
+128	21	Spearow	Normal	Flying									
+129	22	Fearow	Normal	Flying								Spearow			
+130	23	Ekans	Poison									
+131	24	Arbok	Poison								Ekans			
+132	25	Pikachu	Electric									
+133	26	Raichu	Electric								Pikachu			
+134	27	Sandshrew	Ground									
+135	28	Sandslash	Ground								Sandshrew			
+136	29	Nidoran♀	Poison									
+137	30	Nidorina	Poison								Nidoran♀			
+138	31	Nidoqueen	Poison	Ground								Nidorina			
+139	32	Nidoran♂	Poison									
+140	33	Nidorino	Poison								Nidoran♂			
+141	34	Nidoking	Poison	Ground								Nidorino			
+142	35	Clefairy	Fairy									
+143	36	Clefable	Fairy								Clefairy			
+144	37	Vulpix	Fire									
+145	38	Ninetales	Fire								Vulpix			
+146	39	Jigglypuff	Normal	Fairy									
+147	40	Wigglytuff	Normal	Fairy								Jigglypuff			
+148	41	Zubat	Poison	Flying									
+149	42	Golbat	Poison	Flying								Zubat			
+150	43	Oddish	Grass	Poison									
+151	44	Gloom	Grass	Poison								Oddish			
+152	45	Vileplume	Grass	Poison								Gloom			
+153	46	Paras	Bug	Grass									
+154	47	Parasect	Bug	Grass								Paras			
+155	48	Venonat	Bug	Poison									
+156	49	Venomoth	Bug	Poison								Venonat			
+157	50	Diglett	Ground									
+158	51	Dugtrio	Ground								Diglett			
+159	52	Meowth	Normal									
+160	53	Persian	Normal								Meowth			
+161	54	Psyduck	Water									
+162	55	Golduck	Water								Psyduck			
+163	56	Mankey	Fighting									
+164	57	Primeape	Fighting								Mankey			
+165	58	Growlithe	Fire									
+166	59	Arcanine	Fire								Growlithe			
+167	60	Poliwag	Water									
+168	61	Poliwhirl	Water								Poliwag			
+169	62	Poliwrath	Water	Fighting								Poliwhirl			
+170	63	Abra	Psychic									
+171	64	Kadabra	Psychic								Abra			
+172	65	Alakazam	Psychic								Kadabra			
+173	66	Machop	Fighting									
+174	67	Machoke	Fighting								Machop			
+175	68	Machamp	Fighting								Machoke			
+176	69	Bellsprout	Grass	Poison									
+177	70	Weepinbell	Grass	Poison								Bellsprout			
+178	71	Victreebel	Grass	Poison								Weepinbell			
+179	72	Tentacool	Water	Poison									
+180	73	Tentacruel	Water	Poison								Tentacool			
+181	74	Geodude	Rock	Ground									
+182	75	Graveler	Rock	Ground								Geodude			
+183	76	Golem	Rock	Ground								Graveler			
+184	77	Ponyta	Fire									
+185	78	Rapidash	Fire								Ponyta			
+186	79	Slowpoke	Water	Psychic									
+187	80	Slowbro	Water	Psychic								Slowpoke			
+188	81	Magnemite	Electric	Steel									
+189	82	Magneton	Electric	Steel								Magnemite			
+190	83	Farfetch'd	Normal	Flying									
+191	84	Doduo	Normal	Flying									
+192	85	Dodrio	Normal	Flying								Doduo			
+193	86	Seel	Water									
+194	87	Dewgong	Water	Ice								Seel			
+195	88	Grimer	Poison									
+196	89	Muk	Poison								Grimer			
+197	90	Shellder	Water									
+198	91	Cloyster	Water	Ice								Shellder			
+199	92	Gastly	Ghost	Poison									
+200	93	Haunter	Ghost	Poison								Gastly			
+201	94	Gengar	Ghost	Poison								Haunter			
+202	95	Onix	Rock	Ground									
+203	96	Drowzee	Psychic									
+204	97	Hypno	Psychic								Drowzee			
+205	98	Krabby	Water									
+206	99	Kingler	Water								Krabby			
+207	100	Voltorb	Electric									
+208	101	Electrode	Electric								Voltorb			
+209	102	Exeggcute	Grass	Psychic									
+210	103	Exeggutor	Grass	Psychic								Exeggcute			
+211	104	Cubone	Ground									
+212	105	Marowak	Ground								Cubone			
+213	106	Hitmonlee	Fighting									
+214	107	Hitmonchan	Fighting									
+215	108	Lickitung	Normal									
+216	109	Koffing	Poison									
+217	110	Weezing	Poison								Koffing			
+218	111	Rhyhorn	Ground	Rock									
+219	112	Rhydon	Ground	Rock								Rhyhorn			
+220	113	Chansey	Normal									
+221	114	Tangela	Grass									
+222	115	Kangaskhan	Normal									
+223	116	Horsea	Water									
+224	117	Seadra	Water								Horsea			
+225	118	Goldeen	Water									
+226	119	Seaking	Water								Goldeen			
+227	120	Staryu	Water									
+228	121	Starmie	Water	Psychic								Staryu			
+229	122	Mr. Mime	Psychic	Fairy									
+230	123	Scyther	Bug	Flying									
+231	124	Jynx	Ice	Psychic									
+232	125	Electabuzz	Electric									
+233	126	Magmar	Fire									
+234	127	Pinsir	Bug									
+235	128	Tauros	Normal									
+236	129	Magikarp	Water									
+237	130	Gyarados	Water	Flying								Magikarp			
+238	131	Lapras	Water	Ice									
+239	132	Ditto	Normal									
+240	133	Eevee	Normal									
+241	134	Vaporeon	Water								Eevee			
+242	135	Jolteon	Electric								Eevee			
+243	136	Flareon	Fire								Eevee			
+244	137	Porygon	Normal									
+245	138	Omanyte	Rock	Water									
+246	139	Omastar	Rock	Water								Omanyte			
+247	140	Kabuto	Rock	Water									
+248	141	Kabutops	Rock	Water								Kabuto			
+249	142	Aerodactyl	Rock	Flying									
+250	143	Snorlax	Normal									
+251	144	Articuno	Ice	Flying									
+252	145	Zapdos	Electric	Flying									
+253	146	Moltres	Fire	Flying									
+254	147	Dratini	Dragon									
+255	148	Dragonair	Dragon								Dratini			
+256	149	Dragonite	Dragon	Flying								Dragonair			
+257	150	Mewtwo	Psychic									
+258	151	Mew	Psychic									
+259	152	Chikorita	Grass									
+260	153	Bayleef	Grass								Chikorita			
+261	154	Meganium	Grass								Bayleef			
+262	155	Cyndaquil	Fire									
+263	156	Quilava	Fire								Cyndaquil			
+264	157	Typhlosion	Fire								Quilava			
+265	158	Totodile	Water									
+266	159	Croconaw	Water								Totodile			
+267	160	Feraligatr	Water								Croconaw			
+268	161	Sentret	Normal									
+269	162	Furret	Normal								Sentret			
+270	163	Hoothoot	Normal	Flying									
+271	164	Noctowl	Normal	Flying								Hoothoot			
+272	165	Ledyba	Bug	Flying									
+273	166	Ledian	Bug	Flying								Ledyba			
+274	167	Spinarak	Bug	Poison									
+275	168	Ariados	Bug	Poison								Spinarak			
+276	169	Crobat	Poison	Flying								Golbat			
+277	170	Chinchou	Water	Electric									
+278	171	Lanturn	Water	Electric								Chinchou			
+279	172	Pichu	Electric								Pikachu	Breed		
+280	173	Cleffa	Fairy								Clefairy	Breed		
+281	174	Igglybuff	Normal	Fairy								Jigglypuff	Breed		
+282	175	Togepi	Fairy									
+283	176	Togetic	Fairy	Flying								Togepi			
+284	177	Natu	Psychic	Flying									
+285	178	Xatu	Psychic	Flying								Natu			
+286	179	Mareep	Electric									
+287	180	Flaaffy	Electric								Mareep			
+288	181	Ampharos	Electric								Flaaffy			
+289	182	Bellossom	Grass								Gloom			
+290	183	Marill	Water	Fairy									
+291	184	Azumarill	Water	Fairy								Marill			
+292	185	Sudowoodo	Rock									
+293	186	Politoed	Water								Poliwhirl			
+294	187	Hoppip	Grass	Flying									
+295	188	Skiploom	Grass	Flying								Hoppip			
+296	189	Jumpluff	Grass	Flying								Skiploom			
+297	190	Aipom	Normal									
+298	191	Sunkern	Grass									
+299	192	Sunflora	Grass								Sunkern			
+300	193	Yanma	Bug	Flying									
+301	194	Wooper	Water	Ground									
+302	195	Quagsire	Water	Ground								Wooper			
+303	196	Espeon	Psychic								Eevee			
+304	197	Umbreon	Dark								Eevee			
+305	198	Murkrow	Dark	Flying									
+306	199	Slowking	Water	Psychic								Slowpoke			
+307	200	Misdreavus	Ghost									
+308	201	Unown	Psychic									
+309	202	Wobbuffet	Psychic								Wynaut			
+310	203	Girafarig	Normal	Psychic									
+311	204	Pineco	Bug									
+312	205	Forretress	Bug	Steel								Pineco			
+313	206	Dunsparce	Normal									
+314	207	Gligar	Ground	Flying									
+315	208	Steelix	Steel	Ground								Onix			
+316	209	Snubbull	Fairy									
+317	210	Granbull	Fairy								Snubbull			
+318	211	Qwilfish	Water	Poison									
+319	212	Scizor	Bug	Steel								Scyther			
+320	213	Shuckle	Bug	Rock									
+321	214	Heracross	Bug	Fighting									
+322	215	Sneasel	Dark	Ice									
+323	216	Teddiursa	Normal									
+324	217	Ursaring	Normal								Teddiursa			
+325	218	Slugma	Fire									
+326	219	Magcargo	Fire	Rock								Slugma			
+327	220	Swinub	Ice	Ground									
+328	221	Piloswine	Ice	Ground								Swinub			
+329	222	Corsola	Water	Rock									
+330	223	Remoraid	Water									
+331	224	Octillery	Water								Remoraid			
+332	225	Delibird	Ice	Flying									
+333	226	Mantine	Water	Flying								Mantyke			
+334	227	Skarmory	Steel	Flying									
+335	228	Houndour	Dark	Fire									
+336	229	Houndoom	Dark	Fire								Houndour			
+337	230	Kingdra	Water	Dragon								Seadra			
+338	231	Phanpy	Ground									
+339	232	Donphan	Ground								Phanpy			
+340	233	Porygon2	Normal								Porygon			
+341	234	Stantler	Normal									
+342	235	Smeargle	Normal									
+343	236	Tyrogue	Fighting									
+344	237	Hitmontop	Fighting								Tyrogue			
+345	238	Smoochum	Ice	Psychic								Jynx	Breed		
+346	239	Elekid	Electric								Electabuzz	Breed		
+347	240	Magby	Fire								Magmar	Breed		
+348	241	Miltank	Normal									
+349	242	Blissey	Normal								Chansey			
+350	243	Raikou	Electric									
+351	244	Entei	Fire									
+352	245	Suicune	Water									
+353	246	Larvitar	Rock	Ground									
+354	247	Pupitar	Rock	Ground								Larvitar			
+355	248	Tyranitar	Rock	Dark								Pupitar			
+356	249	Lugia	Psychic	Flying									
+357	250	Ho-Oh	Fire	Flying									
+358	251	Celebi	Psychic	Grass									
+359	252	Treecko	Grass									
+360	253	Grovyle	Grass								Treecko			
+361	254	Sceptile	Grass								Grovyle			
+362	255	Torchic	Fire									
+363	256	Combusken	Fire	Fighting								Torchic			
+364	257	Blaziken	Fire	Fighting								Combusken			
+365	258	Mudkip	Water									
+366	259	Marshtomp	Water	Ground								Mudkip			
+367	260	Swampert	Water	Ground								Marshtomp			
+368	261	Poochyena	Dark									
+369	262	Mightyena	Dark								Poochyena			
+370	263	Zigzagoon	Normal									
+371	264	Linoone	Normal								Zigzagoon			
+372	265	Wurmple	Bug									
+373	266	Silcoon	Bug								Wurmple			
+374	267	Beautifly	Bug	Flying								Silcoon			
+375	268	Cascoon	Bug								Wurmple			
+376	269	Dustox	Bug	Poison								Cascoon			
+377	270	Lotad	Water	Grass									
+378	271	Lombre	Water	Grass								Lotad			
+379	272	Ludicolo	Water	Grass								Lombre			
+380	273	Seedot	Grass									
+381	274	Nuzleaf	Grass	Dark								Seedot			
+382	275	Shiftry	Grass	Dark								Nuzleaf			
+383	276	Taillow	Normal	Flying									
+384	277	Swellow	Normal	Flying								Taillow			
+385	278	Wingull	Water	Flying									
+386	279	Pelipper	Water	Flying								Wingull			
+387	280	Ralts	Psychic	Fairy									
+388	281	Kirlia	Psychic	Fairy								Ralts			
+389	282	Gardevoir	Psychic	Fairy								Kirlia			
+390	283	Surskit	Bug	Water									
+391	284	Masquerain	Bug	Flying								Surskit			
+392	285	Shroomish	Grass									
+393	286	Breloom	Grass	Fighting								Shroomish			
+394	287	Slakoth	Normal									
+395	288	Vigoroth	Normal								Slakoth			
+396	289	Slaking	Normal								Vigoroth			
+397	290	Nincada	Bug	Ground									
+398	291	Ninjask	Bug	Flying								Nincada			
+399	292	Shedinja	Bug	Ghost								Nincada			
+400	293	Whismur	Normal									
+401	294	Loudred	Normal								Whismur			
+402	295	Exploud	Normal								Loudred			
+403	296	Makuhita	Fighting									
+404	297	Hariyama	Fighting								Makuhita			
+405	298	Azurill	Normal	Fairy								Marill	Breed		
+406	299	Nosepass	Rock									
+407	300	Skitty	Normal									
+408	301	Delcatty	Normal								Skitty			
+409	302	Sableye	Dark	Ghost									
+410	303	Mawile	Steel	Fairy									
+411	304	Aron	Steel	Rock									
+412	305	Lairon	Steel	Rock								Aron			
+413	306	Aggron	Steel	Rock								Lairon			
+414	307	Meditite	Fighting	Psychic									
+415	308	Medicham	Fighting	Psychic								Meditite			
+416	309	Electrike	Electric									
+417	310	Manectric	Electric								Electrike			
+418	311	Plusle	Electric									
+419	312	Minun	Electric									
+420	313	Volbeat	Bug									
+421	314	Illumise	Bug									
+422	315	Roselia	Grass	Poison									
+423	316	Gulpin	Poison									
+424	317	Swalot	Poison								Gulpin			
+425	318	Carvanha	Water	Dark									
+426	319	Sharpedo	Water	Dark								Carvanha			
+427	320	Wailmer	Water									
+428	321	Wailord	Water								Wailmer			
+429	322	Numel	Fire	Ground									
+430	323	Camerupt	Fire	Ground								Numel			
+431	324	Torkoal	Fire									
+432	325	Spoink	Psychic									
+433	326	Grumpig	Psychic								Spoink			
+434	327	Spinda	Normal									
+435	328	Trapinch	Ground									
+436	329	Vibrava	Ground	Dragon								Trapinch			
+437	330	Flygon	Ground	Dragon								Vibrava			
+438	331	Cacnea	Grass									
+439	332	Cacturne	Grass	Dark								Cacnea			
+440	333	Swablu	Normal	Flying									
+441	334	Altaria	Dragon	Flying								Swablu			
+442	335	Zangoose	Normal									
+443	336	Seviper	Poison									
+444	337	Lunatone	Rock	Psychic									
+445	338	Solrock	Rock	Psychic									
+446	339	Barboach	Water	Ground									
+447	340	Whiscash	Water	Ground								Barboach			
+448	341	Corphish	Water									
+449	342	Crawdaunt	Water	Dark								Corphish			
+450	343	Baltoy	Ground	Psychic									
+451	344	Claydol	Ground	Psychic								Baltoy			
+452	345	Lileep	Rock	Grass									
+453	346	Cradily	Rock	Grass								Lileep			
+454	347	Anorith	Rock	Bug									
+455	348	Armaldo	Rock	Bug								Anorith			
+456	349	Feebas	Water									
+457	350	Milotic	Water								Feebas			
+458	351	Castform	Normal									
+459	352	Kecleon	Normal									
+460	353	Shuppet	Ghost									
+461	354	Banette	Ghost								Shuppet			
+462	355	Duskull	Ghost									
+463	356	Dusclops	Ghost								Duskull			
+464	357	Tropius	Grass	Flying									
+465	358	Chimecho	Psychic									
+466	359	Absol	Dark									
+467	360	Wynaut	Psychic								Wobbuffet	Breed		
+468	361	Snorunt	Ice									
+469	362	Glalie	Ice								Snorunt			
+470	363	Spheal	Ice	Water									
+471	364	Sealeo	Ice	Water								Spheal			
+472	365	Walrein	Ice	Water								Sealeo			
+473	366	Clamperl	Water									
+474	367	Huntail	Water								Clamperl			
+475	368	Gorebyss	Water								Clamperl			
+476	369	Relicanth	Water	Rock									
+477	370	Luvdisc	Water									
+478	371	Bagon	Dragon									
+479	372	Shelgon	Dragon								Bagon			
+480	373	Salamence	Dragon	Flying								Shelgon			
+481	374	Beldum	Steel	Psychic									
+482	375	Metang	Steel	Psychic								Beldum			
+483	376	Metagross	Steel	Psychic								Metang			
+484	377	Regirock	Rock									
+485	378	Regice	Ice									
+486	379	Registeel	Steel									
+487	380	Latias	Dragon	Psychic									
+488	381	Latios	Dragon	Psychic									
+489	382	Kyogre	Water									
+490	383	Groudon	Ground									
+491	384	Rayquaza	Dragon	Flying									
+492	385	Jirachi	Steel	Psychic									
+493	386	Deoxys	Psychic									
+494	387	Turtwig	Grass									
+495	388	Grotle	Grass								Turtwig			
+496	389	Torterra	Grass	Ground								Grotle			
+497	390	Chimchar	Fire									
+498	391	Monferno	Fire	Fighting								Chimchar			
+499	392	Infernape	Fire	Fighting								Monferno			
+500	393	Piplup	Water									
+501	394	Prinplup	Water								Piplup			
+502	395	Empoleon	Water	Steel								Prinplup			
+503	396	Starly	Normal	Flying									
+504	397	Staravia	Normal	Flying								Starly			
+505	398	Staraptor	Normal	Flying								Staravia			
+506	399	Bidoof	Normal									
+507	400	Bibarel	Normal	Water								Bidoof			
+508	401	Kricketot	Bug									
+509	402	Kricketune	Bug								Kricketot			
+510	403	Shinx	Electric									
+511	404	Luxio	Electric								Shinx			
+512	405	Luxray	Electric								Luxio			
+513	406	Budew	Grass	Poison								Roselia	Breed		
+514	407	Roserade	Grass	Poison								Roselia			
+515	408	Cranidos	Rock									
+516	409	Rampardos	Rock								Cranidos			
+517	410	Shieldon	Rock	Steel									
+518	411	Bastiodon	Rock	Steel								Shieldon			
+519	412	Burmy	Bug									
+520	413	Wormadam	Bug	Grass	Form							Burmy			
+521	414	Mothim	Bug	Flying								Burmy			
+522	415	Combee	Bug	Flying									
+523	416	Vespiquen	Bug	Flying								Combee			
+524	417	Pachirisu	Electric									
+525	418	Buizel	Water									
+526	419	Floatzel	Water								Buizel			
+527	420	Cherubi	Grass									
+528	421	Cherrim	Grass								Cherubi			
+529	422	Shellos	Water									
+530	423	Gastrodon	Water	Ground								Shellos			
+531	424	Ambipom	Normal								Aipom			
+532	425	Drifloon	Ghost	Flying									
+533	426	Drifblim	Ghost	Flying								Drifloon			
+534	427	Buneary	Normal									
+535	428	Lopunny	Normal								Buneary			
+536	429	Mismagius	Ghost								Misdreavus			
+537	430	Honchkrow	Dark	Flying								Murkrow			
+538	431	Glameow	Normal									
+539	432	Purugly	Normal								Glameow			
+540	433	Chingling	Psychic								Chimecho	Breed		
+541	434	Stunky	Poison	Dark									
+542	435	Skuntank	Poison	Dark								Stunky			
+543	436	Bronzor	Steel	Psychic									
+544	437	Bronzong	Steel	Psychic								Bronzor			
+545	438	Bonsly	Rock								Sudowoodo	Breed		
+546	439	Mime Jr.	Psychic	Fairy								Mr. Mime	Breed		
+547	440	Happiny	Normal								Chansey	Breed		
+548	441	Chatot	Normal	Flying									
+549	442	Spiritomb	Ghost	Dark									
+550	443	Gible	Dragon	Ground									
+551	444	Gabite	Dragon	Ground								Gible			
+552	445	Garchomp	Dragon	Ground								Gabite			
+553	446	Munchlax	Normal								Snorlax	Breed		
+554	447	Riolu	Fighting									
+555	448	Lucario	Fighting	Steel								Riolu			
+556	449	Hippopotas	Ground									
+557	450	Hippowdon	Ground								Hippopotas			
+558	451	Skorupi	Poison	Bug									
+559	452	Drapion	Poison	Dark								Skorupi			
+560	453	Croagunk	Poison	Fighting									
+561	454	Toxicroak	Poison	Fighting								Croagunk			
+562	455	Carnivine	Grass									
+563	456	Finneon	Water									
+564	457	Lumineon	Water								Finneon			
+565	458	Mantyke	Water	Flying								Mantine	Breed		
+566	459	Snover	Grass	Ice									
+567	460	Abomasnow	Grass	Ice								Snover			
+568	461	Weavile	Dark	Ice								Sneasel			
+569	462	Magnezone	Electric	Steel								Magneton			
+570	463	Lickilicky	Normal								Lickitung			
+571	464	Rhyperior	Ground	Rock								Rhydon			
+572	465	Tangrowth	Grass								Tangela			
+573	466	Electivire	Electric								Electabuzz			
+574	467	Magmortar	Fire								Magmar			
+575	468	Togekiss	Fairy	Flying								Togetic			
+576	469	Yanmega	Bug	Flying								Yanma			
+577	470	Leafeon	Grass								Eevee			
+578	471	Glaceon	Ice								Eevee			
+579	472	Gliscor	Ground	Flying								Gligar			
+580	473	Mamoswine	Ice	Ground								Piloswine			
+581	474	Porygon-Z	Normal								Porygon2			
+582	475	Gallade	Psychic	Fighting								Kirlia			
+583	476	Probopass	Rock	Steel								Nosepass			
+584	477	Dusknoir	Ghost								Dusclops			
+585	478	Froslass	Ice	Ghost								Snorunt			
+586	479	Rotom	Electric	Ghost									
+587	480	Uxie	Psychic									
+588	481	Mesprit	Psychic									
+589	482	Azelf	Psychic									
+590	483	Dialga	Steel	Dragon									
+591	484	Palkia	Water	Dragon									
+592	485	Heatran	Fire	Steel									
+593	486	Regigigas	Normal									
+594	487	Giratina	Ghost	Dragon									
+595	488	Cresselia	Psychic									
+596	489	Phione	Water									
+597	490	Manaphy	Water									
+598	491	Darkrai	Dark									
+599	492	Shaymin	Grass									
+600	493	Arceus	Normal									
+601	494	Victini	Psychic	Fire									
+602	495	Snivy	Grass									
+603	496	Servine	Grass								Snivy			
+604	497	Serperior	Grass								Servine			
+605	498	Tepig	Fire									
+606	499	Pignite	Fire	Fighting								Tepig			
+607	500	Emboar	Fire	Fighting								Pignite			
+608	501	Oshawott	Water									
+609	502	Dewott	Water								Oshawott			
+610	503	Samurott	Water								Dewott			
+611	504	Patrat	Normal									
+612	505	Watchog	Normal								Patrat			
+613	506	Lillipup	Normal									
+614	507	Herdier	Normal								Lillipup			
+615	508	Stoutland	Normal								Herdier			
+616	509	Purrloin	Dark									
+617	510	Liepard	Dark								Purrloin			
+618	511	Pansage	Grass									
+619	512	Simisage	Grass								Pansage			
+620	513	Pansear	Fire									
+621	514	Simisear	Fire								Pansear			
+622	515	Panpour	Water									
+623	516	Simipour	Water								Panpour			
+624	517	Munna	Psychic									
+625	518	Musharna	Psychic								Munna			
+626	519	Pidove	Normal	Flying									
+627	520	Tranquill	Normal	Flying								Pidove			
+628	521	Unfezant	Normal	Flying								Tranquill			
+629	522	Blitzle	Electric									
+630	523	Zebstrika	Electric								Blitzle			
+631	524	Roggenrola	Rock									
+632	525	Boldore	Rock								Roggenrola			
+633	526	Gigalith	Rock								Boldore			
+634	527	Woobat	Psychic	Flying									
+635	528	Swoobat	Psychic	Flying								Woobat			
+636	529	Drilbur	Ground									
+637	530	Excadrill	Ground	Steel								Drilbur			
+638	531	Audino	Normal									
+639	532	Timburr	Fighting									
+640	533	Gurdurr	Fighting								Timburr			
+641	534	Conkeldurr	Fighting								Gurdurr			
+642	535	Tympole	Water									
+643	536	Palpitoad	Water	Ground								Tympole			
+644	537	Seismitoad	Water	Ground								Palpitoad			
+645	538	Throh	Fighting									
+646	539	Sawk	Fighting									
+647	540	Sewaddle	Bug	Grass									
+648	541	Swadloon	Bug	Grass								Sewaddle			
+649	542	Leavanny	Bug	Grass								Swadloon			
+650	543	Venipede	Bug	Poison									
+651	544	Whirlipede	Bug	Poison								Venipede			
+652	545	Scolipede	Bug	Poison								Whirlipede			
+653	546	Cottonee	Grass	Fairy									
+654	547	Whimsicott	Grass	Fairy								Cottonee			
+655	548	Petilil	Grass									
+656	549	Lilligant	Grass								Petilil			
+657	550	Basculin	Water	Form								
+658	551	Sandile	Ground	Dark									
+659	552	Krokorok	Ground	Dark								Sandile			
+660	553	Krookodile	Ground	Dark								Krokorok			
+661	554	Darumaka	Fire									
+662	555	Darmanitan	Fire								Darumaka			
+663	556	Maractus	Grass									
+664	557	Dwebble	Bug	Rock									
+665	558	Crustle	Bug	Rock								Dwebble			
+666	559	Scraggy	Dark	Fighting									
+667	560	Scrafty	Dark	Fighting								Scraggy			
+668	561	Sigilyph	Psychic	Flying									
+669	562	Yamask	Ghost									
+670	563	Cofagrigus	Ghost								Yamask			
+671	564	Tirtouga	Water	Rock									
+672	565	Carracosta	Water	Rock								Tirtouga			
+673	566	Archen	Rock	Flying									
+674	567	Archeops	Rock	Flying								Archen			
+675	568	Trubbish	Poison									
+676	569	Garbodor	Poison								Trubbish			
+677	570	Zorua	Dark									
+678	571	Zoroark	Dark								Zorua			
+679	572	Minccino	Normal									
+680	573	Cinccino	Normal								Minccino			
+681	574	Gothita	Psychic									
+682	575	Gothorita	Psychic								Gothita			
+683	576	Gothitelle	Psychic								Gothorita			
+684	577	Solosis	Psychic									
+685	578	Duosion	Psychic								Solosis			
+686	579	Reuniclus	Psychic								Duosion			
+687	580	Ducklett	Water	Flying									
+688	581	Swanna	Water	Flying								Ducklett			
+689	582	Vanillite	Ice									
+690	583	Vanillish	Ice								Vanillite			
+691	584	Vanilluxe	Ice								Vanillish			
+692	585	Deerling	Normal	Grass									
+693	586	Sawsbuck	Normal	Grass								Deerling			
+694	587	Emolga	Electric	Flying									
+695	588	Karrablast	Bug									
+696	589	Escavalier	Bug	Steel								Karrablast			
+697	590	Foongus	Grass	Poison									
+698	591	Amoonguss	Grass	Poison								Foongus			
+699	592	Frillish	Water	Ghost									
+700	593	Jellicent	Water	Ghost								Frillish			
+701	594	Alomomola	Water									
+702	595	Joltik	Bug	Electric									
+703	596	Galvantula	Bug	Electric								Joltik			
+704	597	Ferroseed	Grass	Steel									
+705	598	Ferrothorn	Grass	Steel								Ferroseed			
+706	599	Klink	Steel									
+707	600	Klang	Steel								Klink			
+708	601	Klinklang	Steel								Klang			
+709	602	Tynamo	Electric									
+710	603	Eelektrik	Electric								Tynamo			
+711	604	Eelektross	Electric								Eelektrik			
+712	605	Elgyem	Psychic									
+713	606	Beheeyem	Psychic								Elgyem			
+714	607	Litwick	Ghost	Fire									
+715	608	Lampent	Ghost	Fire								Litwick			
+716	609	Chandelure	Ghost	Fire								Lampent			
+717	610	Axew	Dragon									
+718	611	Fraxure	Dragon								Axew			
+719	612	Haxorus	Dragon								Fraxure			
+720	613	Cubchoo	Ice									
+721	614	Beartic	Ice								Cubchoo			
+722	615	Cryogonal	Ice									
+723	616	Shelmet	Bug									
+724	617	Accelgor	Bug								Shelmet			
+725	618	Stunfisk	Ground	Electric									
+726	619	Mienfoo	Fighting									
+727	620	Mienshao	Fighting								Mienfoo			
+728	621	Druddigon	Dragon									
+729	622	Golett	Ground	Ghost									
+730	623	Golurk	Ground	Ghost								Golett			
+731	624	Pawniard	Dark	Steel									
+732	625	Bisharp	Dark	Steel								Pawniard			
+733	626	Bouffalant	Normal									
+734	627	Rufflet	Normal	Flying									
+735	628	Braviary	Normal	Flying								Rufflet			
+736	629	Vullaby	Dark	Flying									
+737	630	Mandibuzz	Dark	Flying								Vullaby			
+738	631	Heatmor	Fire									
+739	632	Durant	Bug	Steel									
+740	633	Deino	Dark	Dragon									
+741	634	Zweilous	Dark	Dragon								Deino			
+742	635	Hydreigon	Dark	Dragon								Zweilous			
+743	636	Larvesta	Bug	Fire									
+744	637	Volcarona	Bug	Fire								Larvesta			
+745	638	Cobalion	Steel	Fighting									
+746	639	Terrakion	Rock	Fighting									
+747	640	Virizion	Grass	Fighting									
+748	641	Tornadus	Flying	Form								
+749	642	Thundurus	Electric	Flying	Form								
+750	643	Reshiram	Dragon	Fire									
+751	644	Zekrom	Dragon	Electric									
+752	645	Landorus	Ground	Flying	Form								
+753	646	Kyurem	Dragon	Ice									
+754	647	Keldeo	Water	Fighting									
+755	648	Meloetta	Normal	Psychic	Form								
+756	649	Genesect	Bug	Steel									
+757	650	Chespin	Grass									
+758	651	Quilladin	Grass								Chespin			
+759	652	Chesnaught	Grass	Fighting								Quilladin			
+760	653	Fennekin	Fire									
+761	654	Braixen	Fire								Fennekin			
+762	655	Delphox	Fire	Psychic								Braixen			
+763	656	Froakie	Water									
+764	657	Frogadier	Water								Froakie			
+765	658	Greninja	Water	Dark								Frogadier			
+766	659	Bunnelby	Normal									
+767	660	Diggersby	Normal	Ground								Bunnelby			
+768	661	Fletchling	Normal	Flying									
+769	662	Fletchinder	Fire	Flying								Fletchling			
+770	663	Talonflame	Fire	Flying								Fletchinder			
+771	664	Scatterbug	Bug									
+772	665	Spewpa	Bug								Scatterbug			
+773	666	Vivillon	Bug	Flying								Spewpa			
+774	667	Litleo	Fire	Normal									
+775	668	Pyroar	Fire	Normal								Litleo			
+776	669	Flabébé	Fairy									
+777	670	Floette	Fairy								Flabébé			
+778	671	Florges	Fairy								Floette			
+779	672	Skiddo	Grass									
+780	673	Gogoat	Grass								Skiddo			
+781	674	Pancham	Fighting									
+782	675	Pangoro	Fighting	Dark								Pancham			
+783	676	Furfrou	Normal									
+784	677	Espurr	Psychic									
+785	678	Meowstic	Psychic								Espurr			
+786	679	Honedge	Steel	Ghost									
+787	680	Doublade	Steel	Ghost								Honedge			
+788	681	Aegislash	Steel	Ghost								Doublade			
+789	682	Spritzee	Fairy									
+790	683	Aromatisse	Fairy								Spritzee			
+791	684	Swirlix	Fairy									
+792	685	Slurpuff	Fairy								Swirlix			
+793	686	Inkay	Dark	Psychic									
+794	687	Malamar	Dark	Psychic								Inkay			
+795	688	Binacle	Rock	Water									
+796	689	Barbaracle	Rock	Water								Binacle			
+797	690	Skrelp	Poison	Water									
+798	691	Dragalge	Poison	Dragon								Skrelp			
+799	692	Clauncher	Water									
+800	693	Clawitzer	Water								Clauncher			
+801	694	Helioptile	Electric	Normal									
+802	695	Heliolisk	Electric	Normal								Helioptile			
+803	696	Tyrunt	Rock	Dragon									
+804	697	Tyrantrum	Rock	Dragon								Tyrunt			
+805	698	Amaura	Rock	Ice									
+806	699	Aurorus	Rock	Ice								Amaura			
+807	700	Sylveon	Fairy								Eevee			
+808	701	Hawlucha	Fighting	Flying									
+809	702	Dedenne	Electric	Fairy									
+810	703	Carbink	Rock	Fairy									
+811	704	Goomy	Dragon									
+812	705	Sliggoo	Dragon								Goomy			
+813	706	Goodra	Dragon								Sliggoo			
+814	707	Klefki	Steel	Fairy									
+815	708	Phantump	Ghost	Grass									
+816	709	Trevenant	Ghost	Grass								Phantump			
+817	710	Pumpkaboo	Ghost	Grass									
+818	711	Gourgeist	Ghost	Grass								Pumpkaboo			
+819	712	Bergmite	Ice									
+820	713	Avalugg	Ice								Bergmite			
+821	714	Noibat	Flying	Dragon									
+822	715	Noivern	Flying	Dragon								Noibat			
+823	716	Xerneas	Fairy									
+824	717	Yveltal	Dark	Flying									
+825	718	Zygarde	Dragon	Ground									
+826	719	Diancie	Rock	Fairy									
+827	720	Hoopa	Psychic	Ghost	Form								
+828	721	Volcanion	Fire	Water									
+829	722	Rowlet	Grass	Flying									
+830	723	Dartrix	Grass	Flying								Rowlet			
+831	724	Decidueye	Grass	Ghost								Dartrix			
+832	725	Litten	Fire									
+833	726	Torracat	Fire								Litten			
+834	727	Incineroar	Fire	Dark								Torracat			
+835	728	Popplio	Water									
+836	729	Brionne	Water								Popplio			
+837	730	Primarina	Water	Fairy								Brionne			
+838	731	Pikipek	Normal	Flying									
+839	732	Trumbeak	Normal	Flying								Pikipek			
+840	733	Toucannon	Normal	Flying								Trumbeak			
+841	734	Yungoos	Normal									
+842	735	Gumshoos	Normal								Yungoos			
+843	736	Grubbin	Bug									
+844	737	Charjabug	Bug	Electric								Grubbin			
+845	738	Vikavolt	Bug	Electric								Charjabug			
+846	739	Crabrawler	Fighting									
+847	740	Crabominable	Fighting	Ice								Crabrawler			
+848	741	Oricorio	Fire	Flying	Form								
+849	742	Cutiefly	Bug	Fairy									
+850	743	Ribombee	Bug	Fairy								Cutiefly			
+851	744	Rockruff	Rock									
+852	745	Lycanroc	Rock	Form								Rockruff			
+853	746	Wishiwashi	Water	Form								
+854	747	Mareanie	Poison	Water									
+855	748	Toxapex	Poison	Water								Mareanie			
+856	749	Mudbray	Ground									
+857	750	Mudsdale	Ground								Mudbray			
+858	751	Dewpider	Water	Bug									
+859	752	Araquanid	Water	Bug								Dewpider			
+860	753	Fomantis	Grass									
+861	754	Lurantis	Grass								Fomantis			
+862	755	Morelull	Grass	Fairy									
+863	756	Shiinotic	Grass	Fairy								Morelull			
+864	757	Salandit	Poison	Fire									
+865	758	Salazzle	Poison	Fire								Salandit			
+866	759	Stufful	Normal	Fighting									
+867	760	Bewear	Normal	Fighting								Stufful			
+868	761	Bounsweet	Grass									
+869	762	Steenee	Grass								Bounsweet			
+870	763	Tsareena	Grass								Steenee			
+871	764	Comfey	Fairy									
+872	765	Oranguru	Normal	Psychic									
+873	766	Passimian	Fighting									
+874	767	Wimpod	Bug	Water									
+875	768	Golisopod	Bug	Water								Wimpod			
+876	769	Sandygast	Ghost	Ground									
+877	770	Palossand	Ghost	Ground								Sandygast			
+878	771	Pyukumuku	Water									
+879	772	Type: Null	Normal									
+880	773	Silvally	Normal								Type: Null			
+881	774	Minior	Rock	Flying									
+882	775	Komala	Normal									
+883	776	Turtonator	Fire	Dragon									
+884	777	Togedemaru	Electric	Steel									
+885	778	Mimikyu	Ghost	Fairy									
+886	779	Bruxish	Water	Psychic									
+887	780	Drampa	Normal	Dragon									
+888	781	Dhelmise	Ghost	Grass									
+889	782	Jangmo-o	Dragon									
+890	783	Hakamo-o	Dragon	Fighting								Jangmo-o			
+891	784	Kommo-o	Dragon	Fighting								Hakamo-o			
+892	785	Tapu Koko	Electric	Fairy									
+893	786	Tapu Lele	Psychic	Fairy									
+894	787	Tapu Bulu	Grass	Fairy									
+895	788	Tapu Fini	Water	Fairy									
+896	789	Cosmog	Psychic									
+897	790	Cosmoem	Psychic								Cosmog			
+898	791	Solgaleo	Psychic	Steel								Cosmoem			
+899	792	Lunala	Psychic	Ghost								Cosmoem			
+900	793	Nihilego	Rock	Poison									
+901	794	Buzzwole	Bug	Fighting									
+902	795	Pheromosa	Bug	Fighting									
+903	796	Xurkitree	Electric									
+904	797	Celesteela	Steel	Flying									
+905	798	Kartana	Grass	Steel									
+906	799	Guzzlord	Dark	Dragon									
+907	800	Necrozma	Psychic									
+908	801	Magearna	Steel	Fairy									
+909	802	Marshadow	Fighting	Ghost									
+910	803	Poipole	Poison									
+911	804	Naganadel	Poison	Dragon								Poipole			
+912	805	Stakataka	Rock	Steel									
+913	806	Blacephalon	Fire	Ghost									
+914	807	Zeraora	Electric									
+915	808	Meltan	Steel									
+916	809	Melmetal	Steel								Meltan			
