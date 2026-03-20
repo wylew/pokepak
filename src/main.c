@@ -343,7 +343,13 @@ void draw_type_tag(SDL_Renderer *renderer, const char *type, int x, int y, int w
     SDL_RenderDrawRect(renderer, &r);
 
     SDL_Color white = {255, 255, 255, 255};
-    SDL_Surface *surf = TTF_RenderUTF8_Blended(font_bold, type, white);
+    // Uppercase the type name for display
+    char upper_type[64];
+    int ui = 0;
+    for (; type[ui] && ui < 63; ui++) upper_type[ui] = (type[ui] >= 'a' && type[ui] <= 'z') ? type[ui] - 32 : type[ui];
+    upper_type[ui] = '\0';
+    SDL_Surface *surf = TTF_RenderUTF8_Blended(font_bold, upper_type, white);
+
     if (surf) {
         SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
         // Scale text to fit tag
@@ -406,6 +412,8 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
             draw_pixel_box(renderer, highlight, 4, h_red, (SDL_Color){0,0,0,0});
         }
 
+
+
         // Ball Icon — vertically centered in row
         SDL_Texture *icon = dex->pokemon[i].caught ? ball_tex : ball_x_tex;
         if (icon) {
@@ -443,6 +451,8 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
     // Name Plate (Squeezed for long names)
     SDL_Rect name_plate = {50, 100, 440, 70};
     draw_pixel_box(renderer, name_plate, 8, r_border, r_white);
+
+
     SDL_Surface *ns = TTF_RenderUTF8_Blended(font_bold, p->name, (SDL_Color){40, 40, 40, 255});
     if (ns) {
         SDL_Texture *nt = SDL_CreateTextureFromSurface(renderer, ns);
@@ -475,10 +485,14 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
         SDL_RenderCopy(renderer, sprites[selected].tex, NULL, &sr);
     }
 
+
+
     // Type Plate
     SDL_Rect type_plate = {50, 610, 440, 90};
     draw_pixel_box(renderer, type_plate, 8, r_border, r_white);
     int badge_w = 180, badge_h = 50;
+
+
     if (p->type1[0] && !p->type2[0]) {
         draw_type_tag(renderer, p->type1, type_plate.x + (type_plate.w - badge_w)/2, type_plate.y + (type_plate.h - badge_h)/2, badge_w, badge_h);
     } else {
@@ -519,6 +533,8 @@ void draw_grid(SDL_Renderer *renderer) {
     for (int x = 0; x < screen_w; x += spacing) SDL_RenderDrawLine(renderer, x, 0, x, screen_h);
     for (int y = 0; y < screen_h; y += spacing) SDL_RenderDrawLine(renderer, 0, y, screen_w, y);
 }
+
+
 
 void strip_pokemon(char *str) {
     const char *targets[] = {"Pokemon ", "pokemon ", "POKEMON ", "Pokemon", "pokemon", "POKEMON"};
