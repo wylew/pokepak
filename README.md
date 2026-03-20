@@ -89,6 +89,10 @@ For a Pokémon named `"Hisuian Decidueye"` with National ID `1025`, the app chec
 
 ---
 
-## Credits
-Built with SDL2, SDL_image, and SDL_ttf. 
+## Credits & Resources
+- **Font**: [Pokémon BW 9](https://fontstruct.com/fontstructions/show/2370205/pokemon-bw-9)
+- **Sprite Package**: [EeveeExpo](https://eeveeexpo.com/resources/1101/)
+- **Supplemental Sprites (Lazarus Beta)**: [Mr. Walkthroughs](https://mrwalkthroughs.com/pokemon-lazarus/pokedex/)
+- **Engine**: Built with SDL2, SDL_image, and SDL_ttf.
+
 Pokémon © Nintendo / Game Freak / Creatures Inc.
