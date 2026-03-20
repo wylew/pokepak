@@ -44,6 +44,7 @@ int load_pokedex(const char *tsv_path, const char *caught_path, Pokedex *dex) {
             col++;
             switch (col) {
                 case 1: p->dex_id = atoi(val); break;
+                case 2: p->national_id = atoi(val); break;
                 case 3: strncpy(p->name, val, MAX_STR); break;
                 case 4: strncpy(p->type1, val, MAX_STR); break;
                 case 5: strncpy(p->type2, val, MAX_STR); break;

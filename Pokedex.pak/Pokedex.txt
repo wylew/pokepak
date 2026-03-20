@@ -1,0 +1,2 @@
+/mnt/SDCARD/Tools/tg5040/Pokedex.pak/launch.sh 
+/mnt/SDCARD/Tools/tg5040/Pokedex.pak/launch.sh: exec: line 435: /mnt/SDCARD/Tools/tg5040/Pokedex.pak/bin/arm64/pokedex: not found

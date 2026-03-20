@@ -3,11 +3,12 @@
 
 #include <stdbool.h>
 
-#define MAX_POKEMON 1024
+#define MAX_POKEMON 2048
 #define MAX_STR 128
 
 typedef struct {
     int dex_id;
+    int national_id;
     char name[MAX_STR];
     char type1[MAX_STR];
     char type2[MAX_STR];

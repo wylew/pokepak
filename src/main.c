@@ -70,6 +70,7 @@ typedef struct {
     char caught_path[512];
     int total;
     int caught;
+    char custom_sprites_path[512];
     SDL_Texture *name_tex;   // Cached texture for the name
 } GameInfo;
 
@@ -88,7 +89,7 @@ void find_sprite_bbox(SDL_Surface *surf, SDL_Rect *bbox);
 void draw_type_tag(SDL_Renderer *renderer, const char *type, int x, int y, int w, int h);
 void render_game_select(SDL_Renderer *renderer);
 void render_footer(SDL_Renderer *renderer);
-void sanitize_pokemon_name(const char *src, char *dest, bool upper);
+void sanitize_pokemon_name(const char *src, char *dest, int mode);
 void load_sprite(SDL_Renderer *renderer, Pokemon *p, SpriteRef *out);
 void draw_gradient(SDL_Renderer *renderer, int x, int y, int w, int h, SDL_Color top, SDL_Color bot);
 void draw_grid(SDL_Renderer *renderer);
@@ -114,6 +115,8 @@ void find_games() {
             games[game_count].slug[MAX_STR - 1] = 0;
             snprintf(games[game_count].tsv_path, 512, "data/games/%s/pokemon.tsv", dir->d_name);
             snprintf(games[game_count].caught_path, 512, "data/games/%s/caught.txt", dir->d_name);
+            
+            snprintf(games[game_count].custom_sprites_path, 512, "data/games/%s/custom_sprites", dir->d_name);
             
             char line[256];
             while (fgets(line, sizeof(line), f)) {
@@ -142,65 +145,83 @@ void find_games() {
     fprintf(stderr, "DEBUG: find_games() done. Detected %d games.\n", game_count); fflush(stderr);
 }
 
-void sanitize_pokemon_name(const char *src, char *dest, bool upper) {
+void sanitize_pokemon_name(const char *src, char *dest, int mode) {
     int j = 0;
     for (int i = 0; src[i]; i++) {
         char c = src[i];
-        if (upper) {
-            if (c >= 'a' && c <= 'z') c = c - 'a' + 'A';
-        } else {
+        if (mode == 0) { // Force Lower
             if (c >= 'A' && c <= 'Z') c = c - 'A' + 'a';
+        } else if (mode == 1) { // Force Upper
+            if (c >= 'a' && c <= 'z') c = c - 'a' + 'A';
         }
-        
-        bool ok = false;
-        if (upper) ok = ((c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'));
-        else ok = ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'));
+        // mode 2: Preserve Original Case (Mixed)
+
+        bool ok = ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'));
 
         if (ok) {
             dest[j++] = c;
         } else {
-            if (j > 0 && dest[j-1] != '-') dest[j++] = '-';
+            // Replace any non-alphanumeric (like spaces) with a single underscore
+            if (j > 0 && dest[j-1] != '_') dest[j++] = '_';
         }
     }
-    if (j > 0 && dest[j-1] == '-') j--;
+    if (j > 0 && dest[j-1] == '_') j--;
     dest[j] = 0;
 }
 
-void load_sprite(SDL_Renderer *renderer, Pokemon *p, SpriteRef *out) {
+SDL_Surface* try_load_from_dir(const char *dir, Pokemon *p) {
     char path[512];
     char sname[128];
     SDL_Surface *surf = NULL;
 
-    // 1. Try lowercase .png
-    sanitize_pokemon_name(p->name, sname, false);
-    sprintf(path, "data/sprites/%s.png", sname);
+    // 1. Original Case .png
+    sanitize_pokemon_name(p->name, sname, 2);
+    sprintf(path, "%s/%s.png", dir, sname);
     surf = IMG_Load(path);
+    if (surf) return surf;
 
-    // 2. Try uppercase .PNG
+    // 2. lowercase .png
+    sanitize_pokemon_name(p->name, sname, 0);
+    sprintf(path, "%s/%s.png", dir, sname);
+    surf = IMG_Load(path);
+    if (surf) return surf;
+
+    // 3. UPPERCASE .PNG
+    sanitize_pokemon_name(p->name, sname, 1);
+    sprintf(path, "%s/%s.PNG", dir, sname);
+    surf = IMG_Load(path);
+    if (surf) return surf;
+
+    // 4. UPPERCASE .png
+    sprintf(path, "%s/%s.png", dir, sname);
+    surf = IMG_Load(path);
+    if (surf) return surf;
+
+    // 5. lowercase .PNG
+    sanitize_pokemon_name(p->name, sname, 0);
+    sprintf(path, "%s/%s.PNG", dir, sname);
+    surf = IMG_Load(path);
+    if (surf) return surf;
+
+    // 6. National ID
+    sprintf(path, "%s/%d.png", dir, p->national_id);
+    surf = IMG_Load(path);
+    return surf;
+}
+
+void load_sprite(SDL_Renderer *renderer, Pokemon *p, SpriteRef *out) {
+    SDL_Surface *surf = NULL;
+
+    // 1. Try Game-Specific Custom Sprites First
+    surf = try_load_from_dir(games[selected_game_idx].custom_sprites_path, p);
+    if (surf) fprintf(stderr, "DEBUG: Found Custom Game Sprite for %s\n", p->name);
+
+    // 2. Try Global Sprites
     if (!surf) {
-        sanitize_pokemon_name(p->name, sname, true);
-        sprintf(path, "data/sprites/%s.PNG", sname);
-        surf = IMG_Load(path);
+        surf = try_load_from_dir("data/sprites", p);
     }
 
-    // 3. Try uppercase .png
-    if (!surf) {
-        sprintf(path, "data/sprites/%s.png", sname);
-        surf = IMG_Load(path);
-    }
 
-    // 4. Try lowercase .PNG
-    if (!surf) {
-        sanitize_pokemon_name(p->name, sname, false);
-        sprintf(path, "data/sprites/%s.PNG", sname);
-        surf = IMG_Load(path);
-    }
-
-    // 5. Fallback to ID
-    if (!surf) {
-        sprintf(path, "data/sprites/%03d.png", p->dex_id);
-        surf = IMG_Load(path);
-    }
 
     if (surf) {
         out->tex = SDL_CreateTextureFromSurface(renderer, surf);
@@ -672,17 +693,20 @@ void render_game_select(SDL_Renderer *renderer) {
         SDL_RenderDrawPoint(renderer, f.x + f.w - 3, f.y + f.h - 5);
     }
     // Text lines left-aligned (like GBA dialogue box)
-    int text_y = bubble.y + 24;
+    // Scaled to match the 60px height of the name plate in pokedex view
+    int text_y = bubble.y + 14; 
     for (int i = 0; i < 2; i++) {
         if (bubble_tex[i]) {
             int tw, th; SDL_QueryTexture(bubble_tex[i], NULL, NULL, &tw, &th);
-            float s = (float)(bubble.h / 3.5f) / th;
+            float target_h = 60.0f; 
+            float s = target_h / th;
             SDL_Rect tr = {bubble.x + 28, text_y, (int)(tw*s), (int)(th*s)};
             SDL_RenderCopy(renderer, bubble_tex[i], NULL, &tr);
-            text_y += (int)(th*s) + 8;
+            text_y += (int)(th*s) + 4; // Tight spacing to fit two 60px lines
         }
     }
 }
+
 
 
 void render_footer(SDL_Renderer *renderer) {
