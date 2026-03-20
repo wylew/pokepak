@@ -95,7 +95,7 @@ void load_sprite(SDL_Renderer *renderer, Pokemon *p, SpriteRef *out);
 void draw_gradient(SDL_Renderer *renderer, int x, int y, int w, int h, SDL_Color top, SDL_Color bot);
 void draw_grid(SDL_Renderer *renderer);
 void strip_pokemon(char *str);
-void draw_pixel_box(SDL_Renderer *renderer, SDL_Rect r, int p, SDL_Color border, SDL_Color fill);
+void draw_pixel_box(SDL_Renderer *renderer, SDL_Rect r, int p, int radius, SDL_Color border, SDL_Color fill);
 
 // Scan data/games/ for subdirectories and parse game.conf
 void find_games() {
@@ -277,12 +277,9 @@ void unload_pokedex_assets() {
         SDL_DestroyTexture(footer_tex);
         footer_tex = NULL;
     }
-    if (main_bg_tex) {
-        SDL_DestroyTexture(main_bg_tex);
-        main_bg_tex = NULL;
-    }
 
     // Clean up Pokedex caches
+
     for (int i = 0; i < MAX_POKEMON; i++) {
         if (pk_id_tex[i]) { SDL_DestroyTexture(pk_id_tex[i]); pk_id_tex[i] = NULL; }
         if (pk_name_tex[i]) { SDL_DestroyTexture(pk_name_tex[i]); pk_name_tex[i] = NULL; }
@@ -441,7 +438,7 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
     // 3. Right side: Vertical List
     SDL_Rect list_frame = {520, 100, 460, 600}; // Ends at Y=700
     SDL_Color r_border = {200, 40, 40, 255}, r_white = {255, 255, 255, 220};
-    draw_pixel_box(renderer, list_frame, 8, r_border, r_white);
+    draw_pixel_box(renderer, list_frame, 8, 4, r_border, r_white);
 
     int max_visible = 7;
     float item_h = (float)(list_frame.h - 16 - 20) / max_visible; // Subtracting 8px border*2 and 10px padding*2
@@ -457,8 +454,9 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
         if (sel) {
             SDL_Rect highlight = {item_r.x + 2, item_r.y + 2, item_r.w - 4, item_r.h - 4}; // Smaller
             SDL_Color h_red = {255, 0, 0, 255};
-            draw_pixel_box(renderer, highlight, 4, h_red, (SDL_Color){0,0,0,0});
+            draw_pixel_box(renderer, highlight, 4, 2, h_red, (SDL_Color){0,0,0,0});
         }
+
 
 
 
@@ -498,7 +496,7 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
 
     // Name Plate (Squeezed for long names)
     SDL_Rect name_plate = {50, 100, 440, 70};
-    draw_pixel_box(renderer, name_plate, 8, r_border, r_white);
+    draw_pixel_box(renderer, name_plate, 8, 4, r_border, r_white);
 
 
     SDL_Surface *ns = TTF_RenderUTF8_Blended(font_bold, p->name, (SDL_Color){40, 40, 40, 255});
@@ -537,7 +535,7 @@ void render_pokedex(SDL_Renderer *renderer, Pokedex *dex, int selected, int scro
 
     // Type Plate
     SDL_Rect type_plate = {50, 610, 440, 90};
-    draw_pixel_box(renderer, type_plate, 8, r_border, r_white);
+    draw_pixel_box(renderer, type_plate, 8, 4, r_border, r_white);
     int badge_w = 180, badge_h = 50;
 
 
@@ -596,7 +594,7 @@ void strip_pokemon(char *str) {
     }
 }
 
-void draw_pixel_box(SDL_Renderer *renderer, SDL_Rect r, int p, SDL_Color border, SDL_Color fill) {
+void draw_pixel_box(SDL_Renderer *renderer, SDL_Rect r, int p, int radius, SDL_Color border, SDL_Color fill) {
     if (fill.a > 0) {
         SDL_SetRenderDrawColor(renderer, fill.r, fill.g, fill.b, fill.a);
         SDL_RenderFillRect(renderer, &r);
@@ -604,14 +602,33 @@ void draw_pixel_box(SDL_Renderer *renderer, SDL_Rect r, int p, SDL_Color border,
     SDL_SetRenderDrawColor(renderer, border.r, border.g, border.b, border.a);
     for(int i=0; i<p; i++) {
         SDL_Rect b = {r.x + i, r.y + i, r.w - (i*2), r.h - (i*2)};
-        SDL_RenderDrawLine(renderer, b.x + 2, b.y, b.x + b.w - 3, b.y);             // Top
-        SDL_RenderDrawLine(renderer, b.x + 2, b.y + b.h - 1, b.x + b.w - 3, b.y + b.h - 1); // Bot
-        SDL_RenderDrawLine(renderer, b.x, b.y + 2, b.x, b.y + b.h - 3);             // Left
-        SDL_RenderDrawLine(renderer, b.x + b.w - 1, b.y + 2, b.x + b.w - 1, b.y + b.h - 3); // Right
-        SDL_RenderDrawPoint(renderer, b.x + 1, b.y + 1);
-        SDL_RenderDrawPoint(renderer, b.x + b.w - 2, b.y + 1);
-        SDL_RenderDrawPoint(renderer, b.x + 1, b.y + b.h - 2);
-        SDL_RenderDrawPoint(renderer, b.x + b.w - 2, b.y + b.h - 2);
+        if (radius <= 0) {
+            SDL_RenderDrawRect(renderer, &b);
+        } else {
+            // Draw lines with rounding gap
+            SDL_RenderDrawLine(renderer, b.x + radius, b.y, b.x + b.w - 1 - radius, b.y);
+            SDL_RenderDrawLine(renderer, b.x + radius, b.y + b.h - 1, b.x + b.w - 1 - radius, b.y + b.h - 1);
+            SDL_RenderDrawLine(renderer, b.x, b.y + radius, b.x, b.y + b.h - 1 - radius);
+            SDL_RenderDrawLine(renderer, b.x + b.w - 1, b.y + radius, b.x + b.w - 1, b.y + b.h - 1 - radius);
+            
+            // Draw corners
+            for (int r_i = 1; r_i < radius; r_i++) {
+                // Approximate curve for small pixel radius
+                // For radius=4 or 8, we just need a few transition points
+                if (r_i == 1) {
+                    SDL_RenderDrawPoint(renderer, b.x + 1, b.y + 1);
+                    SDL_RenderDrawPoint(renderer, b.x + b.w - 2, b.y + 1);
+                    SDL_RenderDrawPoint(renderer, b.x + 1, b.y + b.h - 2);
+                    SDL_RenderDrawPoint(renderer, b.x + b.w - 2, b.y + b.h - 2);
+                } else if (r_i < (radius / 2)) {
+                    // Simple stair-step rounding
+                    SDL_RenderDrawPoint(renderer, b.x + r_i, b.y + r_i);
+                    SDL_RenderDrawPoint(renderer, b.x + b.w - 1 - r_i, b.y + r_i);
+                    SDL_RenderDrawPoint(renderer, b.x + r_i, b.y + b.h - 1 - r_i);
+                    SDL_RenderDrawPoint(renderer, b.x + b.w - 1 - r_i, b.y + b.h - 1 - r_i);
+                }
+            }
+        }
     }
 }
 
@@ -660,17 +677,17 @@ void render_game_select(SDL_Renderer *renderer) {
         int ow, oh; SDL_QueryTexture(oak_tex, NULL, NULL, &ow, &oh);
         float scale = (float)(screen_h * 0.65) / oh;
         int tw = (int)(ow * scale), th = (int)(oh * scale);
-        // Align top of Oak with top of game selection container (y=60)
-        SDL_Rect or = {screen_w - tw - 80, 60, tw, th};
+        // Align top of Oak with top of game selection container (y=60), move 40px right
+        SDL_Rect or = {screen_w - tw - 40, 60, tw, th};
         SDL_RenderCopy(renderer, oak_tex, NULL, &or);
     }
 
     SDL_Rect box_outer = {60, 60, 520, 500};
-    SDL_SetRenderDrawColor(renderer, 80, 100, 180, 255); 
-    for(int i=0; i<8; i++) { SDL_Rect b = {box_outer.x+i, box_outer.y+i, box_outer.w-(i*2), box_outer.h-(i*2)}; SDL_RenderDrawRect(renderer, &b); }
-    SDL_SetRenderDrawColor(renderer, 248, 248, 248, 255); 
-    SDL_Rect box_inner = {box_outer.x+8, box_outer.y+8, box_outer.w-16, box_outer.h-16};
-    SDL_RenderFillRect(renderer, &box_inner);
+    SDL_Color box_bdr = {80, 100, 180, 255};
+    SDL_Color box_fill = {248, 248, 248, 255};
+    // Double thickness (16px) and more rounding (radius 8)
+    draw_pixel_box(renderer, box_outer, 16, 8, box_bdr, box_fill);
+    SDL_Rect box_inner = {box_outer.x+16, box_outer.y+16, box_outer.w-32, box_outer.h-32};
 
     int list_start_y = box_inner.y + 20, max_visible = 5;
     float list_item_h = (float)(box_inner.h - 40) / max_visible;
@@ -682,8 +699,11 @@ void render_game_select(SDL_Renderer *renderer) {
         SDL_Rect item_r = {box_inner.x + 10, list_start_y + (int)(v_idx * list_item_h) + 2, box_inner.w - 20, (int)list_item_h - 4};
         
         if (i == selected_game_idx) {
-            draw_pixel_box(renderer, item_r, 4, (SDL_Color){255, 0, 0, 255}, (SDL_Color){0,0,0,0});
+            // Double selection highlight thickness (8px) and rounding (4), Forest Green color
+            draw_pixel_box(renderer, item_r, 8, 4, (SDL_Color){34, 139, 34, 255}, (SDL_Color){0,0,0,0});
         }
+
+
         if (games[i].name_tex) {
             int tw, th; SDL_QueryTexture(games[i].name_tex, NULL, NULL, &tw, &th);
             float s = (float)(list_item_h - 20) / th; // Inherit 20px padding logic
@@ -695,37 +715,12 @@ void render_game_select(SDL_Renderer *renderer) {
         }
     }
 
-    // ── Chat bubble (GBA-style: white fill, thin rounded light-blue border) ──
+    // ── Chat bubble (GBA-style: white fill, updated thickness and rounding) ──
     SDL_Rect bubble = {30, screen_h - 185, screen_w - 60, 148};
-    // Fill
-    SDL_SetRenderDrawColor(renderer, 252, 252, 252, 255);
-    SDL_RenderFillRect(renderer, &bubble);
-    // Thin border – draw a 2-pixel inset rounded rect manually
-    SDL_Color bdr = {150, 210, 220, 255};
-    SDL_SetRenderDrawColor(renderer, bdr.r, bdr.g, bdr.b, 255);
-    // Outer frame (2px thick)
-    for (int t = 0; t < 2; t++) {
-        SDL_Rect f = {bubble.x + t, bubble.y + t, bubble.w - t*2, bubble.h - t*2};
-        // Top & bottom lines (with 8px corner gap)
-        SDL_RenderDrawLine(renderer, f.x + 8, f.y,         f.x + f.w - 8, f.y);
-        SDL_RenderDrawLine(renderer, f.x + 8, f.y+f.h-1,  f.x + f.w - 8, f.y+f.h-1);
-        // Left & right lines (with 8px gap)
-        SDL_RenderDrawLine(renderer, f.x,         f.y + 8, f.x,         f.y + f.h - 8);
-        SDL_RenderDrawLine(renderer, f.x+f.w-1,  f.y + 8, f.x+f.w-1,   f.y + f.h - 8);
-        // Corners – 45-degree diagonal pixel
-        SDL_RenderDrawPoint(renderer, f.x + 4, f.y + 2);
-        SDL_RenderDrawPoint(renderer, f.x + 3, f.y + 3);
-        SDL_RenderDrawPoint(renderer, f.x + 2, f.y + 4);
-        SDL_RenderDrawPoint(renderer, f.x + f.w - 5, f.y + 2);
-        SDL_RenderDrawPoint(renderer, f.x + f.w - 4, f.y + 3);
-        SDL_RenderDrawPoint(renderer, f.x + f.w - 3, f.y + 4);
-        SDL_RenderDrawPoint(renderer, f.x + 4, f.y + f.h - 3);
-        SDL_RenderDrawPoint(renderer, f.x + 3, f.y + f.h - 4);
-        SDL_RenderDrawPoint(renderer, f.x + 2, f.y + f.h - 5);
-        SDL_RenderDrawPoint(renderer, f.x + f.w - 5, f.y + f.h - 3);
-        SDL_RenderDrawPoint(renderer, f.x + f.w - 4, f.y + f.h - 4);
-        SDL_RenderDrawPoint(renderer, f.x + f.w - 3, f.y + f.h - 5);
-    }
+    SDL_Color b_bdr = {150, 210, 220, 255}, b_fill = {252, 252, 252, 255};
+    // Double thickness (4px) and rounded corners (8px)
+    draw_pixel_box(renderer, bubble, 4, 8, b_bdr, b_fill);
+
     // Text lines left-aligned (like GBA dialogue box)
     // Scaled to match the 60px height of the name plate in pokedex view
     int text_y = bubble.y + 14; 
@@ -828,10 +823,13 @@ int main(int argc, char *argv[]) {
     if (font_header) TTF_SetFontStyle(font_header, TTF_STYLE_BOLD);
 
     oak_tex = IMG_LoadTexture(renderer, "data/icons/profoak.png");
+    if (!oak_tex) fprintf(stderr, "ERROR: Failed to load profoak.png: %s\n", IMG_GetError());
     main_bg_tex = IMG_LoadTexture(renderer, "data/icons/mainbg.png");
+    if (!main_bg_tex) fprintf(stderr, "ERROR: Failed to load mainbg.png: %s\n", IMG_GetError());
     ball_tex = IMG_LoadTexture(renderer, "data/icons/pokeball.png");
     ball_x_tex = IMG_LoadTexture(renderer, "data/icons/pokeball_x.png");
     sil_tex = IMG_LoadTexture(renderer, "data/icons/pokeball_sil.png");
+
     if (sil_tex) SDL_SetTextureAlphaMod(sil_tex, 51);
 
     find_games(); cache_game_textures(renderer);
