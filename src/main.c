@@ -47,6 +47,7 @@ SpriteRef sprites[MAX_POKEMON]; // Match Pokedex size
 SDL_Texture *ball_tex;
 SDL_Texture *ball_x_tex;
 SDL_Texture *oak_tex;
+SDL_Texture *main_bg_tex;
 SDL_Texture *sil_tex;
 SDL_Texture *bubble_tex[2]; // Cached chat bubble lines
 SDL_Texture *footer_tex;    // Cached footer text
@@ -276,6 +277,11 @@ void unload_pokedex_assets() {
         SDL_DestroyTexture(footer_tex);
         footer_tex = NULL;
     }
+    if (main_bg_tex) {
+        SDL_DestroyTexture(main_bg_tex);
+        main_bg_tex = NULL;
+    }
+
     // Clean up Pokedex caches
     for (int i = 0; i < MAX_POKEMON; i++) {
         if (pk_id_tex[i]) { SDL_DestroyTexture(pk_id_tex[i]); pk_id_tex[i] = NULL; }
@@ -295,25 +301,26 @@ void cache_game_textures(SDL_Renderer *renderer) {
         }
     }
 
-    // Cache Bubble Text
+    // Cache Bubble Text (Matching Pokedex list style: non-bold)
     const char *lines[] = {"Please select your pokemon game", "from the list."};
     for(int i=0; i<2; i++) {
         if (bubble_tex[i]) SDL_DestroyTexture(bubble_tex[i]);
-        SDL_Surface *sf = TTF_RenderUTF8_Blended(font_header, lines[i], black);
+        SDL_Surface *sf = TTF_RenderUTF8_Blended(font_list, lines[i], black);
         if (sf) {
             bubble_tex[i] = SDL_CreateTextureFromSurface(renderer, sf);
             SDL_FreeSurface(sf);
         }
     }
 
-    // Cache Footer Text
+    // Cache Footer Text (Inherited style)
     SDL_Color gray = {200, 180, 160, 255};
     if (footer_tex) SDL_DestroyTexture(footer_tex);
-    SDL_Surface *fs = TTF_RenderUTF8_Blended(font_header, "[A] Select/Toggle     [B] Back", gray);
+    SDL_Surface *fs = TTF_RenderUTF8_Blended(font_list, "[A] Select/Toggle     [B] Back", gray);
     if (fs) {
         footer_tex = SDL_CreateTextureFromSurface(renderer, fs);
         SDL_FreeSurface(fs);
     }
+
 
     // Cache Pokedex names/IDs for the CURRENT main_dex
     SDL_Color gray_c = {120, 120, 120, 255};
@@ -610,15 +617,14 @@ void draw_pixel_box(SDL_Renderer *renderer, SDL_Rect r, int p, SDL_Color border,
 
 void render_game_select(SDL_Renderer *renderer) {
     // ── GBA-style banded gradient ─────────────────────────────────────────────
-    // Colors from the reference: teal top, light mint/white center,
-    // slightly dimmer teal bottom. Non-linear: holds top 30%, bottom 30%.
-    // Each band is 8px tall to create the visible banding artifact.
-    {
-        // Top solid zone (30% of screen height)
+    if (main_bg_tex) {
+        SDL_RenderCopy(renderer, main_bg_tex, NULL, NULL);
+    } else {
+        // Colors from the reference: teal top, light mint/white center,
+        // slightly dimmer teal bottom. Non-linear: holds top 30%, bottom 30%.
+        // Each band is 8px tall to create the visible banding artifact.
         int top_zone    = (int)(screen_h * 0.30f);
-        // Bottom solid zone (30% of screen height)
         int bot_zone    = (int)(screen_h * 0.30f);
-        // Transition zone (middle 40%)
         int mid_start   = top_zone;
         int mid_end     = screen_h - bot_zone;
         int mid_h       = mid_end - mid_start;
@@ -649,13 +655,16 @@ void render_game_select(SDL_Renderer *renderer) {
         SDL_RenderFillRect(renderer, &bot_r);
     }
 
+
     if (oak_tex) {
         int ow, oh; SDL_QueryTexture(oak_tex, NULL, NULL, &ow, &oh);
         float scale = (float)(screen_h * 0.65) / oh;
         int tw = (int)(ow * scale), th = (int)(oh * scale);
-        SDL_Rect or = {screen_w - tw - 80, screen_h - th - 180, tw, th};
+        // Align top of Oak with top of game selection container (y=60)
+        SDL_Rect or = {screen_w - tw - 80, 60, tw, th};
         SDL_RenderCopy(renderer, oak_tex, NULL, &or);
     }
+
     SDL_Rect box_outer = {60, 60, 520, 500};
     SDL_SetRenderDrawColor(renderer, 80, 100, 180, 255); 
     for(int i=0; i<8; i++) { SDL_Rect b = {box_outer.x+i, box_outer.y+i, box_outer.w-(i*2), box_outer.h-(i*2)}; SDL_RenderDrawRect(renderer, &b); }
@@ -663,24 +672,29 @@ void render_game_select(SDL_Renderer *renderer) {
     SDL_Rect box_inner = {box_outer.x+8, box_outer.y+8, box_outer.w-16, box_outer.h-16};
     SDL_RenderFillRect(renderer, &box_inner);
 
-    int list_start_y = box_inner.y + 20, max_visible = 7;
+    int list_start_y = box_inner.y + 20, max_visible = 5;
     float list_item_h = (float)(box_inner.h - 40) / max_visible;
     int scroll_off = (selected_game_idx >= max_visible) ? selected_game_idx - max_visible + 1 : 0;
 
     for (int i = 0; i < game_count; i++) {
         int v_idx = i - scroll_off;
         if (v_idx < 0 || v_idx >= max_visible) continue;
+        SDL_Rect item_r = {box_inner.x + 10, list_start_y + (int)(v_idx * list_item_h) + 2, box_inner.w - 20, (int)list_item_h - 4};
+        
         if (i == selected_game_idx) {
-            SDL_Rect highlight = {box_inner.x + 10, list_start_y + (int)(v_idx * list_item_h) + 2, box_inner.w - 20, (int)list_item_h - 4};
-            draw_pixel_box(renderer, highlight, 4, (SDL_Color){255, 0, 0, 255}, (SDL_Color){0,0,0,0});
+            draw_pixel_box(renderer, item_r, 4, (SDL_Color){255, 0, 0, 255}, (SDL_Color){0,0,0,0});
         }
         if (games[i].name_tex) {
             int tw, th; SDL_QueryTexture(games[i].name_tex, NULL, NULL, &tw, &th);
-            float s = (float)(list_item_h - 10) / th;
-            SDL_Rect tr = {box_inner.x + 30, list_start_y + (int)(v_idx * list_item_h), (int)(tw*s), (int)(th*s)};
+            float s = (float)(list_item_h - 20) / th; // Inherit 20px padding logic
+            int tw_scaled = (int)(tw * s);
+            int max_tw = item_r.w - 40;
+            if (tw_scaled > max_tw) tw_scaled = max_tw;
+            SDL_Rect tr = {item_r.x + 20, item_r.y + (int)(list_item_h - (int)(th * s))/2, tw_scaled, (int)(th * s)};
             SDL_RenderCopy(renderer, games[i].name_tex, NULL, &tr);
         }
     }
+
     // ── Chat bubble (GBA-style: white fill, thin rounded light-blue border) ──
     SDL_Rect bubble = {30, screen_h - 185, screen_w - 60, 148};
     // Fill
@@ -720,11 +734,15 @@ void render_game_select(SDL_Renderer *renderer) {
             int tw, th; SDL_QueryTexture(bubble_tex[i], NULL, NULL, &tw, &th);
             float target_h = 60.0f; 
             float s = target_h / th;
-            SDL_Rect tr = {bubble.x + 28, text_y, (int)(tw*s), (int)(th*s)};
+            int tw_scaled = (int)(tw * s);
+            int max_tw = bubble.w - 56; // 28px padding * 2
+            if (tw_scaled > max_tw) tw_scaled = max_tw;
+            SDL_Rect tr = {bubble.x + 28, text_y, tw_scaled, (int)(th * s)};
             SDL_RenderCopy(renderer, bubble_tex[i], NULL, &tr);
-            text_y += (int)(th*s) + 4; // Tight spacing to fit two 60px lines
+            text_y += (int)(th * s) + 4; // Tight spacing to fit two 60px lines
         }
     }
+
 }
 
 
@@ -809,7 +827,8 @@ int main(int argc, char *argv[]) {
     if (font_bold) TTF_SetFontStyle(font_bold, TTF_STYLE_BOLD);
     if (font_header) TTF_SetFontStyle(font_header, TTF_STYLE_BOLD);
 
-    oak_tex = IMG_LoadTexture(renderer, "data/sprites/profoak.png");
+    oak_tex = IMG_LoadTexture(renderer, "data/icons/profoak.png");
+    main_bg_tex = IMG_LoadTexture(renderer, "data/icons/mainbg.png");
     ball_tex = IMG_LoadTexture(renderer, "data/icons/pokeball.png");
     ball_x_tex = IMG_LoadTexture(renderer, "data/icons/pokeball_x.png");
     sil_tex = IMG_LoadTexture(renderer, "data/icons/pokeball_sil.png");
